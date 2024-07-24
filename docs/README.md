@@ -1,16 +1,16 @@
-# PPG HEART RATE MONITOR
+# PULSE OXIMETRY
 
  <p align="center">
-  <img src="./img/heart_rate_monitor.png" alt="Project Image" width="400" height="auto">
+  <img src="./img/pulse_oximetry.png" alt="Project Image" width="400" height="auto">
 </p>
 
-# About PPG Heart Rate Monitor
+# About Pulse Oximetry
 
 PPG is the most commonly used measurement of heart rate for heart rate trackers. As your heart beats, the volume of blood changes within your cardiovascular systems, including the small skin vessels such as your veins and arteries. It is this change in volume which is recorded by the PPG sensor, via a small LED light.
 
 # Table of Contents
-- [PPG HEART RATE MONITOR](#ppg-heart-rate-monitor)
-- [About PPG Heart Rate Monitor](#about-ppg-heart-rate-monitor)
+- [PULSE OXIMETRY](#pulse-oximetry)
+- [About Pulse Oximetry](#about-pulse-oximetry)
 - [Table of Contents](#table-of-contents)
   - [1. Technologies](#1-technologies)
   - [2. Features](#2-features)
