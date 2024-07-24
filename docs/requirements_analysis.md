@@ -42,10 +42,13 @@
 * **Noise Filtering:** Combine a high-pass filter to remove the DC component and a Notch filter with a sampling frequency determined based on the specified cutoff frequency to filter out unwanted noise from the environment and the 50Hz mains frequency.
 * **SpO2/Heart Rate Measurement:** Apply an algorithm to produce accurate measurement results.
   * Apply the VMD method to remove baseline drift. After that, calculate the R ratio following the Lambert-Law, then calibrate the SpO2 curve.
-  * Apply the TERMA Framework for Heart Rate Measurement
+  * Apply the TERMA Framework for Heart Rate Measurement.
 
 ### Block Diagram
 
+ <p align="center">
+  <img src="./img/block_diagram.png" alt="Block Diagram" width="600" height="auto">
+</p>
 
 ### Firmware Architecture
 
