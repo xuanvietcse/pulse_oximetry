@@ -41,9 +41,9 @@
 3. Detect the Hypertension and alert thoughout buzzer.
 * **Sensor Calibration:** Based on actual measurement results and theoretical data from the datasheet, calibrate the sensor using the least squares method to achieve the smallest possible error under operating environmental conditions.
 * **SpO2/Heart Rate Measurement:** Apply an algorithm to produce accurate measurement results.
-  * Apply the bandpass Butterworth filter with 1-5Hz range to remove the baseline drift and high-frequency interference.
-  * Apply the TERMA Framework for Heart Rate Measurement.
-  * After that, calculate the R ratio following the formula $R = \dfrac{AC}{DC}$, then calibrate the SpO2 curve and find the coefficients of equation: $SpO2 = A - B.R$.
+  * Apply the bandpass Butterworth filter with 1-5Hz range to remove the baseline drift and high-frequencies.
+  * Apply the TERMA Framework to find the peak PPG signal, then count the peak per minute to measure the heart rate.
+  * For each peak, find the previous and next valley value, calculate the average valley value. The R ratio following the formula $R = \dfrac{AC}{DC}$, with AC is (peak - average valley) and DC is a half of that. Then, calibrate the SpO2 curve and find the coefficients of equation: $SpO2 = A - B.R$.
 
 ### Block Diagram
 
