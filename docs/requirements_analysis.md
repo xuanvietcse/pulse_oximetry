@@ -7,6 +7,8 @@
   - [Design](#design)
     - [Required Modules](#required-modules)
     - [Requirements Approach](#requirements-approach)
+    - [Detail Features](#detail-features)
+      - [GUI components](#gui-components)
     - [Block Diagram](#block-diagram)
     - [Firmware Architecture](#firmware-architecture)
 
@@ -43,6 +45,11 @@
   * Apply the bandpass Butterworth filter with 1-5Hz range to remove the baseline drift and high-frequencies.
   * Apply the TERMA Framework to find the peak PPG signal, then count the peak per minute to measure the heart rate.
   * For each peak, find the previous and next valley value, calculate the average valley value. The R ratio following the formula $R = \dfrac{AC}{DC}$, with AC is (peak - average valley) and DC is a half of that. Then, calibrate the SpO2 curve and find the coefficients of equation: $SpO2 = A - B.R$.
+
+### Detail Features
+
+#### GUI components
+
 
 ### Block Diagram
 
