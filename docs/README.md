@@ -37,9 +37,11 @@ PPG is the most commonly used measurement of heart rate for heart rate trackers.
 
 About this Heart Rate Monitor:
 
-1. **GUI for Heart Rate Monitoring:** Plot the real-time PPG signal and measure its characteristics such as heartbeat, SpO2 though USB connection.
+1. **Real-time Heart Rate signal in OLED 0.92" screen:** Plot the real-time PPG signal and measure its characteristics such as heartbeat.
 
-2. **Display for Sp02 and Heart Rate value:** User can view the SpO2 and Heartbeat on 0.92" OLED screen.
+2. **Record the result:** User can record the Heart Rate result either by pushing the built-in button or setting interval through GUI.
+
+3. **Turn on/off the device manually:** User can turn on/off the device by holding built-in button at least 3s.
 
 <a id="3-usages"></a>
 
