@@ -26,8 +26,7 @@
 ### Required Modules
 
 * STM32F411VET6 Discovery Kit
-* DS1307
-* SSD1306
+* SSD1306 I2C OLED
 * [Analog/Digital PPG Heart Rate Sensor](https://hshop.vn/products/cam-bien-nhip-tim-dfrobot-gravity-analog-digital-ppg-heart-rate-sensor)
 * USB to TTL CP2102 
 
