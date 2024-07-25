@@ -41,8 +41,6 @@ About this Heart Rate Monitor:
 
 2. **Display for Sp02 and Heart Rate value:** User can view the SpO2 and Heartbeat on 0.92" OLED screen.
 
-3. **Build-in memory for each measurement:** Store the Heartbeat, SpO2 and the time of each session. User can review them on the GUI.
-
 <a id="3-usages"></a>
 
 ## 3. Usages
