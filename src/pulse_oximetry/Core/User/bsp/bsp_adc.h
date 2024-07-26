@@ -22,7 +22,7 @@
 #include "main.h"
 /* Public defines ----------------------------------------------------- */
 typedef ADC_HandleTypeDef bsp_adc_typedef_t;
-
+typedef HAL_StatusTypeDef hal_status_t;
 /* Public enumerate/structure ----------------------------------------- */
 enum bsp_adc_status_t
 {
@@ -118,6 +118,19 @@ uint32_t bsp_adc_stop_it(bsp_adc_typedef_t *badc);
  *  - (0) : Success
  */
 uint32_t bsp_adc_stop_dma(bsp_adc_typedef_t *badc);
+
+/**
+ * @brief  Gets the converted value from data register of regular channel.
+ *
+ * @note   Caution: This function will stop also injected channels.
+ *
+ * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
+ *         the configuration information for the specified ADC.
+ *
+ * @return
+ *  - Converted value.
+ */
+uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc);
 
 #endif // __USER_BSP_ADC_H
 
