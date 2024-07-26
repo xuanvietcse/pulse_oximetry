@@ -49,7 +49,7 @@ enum bsp_adc_status_t
 uint32_t bsp_adc_start(bsp_adc_typedef_t *badc);
 
 /**
- * @brief  Enable and Start ADC conversion
+ * @brief         Enables the interrupt and starts ADC conversion of regular channels.
  *
  * @param[in]     badc pointer to a bsp_adc_typedef_t structure that contains
  *                the configuration information for the specified ADC.
@@ -62,7 +62,7 @@ uint32_t bsp_adc_start(bsp_adc_typedef_t *badc);
 uint32_t bsp_adc_start_it(bsp_adc_typedef_t *badc);
 
 /**
- * @brief  Enable and Start ADC conversion
+ * @brief         Enables ADC DMA request after last transfer (Single-ADC mode) and enables ADC peripheral.
  *
  * @param[in]     badc pointer to a bsp_adc_typedef_t structure that contains
  *                the configuration information for the specified ADC.
@@ -72,7 +72,53 @@ uint32_t bsp_adc_start_it(bsp_adc_typedef_t *badc);
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t bsp_adc_start_dma(bsp_adc_typedef_t *badc);
+uint32_t bsp_adc_start_dma(bsp_adc_typedef_t *badc, uint32_t *dma_buf, uint32_t length);
+
+/**
+ * @brief  Disables ADC and stop conversion of regular channels.
+ *
+ * @note   Caution: This function will stop also injected channels.
+ *
+ * @param[in]     badc pointer to a bsp_adc_typedef_t structure that contains
+ *                the configuration information for the specified ADC.
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t bsp_adc_stop(bsp_adc_typedef_t *badc);
+
+/**
+ * @brief  Disables the interrupt and stop ADC conversion of regular channels.
+ *
+ * @note   Caution: This function will stop also injected channels.
+ *
+ * @param[in]     badc pointer to a bsp_adc_typedef_t structure that contains
+ *                the configuration information for the specified ADC.
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t bsp_adc_stop_it(bsp_adc_typedef_t *badc);
+
+/**
+ * @brief  Disables ADC DMA (Single-ADC mode) and disables ADC peripheral
+ *
+ * @note   Caution: This function will stop also injected channels.
+ *
+ * @param[in]     badc pointer to a bsp_adc_typedef_t structure that contains
+ *                the configuration information for the specified ADC.
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t bsp_adc_stop_dma(bsp_adc_typedef_t *badc);
+
 #endif // __USER_BSP_ADC_H
 
 /* End of file -------------------------------------------------------- */
