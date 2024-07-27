@@ -77,6 +77,19 @@ uint32_t bsp_timer_set_autoreload(bsp_tim_typedef_t *htim, uint32_t autoreload);
 uint32_t bsp_timer_start(bsp_tim_typedef_t *htim);
 
 /**
+ * @brief       Start the PWM generator on a channel of timer and enable this timer interrupt.
+ *
+ * @param[in]   htim          Pointer of timer handler.
+ *
+ * @attention   timer initialize first.
+ *
+ * @return      -2 if error,
+ *              -1 if fail to start PWM,
+ *              0 if start PWM successfully.
+ */
+uint32_t bsp_timer_start_it(bsp_tim_typedef_t *htim);
+
+/**
  * @brief       Stop counter on a channel of timer.
  *
  * @param[in]   htim          Pointer of timer handler.
@@ -86,5 +99,16 @@ uint32_t bsp_timer_start(bsp_tim_typedef_t *htim);
  *              0 if stop that channel successfully.
  */
 uint32_t bsp_timer_stop(bsp_tim_typedef_t *htim);
+
+/**
+ * @brief       Stop counter on a channel of timer in interrupt mode.
+ *
+ * @param[in]   htim          Pointer of timer handler.
+ *
+ * @return      -2 if error,
+ *              -1 if fail to stop that channel,
+ *              0 if stop that channel successfully.
+ */
+uint32_t bsp_timer_stop_it(bsp_tim_typedef_t *htim);
 
 #endif /* USER_BSP_BSP_TIMER_H_ */
