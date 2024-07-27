@@ -39,7 +39,7 @@
  *  - (-1): Fail
  *  - (0) : Success
  */
-static uint32_t drv_hr_start(drv_hr_t *hr_sen);
+static uint32_t drv_hr_peri_init(drv_hr_t *hr_sen);
 /* Function definitions ----------------------------------------------- */
 uint32_t drv_hr_init(drv_hr_t *hr_sen,
                      bsp_adc_typedef_t *sen_adc,
@@ -59,15 +59,46 @@ uint32_t drv_hr_init(drv_hr_t *hr_sen,
   hr_sen->buf_size = buf_size;
 
   uint32_t ret = DRV_HR_OK;
-  ret = drv_hr_start(hr_sen);
+  ret = drv_hr_peri_init(hr_sen);
   __ASSERT(ret == DRV_HR_OK, DRV_HR_FAIL);
 
   hr_sen->active = true;
 
   return DRV_HR_OK;
 }
+
+uint32_t drv_hr_sleep(drv_hr_t *hr_sen)
+{
+  __ASSERT(hr_sen != NULL, DRV_HR_ERROR);
+
+  uint32_t ret = BSP_TIMER_OK;
+  ret = bsp_timer_stop(hr_sen->sampling_rate->timer);
+  __ASSERT(ret == BSP_TIMER_OK, DRV_HR_FAIL);
+  ret = bsp_adc_stop_dma(hr_sen->adc);
+  __ASSERT(ret == BSP_ADC_OK, DRV_HR_FAIL);
+
+  hr_sen->active = false;
+
+  return DRV_HR_OK;
+}
+
+uint32_t drv_hr_wakeup(drv_hr_t *hr_sen)
+{
+  __ASSERT(hr_sen != NULL, DRV_HR_ERROR);
+
+  uint32_t ret = BSP_ADC_OK;
+  ret = bsp_adc_start_dma(hr_sen->adc, hr_sen->converted_data_buf, hr_sen->buf_size);
+  __ASSERT(ret == BSP_ADC_OK, DRV_HR_FAIL);
+  ret = bsp_timer_start(hr_sen->sampling_rate->timer);
+  __ASSERT(ret == BSP_TIMER_OK, DRV_HR_FAIL);
+
+  hr_sen->active = true;
+
+  return DRV_HR_OK;
+}
+
 /* Private definitions ------------------------------------------------ */
-static uint32_t drv_hr_start(drv_hr_t *hr_sen)
+static uint32_t drv_hr_peri_init(drv_hr_t *hr_sen)
 {
   __ASSERT(hr_sen != NULL, DRV_HR_ERROR);
 

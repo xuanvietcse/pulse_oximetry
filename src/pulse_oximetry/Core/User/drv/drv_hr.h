@@ -74,6 +74,30 @@ uint32_t drv_hr_init(drv_hr_t *hr_sen,
                      uint32_t *converted_data_buf,
                      uint32_t buf_size);
 
+/**
+ * @brief  Halt the Heart Rate sensor, can not collect data
+ *
+ * @param[in]     hr_sen  pointer to a drv_hr_t structure that store the information of Heart Rate sensor
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Fail
+ *  - (0) : Success
+ */
+uint32_t drv_hr_sleep(drv_hr_t *hr_sen);
+
+/**
+ * @brief  Wakeup the Heart Rate sensor, continue to collect data
+ *
+ * @param[in]     hr_sen  pointer to a drv_hr_t structure that store the information of Heart Rate sensor
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Fail
+ *  - (0) : Success
+ */
+uint32_t drv_hr_wakeup(drv_hr_t *hr_sen);
+
 #endif // __USER_DRV_HR_H
 
 /* End of file -------------------------------------------------------- */
