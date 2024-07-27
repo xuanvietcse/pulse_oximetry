@@ -12,7 +12,7 @@
       - [Visualize the Heart Rate record on GUI application](#visualize-the-heart-rate-record-on-gui-application)
       - [Record the Heart Rate manually or periodic](#record-the-heart-rate-manually-or-periodic)
       - [Notificate to user when the Heart Rate is lower or upper then threshold](#notificate-to-user-when-the-heart-rate-is-lower-or-upper-then-threshold)
-    - [Easy to turn on/off device](#easy-to-turn-onoff-device)
+      - [Easy to turn on/off device](#easy-to-turn-onoff-device)
     - [Block Diagram](#block-diagram)
     - [Firmware Architecture](#firmware-architecture)
     - [Contributors](#contributors)
@@ -94,7 +94,7 @@
 - Change the color of the heart icon at the up-right corner.
 - Turn on the buzzer with sound "beep beep".
 
-### Easy to turn on/off device
+#### Easy to turn on/off device
 - User just hold the build-in button in 3s.
 
 ### Block Diagram
