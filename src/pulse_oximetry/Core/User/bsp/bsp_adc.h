@@ -33,7 +33,7 @@ enum bsp_adc_status_t
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-
+typedef uint32_t (*bsp_adc_cb_t)(bsp_adc_typedef_t *badc);
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief  Enable and Start ADC conversion
@@ -131,6 +131,31 @@ uint32_t bsp_adc_stop_dma(bsp_adc_typedef_t *badc);
  *  - Converted value.
  */
 uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc);
+
+/**
+ * @brief  Register the upper-layer function to handle the callback event.
+ *
+ * @param  bsp_adc_cb pointer to a function handle this callback.
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t bsp_adc_register_handler(bsp_adc_cb_t bsp_adc_cb);
+
+/**
+ * @brief  Regular conversion complete callback in non blocking mode.
+ *
+ * @note   Caution: This function will stop also injected channels.
+ *
+ * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
+ *         the configuration information for the specified ADC.
+ *
+ * @return
+ *  - None.
+ */
+void bsp_adc_conv_cplt_callback(bsp_adc_typedef_t *badc);
 
 #endif // __USER_BSP_ADC_H
 
