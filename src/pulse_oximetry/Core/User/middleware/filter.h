@@ -20,10 +20,10 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
-//#include "arm_math.h"
 
 /* Public defines ----------------------------------------------------- */
-#define NUM_OF_COEFFS       (5)   // 4-order filter
+#define FILTER_ORDER        (4)  
+#define NUM_OF_COEFFS       (5)   // 4-order filter has 5 coeffi       
 #define SAMPLING_FREQUENCY  (100) // Hz
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -37,9 +37,23 @@ typedef enum
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
+// Coeffi in s-domain
+double a_s[NUM_OF_COEFFS] = {1, 28.74438523, 413.1198405, 3478.070613, 14641};
+double b_s[NUM_OF_COEFFS] = {0, 0, 0, 0, 14641};
 
 /* Public function prototypes ----------------------------------------- */
-/* Public function prototypes ----------------------------------------- */
+/**
+ * @brief       Init filter.
+ *
+ * @param[in]   a_s      Pointer to the numerator coeffi of the transfer function in the s-domain.
+ * @param[in]   b_s      Pointer to the denominator coeffi of the transfer function in the s-domain.
+ * 
+ * @attention   This function should be called first.
+ * 
+ * @return      The status of filter operation.
+ */
+filter_status_t filter_btw_init(void *a_s, void *b_s);
+
 /**
  * @brief       Apply filter to an array of data.
  *
@@ -51,21 +65,8 @@ typedef enum
  * 
  * @return      The status of filter operation.
  */
-filter_status_t apply_filter_to_array_of_data(double *current_input_array, 
-                                              double *current_output_array,
-                                              uint8_t size_of_array);
-
-/**
- * @brief       Apply filter to a single data.
- *
- * @param[in]   current_input_data       Pointer to the current input data.
- * @param[out]  current_output_data      Pointer to the current output data.
- * 
- * @attention   No.
- * 
- * @return      The status of filter operation.
- */
-filter_status_t apply_filter_to_single_data(double *current_input_data,
-                                            double *current_output_data);
+filter_status_t filter_btw_process(void *current_input_array, 
+                                   void *current_output_array,
+                                   uint8_t size_of_array);
 
 #endif /* USER_MIDDLEWARE_FILTER_H_ */
