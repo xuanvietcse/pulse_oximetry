@@ -36,3 +36,43 @@ If there is any error, system must notify to users.
 
 **More over, every time users or developers send a packet to system, there will be a **Check UART** packet sent first to ensure there is no packet lost between communication process.**
 
+## Packet format
+
+### 5 Fields
+- Start of frame (SOF):
+  - Length: 4 bits.
+  - Value: 0x1.
+  - Inform starting point of packet.
+- Command Type (CMD):
+  - Length: 4 bits.
+  - Value:
+    - 0x0: Check UART.
+    - 0x1: Get data.
+    - 0x2: Set Threshold.
+    - 0x3: Set interval.
+    - 0x4: Set time.
+    - 0x5: Clear records.
+    - 0x6: Tune filter.
+    - 0x7: Error notification.
+- Data (DATA):
+  - Length: 4 bytes.
+  - Value: Based on CMD.
+    - Check UART: 0xFFFFFFFF.
+    - Get data: 0xFFFFFFFX. The last nibble X depends on what users want to get. 0x0: hear rate, 0x1: logs, 0x2: PPG signal after filtered, 0x3: PPG signal before filtered.
+    - Set threshold: Based on Nes, *et al.* (2013)[1], Heart rate max = 211 - (0.64 * age). So maximum heart rate we can get is 211. Therefore, we will need 1 byte to store the heart rate we want to set. 0xFFFFFFXX, XX is the hex value of heart rate to be set.
+    - Set interval: Default unit is nanosecond (ns). 0xXXXXXXXX, we should read datasheet before to ensure the interval we set is supported by MCU.
+    - Set time: 0xXXXXXXXX. From the 24-hour format on GUI, converting to epoch time for setting time on RTC.
+    - Clear records: 0xFFFFFFFF.
+    - Tune filter: 0xXXXXXXXX.
+    - Error notification: 0xFFFFFFFF.
+- Threshold:
+  - Length: 1 byte.
+  - Value: 0xFFFX. X = F, heart rate below threshold. X = 0, heart rate above threshold.
+- End of frame (EOF):
+  - Length: 1 byte.
+  - Value: 0x04.
+  - Inform ending point of packet.
+
+**Example packet:**
+
+![image](./img/example_packet.png)
