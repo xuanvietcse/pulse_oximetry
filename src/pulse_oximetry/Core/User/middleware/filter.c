@@ -29,11 +29,11 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
+filter_t *filter_internal = NULL;
+
 // Sample coeffi in s-domain
 // double a_s[NUM_OF_COEFFS] = {1, 28.74438523, 413.1198405, 3478.070613, 14641};
 // double b_s[NUM_OF_COEFFS] = {0, 0, 0, 0, 14641};
-
-filter_t *filter_internal = NULL;
 
 /* Private function prototypes ---------------------------------------- */
 /**
