@@ -3,18 +3,23 @@
 # Table of Contents
 - [PULSE OXIMETRY](#pulse-oximetry)
 - [Table of Contents](#table-of-contents)
-  - [Requirements](#requirements)
-  - [Design](#design)
-    - [Requirements Approach](#requirements-approach)
-    - [Required Modules](#required-modules)
-    - [Detail Features](#detail-features)
-      - [GUI components](#gui-components)
-    - [Block Diagram](#block-diagram)
-    - [Firmware Architecture](#firmware-architecture)
+  - [1. Requirements](#1-requirements)
+  - [2. Design](#2-design)
+    - [2.1. Requirements Approach](#21-requirements-approach)
+    - [2.2. Required Modules](#22-required-modules)
+    - [2.3. Detail Features](#23-detail-features)
+      - [Stream the real-time Heart Rate with 0.92" OLED](#stream-the-real-time-heart-rate-with-092-oled)
+      - [Visualize the Heart Rate record on GUI application](#visualize-the-heart-rate-record-on-gui-application)
+      - [Record the Heart Rate manually or periodic](#record-the-heart-rate-manually-or-periodic)
+      - [Notificate to user when the Heart Rate is lower or upper then threshold](#notificate-to-user-when-the-heart-rate-is-lower-or-upper-then-threshold)
+      - [Easy to turn on/off device](#easy-to-turn-onoff-device)
+    - [2.4. Block Diagram](#24-block-diagram)
+    - [2.5. Firmware Architecture](#25-firmware-architecture)
+  - [3. Contributors](#3-contributors)
 
 <a id="#1-requirements"></a>
 
-## Requirements
+## 1. Requirements
 
 * Measure the Heartbeat within an accuracy 10 percent of actual value.
 * Stream the real-time PPG Heart Rate signal in OLED screen.
@@ -27,9 +32,9 @@
 
 <a id="#firmware-architecture"></a>
 
-## Design
+## 2. Design
 
-### Requirements Approach
+### 2.1. Requirements Approach
 
 1. **Measure the Heartbeat within an accuracy 10 percent of actual value.**
 
@@ -48,7 +53,7 @@
 
 5. **Store upto 1,000 Heart Rate records with format *hh:mm:ss - DD/MM/YY - heart rate result*.**
 
-- The Module RTC have EEPROM 24C32 32Kb, when use above format, each record get max. 32bit of space. So that, we can use this memory to store upto 1,0000 records.
+- The Module RTC have EEPROM 24C32 32Kb, when use above format, each record get max. 32bit of space. So that, we can use this memory to store upto 1,0000 records. When strorage is full, stop recording and notificate user.
 
 6. **Detect the Hypertension and alert through buzzer.**
 - Device can do that if user enter the upper threshold and lower threshold of the Heart Rate.
@@ -60,27 +65,51 @@
 - We use Qt Designer for Python to design the GUI. After receive the records to device, GUI will copy those data to .txt or .csv file and display records on a graph.
 
 
-### Required Modules
+### 2.2. Required Modules
 
 * STM32F411VET6 Discovery Kit
 * SSD1306 I2C OLED
-* DS107 RTC Module
+* DS1307 RTC Module
 * [Analog/Digital PPG Heart Rate Sensor](https://hshop.vn/products/cam-bien-nhip-tim-dfrobot-gravity-analog-digital-ppg-heart-rate-sensor)
 * USB to TTL CP2102 
 
-### Detail Features
+### 2.3. Detail Features
 
-#### GUI components
-
-
-### Block Diagram
-
+#### Stream the real-time Heart Rate with 0.92" OLED
  <p align="center">
-  <img src="./img/block_diagram.png" alt="Block Diagram" width="600" height="auto">
+  <img src="./img/oled_ui.svg" alt="OLED UI" width="512" height="auto">
 </p>
 
-### Firmware Architecture
+#### Visualize the Heart Rate record on GUI application
+ <p align="center">
+  <img src="./img/app_ui.svg" alt="APP UI" width="256" height="auto">
+</p>
+
+#### Record the Heart Rate manually or periodic
+- Click the button to record the Heart Rate immediately.
+- Set interval of each record. Minimum: 10 seconds.
+
+#### Notificate to user when the Heart Rate is lower or upper then threshold
+- The thresholds can be set on GUI application.
+- Change the color of the heart icon at the up-right corner.
+- Turn on the buzzer with sound "beep beep".
+
+#### Easy to turn on/off device
+- User just hold the build-in button in 3s.
+
+### 2.4. Block Diagram
+
+ <p align="center">
+  <img src="./img/block_diagram.svg" alt="Block Diagram" width="600" height="auto">
+</p>
+
+### 2.5. Firmware Architecture
 
  <p align="center">
   <img src="./img/firmware_architecture.svg" alt="Firmware Architecture" width="600" height="auto">
 </p>
+
+## 3. Contributors
+1. Viet Hoang Xuan
+2. Giang Phan Truong
+3. Khanh Nguyen Ngoc
