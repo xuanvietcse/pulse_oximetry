@@ -20,11 +20,16 @@
 #define __SYS_PROTOCOL_H
 
 /* Includes ----------------------------------------------------------- */
-
+#include "main.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
-
+typedef enum
+{
+  SYS_PROTOCOL_ERROR = -2,
+  SYS_PROTOCOL_FAILED,
+  SYS_PROTOCOL_OK
+} sys_protocol_status_t;
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
