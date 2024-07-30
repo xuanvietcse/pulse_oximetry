@@ -17,34 +17,17 @@ from PySide6.QtCore import Slot
 from ui_dev import Ui_Dev_UI
 from ui_form import Ui_User_UI
 
-class MainWindow(QMainWindow):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+class Widget(QWidget):
+    def __init__(self, stacked_widget):
+        super().__init__()
+        self.stacked_widget = stacked_widget
+        self.setup_ui()
 
-        self.stacked_widget = QStackedWidget()
-        self.setCentralWidget(self.stacked_widget)
-
-        # Set up the QWidget from dev.ui
-        self.dev_ui = QWidget()
+    def setup_ui(self):
         self.ui_dev = Ui_Dev_UI()
-        self.ui_dev.setupUi(self.dev_ui)
+        self.ui_dev.setupUi(self)
 
-        # Set up the QMainWindow from form.ui
-        self.user_ui = QMainWindow()
-        self.ui_user = Ui_User_UI()
-        self.ui_user.setupUi(self.user_ui)
-
-        self.stacked_widget.addWidget(self.dev_ui)
-        self.stacked_widget.addWidget(self.user_ui)
-
-        self.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
-        self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
-
-        # Connect the combobox to the slot to switch UI
         self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_combobox_changed)
-
-        # Set the initial widget to user_ui
-        self.stacked_widget.setCurrentWidget(self.user_ui)
 
         # Add the plot widget raw_ppg to the layout in dev.ui
         self.plot_graph = pg.PlotWidget()
@@ -58,7 +41,7 @@ class MainWindow(QMainWindow):
         self.plot_graph.setLabel("left", "Temperature (°C)", **styles)
         self.plot_graph.setLabel("bottom", "Time (min)", **styles)
 
-        pen = pg.mkPen(color=(255, 0, 0)) # Red
+        pen = pg.mkPen(color=(255, 0, 0))  # Red
         ppg = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         time = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
         self.plot_graph.plot(ppg, time, pen=pen)
@@ -74,10 +57,82 @@ class MainWindow(QMainWindow):
         self.filtered_graph.setLabel("left", "Temperature (°C)", **styles)
         self.filtered_graph.setLabel("bottom", "Time (min)", **styles)
 
-        pen1 = pg.mkPen(color=(0, 255, 0)) # Red
+        pen1 = pg.mkPen(color=(0, 255, 0))  # Green
         ppg1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         time1 = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
         self.filtered_graph.plot(ppg1, time1, pen=pen1)
+
+        # Init RTC visible
+        self.ui_dev.lbl_mode_time.setVisible(True)
+        self.ui_dev.cbb_mode_time.setVisible(True)
+        self.ui_dev.btn_set_rtc.setVisible(True)
+
+    @Slot()
+    def on_combobox_changed(self):
+        if self.ui_dev.cbb_mode_time.currentText() == "Date time mode 12h":
+            self.ui_dev.lbl_date_time.setVisible(True)
+            self.ui_dev.lbl_set_ddmy.setVisible(True)
+            self.ui_dev.lbl_mode_24.setVisible(False)
+            self.ui_dev.te_mode_24.setVisible(False)
+            self.ui_dev.lbl_mode_12.setVisible(True)
+            self.ui_dev.te_mode_12.setVisible(True)
+            self.ui_dev.lbl_epoch_time.setVisible(False)
+            self.ui_dev.line_epoch_time.setVisible(False)
+            self.ui_dev.calendar_widget.setVisible(True)
+        elif self.ui_dev.cbb_mode_time.currentText() == "Date time mode 24h":
+            self.ui_dev.lbl_date_time.setVisible(True)
+            self.ui_dev.lbl_set_ddmy.setVisible(True)
+            self.ui_dev.lbl_mode_24.setVisible(True)
+            self.ui_dev.te_mode_24.setVisible(True)
+            self.ui_dev.lbl_mode_12.setVisible(False)
+            self.ui_dev.te_mode_12.setVisible(False)
+            self.ui_dev.lbl_epoch_time.setVisible(False)
+            self.ui_dev.line_epoch_time.setVisible(False)
+            self.ui_dev.calendar_widget.setVisible(True)
+        elif self.ui_dev.cbb_mode_time.currentText() == "Epoch time":
+            self.ui_dev.lbl_date_time.setVisible(False)
+            self.ui_dev.lbl_set_ddmy.setVisible(False)
+            self.ui_dev.lbl_mode_24.setVisible(False)
+            self.ui_dev.te_mode_24.setVisible(False)
+            self.ui_dev.lbl_mode_12.setVisible(False)
+            self.ui_dev.te_mode_12.setVisible(False)
+            self.ui_dev.lbl_epoch_time.setVisible(True)
+            self.ui_dev.line_epoch_time.setVisible(True)
+            self.ui_dev.calendar_widget.setVisible(False)
+        elif self.ui_dev.cbb_mode_time.currentText() == "None":
+            self.ui_dev.lbl_date_time.setVisible(True)
+            self.ui_dev.lbl_set_ddmy.setVisible(True)
+            self.ui_dev.lbl_mode_24.setVisible(True)
+            self.ui_dev.te_mode_24.setVisible(True)
+            self.ui_dev.lbl_mode_12.setVisible(True)
+            self.ui_dev.te_mode_12.setVisible(True)
+            self.ui_dev.lbl_epoch_time.setVisible(True)
+            self.ui_dev.line_epoch_time.setVisible(True)
+            self.ui_dev.calendar_widget.setVisible(True)
+
+class MainWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
+
+        # Set up the QWidget from dev.ui
+        self.dev_widget = Widget(self.stacked_widget)
+
+        # Set up the QMainWindow from form.ui
+        self.user_ui = QMainWindow()
+        self.ui_user = Ui_User_UI()
+        self.ui_user.setupUi(self.user_ui)
+
+        self.stacked_widget.addWidget(self.dev_widget)
+        self.stacked_widget.addWidget(self.user_ui)
+
+        self.dev_widget.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
+        self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
+
+        # Set the initial widget to user_ui
+        self.stacked_widget.setCurrentWidget(self.user_ui)
 
         # Add the heart rate plot to the layout in user.ui
         self.heart_rate_plot = pg.PlotWidget()
@@ -88,10 +143,11 @@ class MainWindow(QMainWindow):
         self.heart_rate_plot.setBackground("w")
         self.heart_rate_plot.setTitle("Heart Rate Graph", color="black", size="10pt")
 
+        styles = {"color": "black", "font-size": "15px"}
         self.heart_rate_plot.setLabel("left", "Heart Rate (bpm)", **styles)
         self.heart_rate_plot.setLabel("bottom", "Time (s)", **styles)
 
-        pen_hr = pg.mkPen(color=(0, 0, 255)) # Blue
+        pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
         heart_rate_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         heart_rate = [72, 75, 78, 76, 77, 79, 74, 73, 78, 80]
         self.heart_rate_plot.plot(heart_rate_time, heart_rate, pen=pen_hr)
@@ -102,12 +158,7 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def show_dev_ui(self):
-        self.stacked_widget.setCurrentWidget(self.dev_ui)
-
-    @Slot()
-    def on_combobox_changed(self):
-        if self.ui_dev.cbb_mode_time.currentText() == "Date time":
-            self.stacked_widget.setCurrentWidget(self.user_ui)
+        self.stacked_widget.setCurrentWidget(self.dev_widget)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

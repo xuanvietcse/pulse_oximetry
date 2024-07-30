@@ -88,7 +88,17 @@
     </property>
     <item>
      <property name="text">
-      <string>Date time</string>
+      <string>None</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Date time mode 12h</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Date time mode 24h</string>
      </property>
     </item>
     <item>
@@ -128,7 +138,7 @@
      <rect>
       <x>170</x>
       <y>520</y>
-      <width>251</width>
+      <width>291</width>
       <height>26</height>
      </rect>
     </property>
@@ -137,7 +147,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>80</y>
+      <y>70</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -146,103 +156,12 @@
      <string>Date time (GMT7):</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl_day">
+   <widget class="QTimeEdit" name="te_mode_24">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>80</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Day:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_date">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>80</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Date:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_month">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>130</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Month:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_year">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>130</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Year:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_hour">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>180</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Hour:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_min">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>180</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Min:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_sec">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>220</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Sec:</string>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="timeEdit">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>350</y>
-      <width>118</width>
+      <x>230</x>
+      <y>410</y>
+      <width>141</width>
       <height>26</height>
      </rect>
     </property>
@@ -250,14 +169,66 @@
      <string>hh:mm:ss</string>
     </property>
    </widget>
-   <widget class="QDateEdit" name="dateEdit">
+   <widget class="QCalendarWidget" name="calendar_widget">
     <property name="geometry">
      <rect>
       <x>110</x>
+      <y>140</y>
+      <width>392</width>
+      <height>236</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_set_ddmy">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>100</y>
+      <width>201</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set day, date, month, year:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_mode_24">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
       <y>410</y>
-      <width>110</width>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set time (mode 24h):</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_mode_12">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>460</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set time (mode 12h):</string>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="te_mode_12">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>460</y>
+      <width>141</width>
       <height>26</height>
      </rect>
+    </property>
+    <property name="displayFormat">
+     <string>hh:mm:ss AP</string>
     </property>
    </widget>
   </widget>
