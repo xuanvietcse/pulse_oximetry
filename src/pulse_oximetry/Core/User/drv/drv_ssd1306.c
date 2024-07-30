@@ -89,7 +89,7 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   // Set normal/inverse display
   drv_ssd1306_write_command(0xA6);
   // Clear display
-  drv_ssd1306_clear_display(dev);
+  drv_ssd1306_fill_screen(dev, DRV_SSD1306_COLOR_BLACK);
   // Set display ON
   drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_ON);
   // Return
