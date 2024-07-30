@@ -119,14 +119,14 @@ uint32_t drv_ssd1306_set_display(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command)
 {
-  drv_ssd1306_status_t ret = DRV_SSD1306_OK;
-  ret = (drv_ssd1306_t)bsp_i2c_mem_write(dev->i2c,
-                                         (dev->address) << 1,
-                                         0x00,
-                                         1,
-                                         &command,
-                                         1,
-                                         HAL_MAX_DELAY);
+  uint32_t ret = DRV_SSD1306_OK;
+  ret = bsp_i2c_mem_write(dev->i2c,
+                          (dev->address) << 1,
+                          0x00,
+                          1,
+                          &command,
+                          1,
+                          HAL_MAX_DELAY);
   __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
   return DRV_SSD1306_OK;
 }
