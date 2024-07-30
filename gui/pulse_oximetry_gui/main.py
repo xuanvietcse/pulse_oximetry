@@ -10,22 +10,26 @@
 
 import sys
 import serial
+import serial.tools.list_ports
 import pyqtgraph as pg
 import numpy as np
-from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox, QVBoxLayout
 from PySide6.QtCore import Slot
 from ui_dev import Ui_Dev_UI
 from ui_form import Ui_User_UI
 
 class Widget(QWidget):
-    def __init__(self, stacked_widget):
+    def __init__(self, main_window):
         super().__init__()
-        self.stacked_widget = stacked_widget
+        self.main_window = main_window
         self.setup_ui()
 
     def setup_ui(self):
         self.ui_dev = Ui_Dev_UI()
         self.ui_dev.setupUi(self)
+
+        # Connect the button to switch UI
+        self.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
 
         self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_cbb_mode_time_changed)
 
@@ -65,11 +69,26 @@ class Widget(QWidget):
         # Init RTC visible
         self.ui_dev.lbl_mode_time.setVisible(True)
         self.ui_dev.cbb_mode_time.setVisible(True)
-        self.ui_dev.btn_set_rtc.setVisible(True)
+        self.ui_dev.lbl_date_time.setVisible(False)
+        self.ui_dev.lbl_set_ddmy.setVisible(False)
+        self.ui_dev.lbl_mode_24.setVisible(False)
+        self.ui_dev.te_mode_24.setVisible(False)
+        self.ui_dev.lbl_mode_12.setVisible(False)
+        self.ui_dev.te_mode_12.setVisible(False)
+        self.ui_dev.lbl_epoch_time.setVisible(False)
+        self.ui_dev.line_epoch_time.setVisible(False)
+        self.ui_dev.calendar_widget.setVisible(False)
+        self.ui_dev.btn_set_rtc.setVisible(False)
+
+    @Slot()
+    def show_user_ui(self):
+        self.main_window.stacked_widget.setCurrentWidget(self.main_window.user_ui)
 
     @Slot()
     def on_cbb_mode_time_changed(self):
         if self.ui_dev.cbb_mode_time.currentText() == "Date time mode 12h":
+            self.ui_dev.lbl_mode_time.setVisible(True)
+            self.ui_dev.cbb_mode_time.setVisible(True)
             self.ui_dev.lbl_date_time.setVisible(True)
             self.ui_dev.lbl_set_ddmy.setVisible(True)
             self.ui_dev.lbl_mode_24.setVisible(False)
@@ -79,7 +98,10 @@ class Widget(QWidget):
             self.ui_dev.lbl_epoch_time.setVisible(False)
             self.ui_dev.line_epoch_time.setVisible(False)
             self.ui_dev.calendar_widget.setVisible(True)
+            self.ui_dev.btn_set_rtc.setVisible(True)
         elif self.ui_dev.cbb_mode_time.currentText() == "Date time mode 24h":
+            self.ui_dev.lbl_mode_time.setVisible(True)
+            self.ui_dev.cbb_mode_time.setVisible(True)
             self.ui_dev.lbl_date_time.setVisible(True)
             self.ui_dev.lbl_set_ddmy.setVisible(True)
             self.ui_dev.lbl_mode_24.setVisible(True)
@@ -89,7 +111,10 @@ class Widget(QWidget):
             self.ui_dev.lbl_epoch_time.setVisible(False)
             self.ui_dev.line_epoch_time.setVisible(False)
             self.ui_dev.calendar_widget.setVisible(True)
+            self.ui_dev.btn_set_rtc.setVisible(True)
         elif self.ui_dev.cbb_mode_time.currentText() == "Epoch time":
+            self.ui_dev.lbl_mode_time.setVisible(True)
+            self.ui_dev.cbb_mode_time.setVisible(True)
             self.ui_dev.lbl_date_time.setVisible(False)
             self.ui_dev.lbl_set_ddmy.setVisible(False)
             self.ui_dev.lbl_mode_24.setVisible(False)
@@ -99,16 +124,20 @@ class Widget(QWidget):
             self.ui_dev.lbl_epoch_time.setVisible(True)
             self.ui_dev.line_epoch_time.setVisible(True)
             self.ui_dev.calendar_widget.setVisible(False)
+            self.ui_dev.btn_set_rtc.setVisible(True)
         elif self.ui_dev.cbb_mode_time.currentText() == "None":
-            self.ui_dev.lbl_date_time.setVisible(True)
-            self.ui_dev.lbl_set_ddmy.setVisible(True)
-            self.ui_dev.lbl_mode_24.setVisible(True)
-            self.ui_dev.te_mode_24.setVisible(True)
-            self.ui_dev.lbl_mode_12.setVisible(True)
-            self.ui_dev.te_mode_12.setVisible(True)
-            self.ui_dev.lbl_epoch_time.setVisible(True)
-            self.ui_dev.line_epoch_time.setVisible(True)
-            self.ui_dev.calendar_widget.setVisible(True)
+            self.ui_dev.lbl_mode_time.setVisible(True)
+            self.ui_dev.cbb_mode_time.setVisible(True)
+            self.ui_dev.lbl_date_time.setVisible(False)
+            self.ui_dev.lbl_set_ddmy.setVisible(False)
+            self.ui_dev.lbl_mode_24.setVisible(False)
+            self.ui_dev.te_mode_24.setVisible(False)
+            self.ui_dev.lbl_mode_12.setVisible(False)
+            self.ui_dev.te_mode_12.setVisible(False)
+            self.ui_dev.lbl_epoch_time.setVisible(False)
+            self.ui_dev.line_epoch_time.setVisible(False)
+            self.ui_dev.calendar_widget.setVisible(False)
+            self.ui_dev.btn_set_rtc.setVisible(False)
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -118,7 +147,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.stacked_widget)
 
         # Set up the QWidget from dev.ui
-        self.dev_widget = Widget(self.stacked_widget)
+        self.dev_widget = Widget(self)
 
         # Set up the QMainWindow from form.ui
         self.user_ui = QMainWindow()
@@ -128,7 +157,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.dev_widget)
         self.stacked_widget.addWidget(self.user_ui)
 
-        self.dev_widget.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
+        #self.dev_widget.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
 
         # Set the initial widget to user_ui
@@ -152,9 +181,40 @@ class MainWindow(QMainWindow):
         heart_rate = [72, 75, 78, 76, 77, 79, 74, 73, 78, 80]
         self.heart_rate_plot.plot(heart_rate_time, heart_rate, pen=pen_hr)
 
+        # Initialize serial communication
+        self.serial_connection = None
+        self.ui_user.cbb_com.addItems(self.get_available_ports())
+        self.ui_user.btn_connect.clicked.connect(self.toggle_serial_connection)
+
+    def get_available_ports(self):
+        """Get a list of available COM ports."""
+        ports = serial.tools.list_ports.comports()
+        return [port.device for port in ports]
+
     @Slot()
-    def show_user_ui(self):
-        self.stacked_widget.setCurrentWidget(self.user_ui)
+    def toggle_serial_connection(self):
+        if self.serial_connection and self.serial_connection.is_open:
+            self.disconnect_serial()
+        else:
+            self.connect_serial()
+
+    @Slot()
+    def connect_serial(self):
+        port = self.ui_user.cbb_com.currentText()
+        baudrate = self.ui_user.cbb_baudrate.currentText()
+        try:
+            self.serial_connection = serial.Serial(port, baudrate, timeout=1)
+            self.ui_user.btn_connect.setText("Disconnect")  # Update button text
+            QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baud.")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", str(e))
+
+    @Slot()
+    def disconnect_serial(self):
+        if self.serial_connection and self.serial_connection.is_open:
+            self.serial_connection.close()
+            self.ui_user.btn_connect.setText("Connect")  # Update button text
+            QMessageBox.information(self, "Disconnection", "Serial port disconnected.")
 
     @Slot()
     def show_dev_ui(self):
