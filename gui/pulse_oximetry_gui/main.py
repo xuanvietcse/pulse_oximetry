@@ -34,37 +34,37 @@ class Widget(QWidget):
         self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_cbb_mode_time_changed)
 
         # Add the plot widget raw_ppg to the layout in dev.ui
-        self.plot_graph = pg.PlotWidget()
+        self.raw_ppg_graph = pg.PlotWidget()
         layout = QVBoxLayout(self.ui_dev.Raw_PPG)
-        layout.addWidget(self.plot_graph)
+        layout.addWidget(self.raw_ppg_graph)
 
-        self.plot_graph.setBackground("w")
-        self.plot_graph.setTitle("Raw PPG signal", color="black", size="10pt")
+        self.raw_ppg_graph.setBackground("w")
+        self.raw_ppg_graph.setTitle("Raw PPG signal", color="black", size="10pt")
 
         styles = {"color": "black", "font-size": "15px"}
-        self.plot_graph.setLabel("left", "Temperature (°C)", **styles)
-        self.plot_graph.setLabel("bottom", "Time (min)", **styles)
+        self.raw_ppg_graph.setLabel("left", "PPG", **styles)
+        self.raw_ppg_graph.setLabel("bottom", "Time (s)", **styles)
 
         pen = pg.mkPen(color=(255, 0, 0))  # Red
         ppg = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         time = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
-        self.plot_graph.plot(ppg, time, pen=pen)
+        self.raw_ppg_graph.plot(ppg, time, pen=pen)
 
         # Add the plot widget filtered_ppg to the layout in dev.ui
-        self.filtered_graph = pg.PlotWidget()
+        self.filtered_ppg_graph = pg.PlotWidget()
         layout = QVBoxLayout(self.ui_dev.Filtered_PPG)
-        layout.addWidget(self.filtered_graph)
+        layout.addWidget(self.filtered_ppg_graph)
 
-        self.filtered_graph.setBackground("w")
-        self.filtered_graph.setTitle("Filtered PPG signal", color="black", size="10pt")
+        self.filtered_ppg_graph.setBackground("w")
+        self.filtered_ppg_graph.setTitle("Filtered PPG signal", color="black", size="10pt")
 
-        self.filtered_graph.setLabel("left", "Temperature (°C)", **styles)
-        self.filtered_graph.setLabel("bottom", "Time (min)", **styles)
+        self.filtered_ppg_graph.setLabel("left", "PPG", **styles)
+        self.filtered_ppg_graph.setLabel("bottom", "Time (min)", **styles)
 
         pen1 = pg.mkPen(color=(0, 255, 0))  # Green
         ppg1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         time1 = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
-        self.filtered_graph.plot(ppg1, time1, pen=pen1)
+        self.filtered_ppg_graph.plot(ppg1, time1, pen=pen1)
 
         # Init RTC visible
         self.ui_dev.lbl_mode_time.setVisible(True)
@@ -99,6 +99,7 @@ class Widget(QWidget):
             self.ui_dev.line_epoch_time.setVisible(False)
             self.ui_dev.calendar_widget.setVisible(True)
             self.ui_dev.btn_set_rtc.setVisible(True)
+
         elif self.ui_dev.cbb_mode_time.currentText() == "Date time mode 24h":
             self.ui_dev.lbl_mode_time.setVisible(True)
             self.ui_dev.cbb_mode_time.setVisible(True)
@@ -112,6 +113,7 @@ class Widget(QWidget):
             self.ui_dev.line_epoch_time.setVisible(False)
             self.ui_dev.calendar_widget.setVisible(True)
             self.ui_dev.btn_set_rtc.setVisible(True)
+
         elif self.ui_dev.cbb_mode_time.currentText() == "Epoch time":
             self.ui_dev.lbl_mode_time.setVisible(True)
             self.ui_dev.cbb_mode_time.setVisible(True)
@@ -125,6 +127,7 @@ class Widget(QWidget):
             self.ui_dev.line_epoch_time.setVisible(True)
             self.ui_dev.calendar_widget.setVisible(False)
             self.ui_dev.btn_set_rtc.setVisible(True)
+
         elif self.ui_dev.cbb_mode_time.currentText() == "None":
             self.ui_dev.lbl_mode_time.setVisible(True)
             self.ui_dev.cbb_mode_time.setVisible(True)
@@ -164,22 +167,22 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.user_ui)
 
         # Add the heart rate plot to the layout in user.ui
-        self.heart_rate_plot = pg.PlotWidget()
+        self.heart_rate_graph = pg.PlotWidget()
         layout_hr = QVBoxLayout(self.ui_user.Heart_rate_graph)
         self.ui_user.Heart_rate_graph.setLayout(layout_hr)
-        layout_hr.addWidget(self.heart_rate_plot)
+        layout_hr.addWidget(self.heart_rate_graph)
 
-        self.heart_rate_plot.setBackground("w")
-        self.heart_rate_plot.setTitle("Heart Rate Graph", color="black", size="10pt")
+        self.heart_rate_graph.setBackground("w")
+        self.heart_rate_graph.setTitle("Heart Rate Graph", color="black", size="10pt")
 
         styles = {"color": "black", "font-size": "15px"}
-        self.heart_rate_plot.setLabel("left", "Heart Rate (bpm)", **styles)
-        self.heart_rate_plot.setLabel("bottom", "Time (s)", **styles)
+        self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
+        self.heart_rate_graph.setLabel("bottom", "Time (s)", **styles)
 
         pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
         heart_rate_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         heart_rate = [72, 75, 78, 76, 77, 79, 74, 73, 78, 80]
-        self.heart_rate_plot.plot(heart_rate_time, heart_rate, pen=pen_hr)
+        self.heart_rate_graph.plot(heart_rate_time, heart_rate, pen=pen_hr)
 
         # Initialize serial communication
         self.serial_connection = None
@@ -205,7 +208,7 @@ class MainWindow(QMainWindow):
         try:
             self.serial_connection = serial.Serial(port, baudrate, timeout=1)
             self.ui_user.btn_connect.setText("Disconnect")  # Update button text
-            QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baud.")
+            QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
         except Exception as e:
             QMessageBox.critical(self, "Error", str(e))
 
