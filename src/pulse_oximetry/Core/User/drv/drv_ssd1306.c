@@ -156,7 +156,7 @@ static uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command)
 {
   uint32_t ret = DRV_SSD1306_OK;
   ret = bsp_i2c_mem_write(dev->i2c,
-                          (dev->address) << 1,
+                          dev->address,
                           0x00,
                           1,
                           &command,
@@ -170,7 +170,7 @@ static uint32_t drv_ssd1306_write_data(drv_ssd1306_t *dev, uint8_t *data, uint16
 {
   uint32_t ret = DRV_SSD1306_OK;
   ret = bsp_i2c_mem_write(dev->i2c,
-                          (dev->address) << 1,
+                          dev->address,
                           0x40,
                           1,
                           data,
