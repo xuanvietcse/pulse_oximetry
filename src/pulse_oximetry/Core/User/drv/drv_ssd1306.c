@@ -20,7 +20,7 @@
 #include "common.h"
 #include <string.h>
 /* Private defines ---------------------------------------------------- */
-
+#define SSD1306_CONTRAST_REGISTER (0x81)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -95,8 +95,7 @@ uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_set_contrast(drv_ssd1306_t *dev, uint8_t value)
 {
-  const uint8_t set_contrast_register = 0x81;
-  drv_ssd1306_write_command(dev, set_contrast_register);
+  drv_ssd1306_write_command(dev, SSD1306_CONTRAST_REGISTER);
   drv_ssd1306_write_command(dev, value);
 }
 /* Private definitions ----------------------------------------------- */
