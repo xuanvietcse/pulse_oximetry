@@ -38,15 +38,15 @@ typedef enum
 
 typedef struct
 {
-  const uint8_t width;
-  const uint8_t height;
+  uint8_t width;
+  uint8_t height;
 } drv_ssd1306_size_t;
 typedef struct
 {
   bsp_i2c_handle_t *i2c;
   uint16_t address;
   uint8_t *buffer;
-  drv_ssd1306_size_t size
+  drv_ssd1306_size_t size;
 } drv_ssd1306_t;
 
 typedef enum
@@ -182,7 +182,7 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev, char ch, drv_ssd1306_font_t 
  *  - (-1): Fail
  *  - (0) : Success
  */
-uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev, char *str, drv_ssd1306_font_t font, SSD1306_COLOR color);
+uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev, char *str, drv_ssd1306_font_t font, drv_ssd1306_color_t color);
 
 #endif // __USER_DRV_SSD1306_H
 
