@@ -54,41 +54,47 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   dev->buffer = dev_buffer;
   dev->size.width = dev_width;
   dev->size.height = dev_height;
-  HAL_Delay(100);
   // Init sequence
-  // Set multiplex ratio
+  // Set display off
+  drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_OFF);
+  // Set display clock division
+  drv_ssd1306_write_command(dev, 0xD5);
+  drv_ssd1306_write_command(dev, 0x80);
+  // Set multiplex
   drv_ssd1306_write_command(dev, 0xA8);
-  drv_ssd1306_write_command(dev, 0x3F);
   // Set display offset
   drv_ssd1306_write_command(dev, 0xD3);
   drv_ssd1306_write_command(dev, 0x00);
-  // Set display start line
-  drv_ssd1306_write_command(dev, 0x40);
-  // Set segment remap
-  drv_ssd1306_write_command(dev, 0xA1);
-  // Set COM output scan direction
-  drv_ssd1306_write_command(dev, 0xC8);
-  // Set COM pins hardware configuration
-  drv_ssd1306_write_command(dev, 0xDA);
-  drv_ssd1306_write_command(dev, 0x12);
-  // Set contrast control
-  drv_ssd1306_write_command(dev, 0x81);
-  drv_ssd1306_write_command(dev, 0x9F);
-
-  // Set entire display on/off
-  drv_ssd1306_write_command(dev, 0xA4);
-  // Set normal/inverse display
-  drv_ssd1306_write_command(dev, 0xA6);
-  // Set display clock divide ratio/oscillator frequency
-  drv_ssd1306_write_command(dev, 0xD5);
-  drv_ssd1306_write_command(dev, 0x80);
+  // Set start line
+  drv_ssd1306_write_command(dev, 0x40 | 0x0);
   // Set charge pump
   drv_ssd1306_write_command(dev, 0x8D);
-  drv_ssd1306_write_command(dev, 0x14);
-  // Set display ON
+  drv_ssd1306_write_command(dev, 0x10);
+  // Memory mode
+  drv_ssd1306_write_command(dev, 0x20);
+  drv_ssd1306_write_command(dev, 0x00);
+  drv_ssd1306_write_command(dev, 0xA0 | 0x1);
+  drv_ssd1306_write_command(dev, 0xC8);
+  // Set compins
+  drv_ssd1306_write_command(dev, 0xDA);
+  drv_ssd1306_write_command(dev, 0x02);
+  // Set contrast
+  drv_ssd1306_write_command(dev, 0x81);
+  drv_ssd1306_write_command(dev, 0x8F);
+  // Set precharge
+  drv_ssd1306_write_command(dev, 0xD9);
+  drv_ssd1306_write_command(dev, 0x22);
+  // Set vcom detect
+  drv_ssd1306_write_command(dev, 0xDB);
+  drv_ssd1306_write_command(dev, 0x40);
+  // Set display all on resume
+  drv_ssd1306_write_command(dev, 0xA4);
+  // Set normal display
+  drv_ssd1306_write_command(dev, 0xA6);
+  // Deactive scroll
+  drv_ssd1306_write_command(dev, 0x2E);
+  // Turn on
   drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_ON);
-  // Fill Screen
-  drv_ssd1306_fill_screen(dev, DRV_SSD1306_COLOR_WHITE);
   // Return
   return DRV_SSD1306_OK;
 }
