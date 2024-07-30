@@ -41,12 +41,20 @@ typedef struct
   uint8_t width;
   uint8_t height;
 } drv_ssd1306_size_t;
+
+typedef struct
+{
+  uint8_t x;
+  uint8_t y;
+} drv_ssd1306_cursor_position_t;
 typedef struct
 {
   bsp_i2c_handle_t *i2c;
   uint16_t address;
   uint8_t *buffer;
   drv_ssd1306_size_t size;
+  drv_ssd1306_cursor_position_t cursor;
+  bool active;
 } drv_ssd1306_t;
 
 typedef enum
