@@ -27,7 +27,7 @@ class Widget(QWidget):
         self.ui_dev = Ui_Dev_UI()
         self.ui_dev.setupUi(self)
 
-        self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_combobox_changed)
+        self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_cbb_mode_time_changed)
 
         # Add the plot widget raw_ppg to the layout in dev.ui
         self.plot_graph = pg.PlotWidget()
@@ -68,7 +68,7 @@ class Widget(QWidget):
         self.ui_dev.btn_set_rtc.setVisible(True)
 
     @Slot()
-    def on_combobox_changed(self):
+    def on_cbb_mode_time_changed(self):
         if self.ui_dev.cbb_mode_time.currentText() == "Date time mode 12h":
             self.ui_dev.lbl_date_time.setVisible(True)
             self.ui_dev.lbl_set_ddmy.setVisible(True)
