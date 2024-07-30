@@ -1,6 +1,7 @@
 {
     "files": [
         "main.py",
-        "form.ui"
+        "form.ui",
+        "dev.ui"
     ]
 }
