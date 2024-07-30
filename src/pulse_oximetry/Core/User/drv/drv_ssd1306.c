@@ -29,6 +29,7 @@
 /* Private variables -------------------------------------------------- */
 
 /* Private function prototypes ---------------------------------------- */
+
 uint32_t drv_ssd1306_write_command(uint8_t command);
 /* Function definitions ----------------------------------------------- */
 
@@ -92,6 +93,26 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   // Set display ON
   drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_ON);
   // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_set_display(drv_ssd1306_t *dev,
+                                 drv_ssd1306_display_t state)
+{
+  uint8_t value = 0x00;
+  switch (state)
+  {
+  case DRV_SSD1306_DISPLAY_ON:
+    value = 0xAF;
+    break;
+  case DRV_SSD1306_DISPLAY_OFF:
+    value = 0xAE;
+    break;
+  default:
+    // Do nothing
+    break;
+  }
+  drv_ssd1306_write_command(value);
   return DRV_SSD1306_OK;
 }
 /* Private definitions ----------------------------------------------- */
