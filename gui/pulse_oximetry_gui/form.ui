@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>User_UI</class>
+ <widget class="QMainWindow" name="User_UI">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1541</width>
-    <height>856</height>
+    <width>1534</width>
+    <height>845</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="User_UI">
+  <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="Heart_rate_graph">
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>30</y>
+      <y>20</y>
       <width>1001</width>
       <height>501</height>
      </rect>
@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="btn_switch_to_dev_ui">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>720</x>
       <y>740</y>
       <width>141</width>
       <height>41</height>
@@ -44,9 +44,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>550</y>
+      <y>540</y>
       <width>451</width>
-      <height>171</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -56,7 +56,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>80</y>
+       <y>90</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -69,7 +69,7 @@
      <property name="geometry">
       <rect>
        <x>122</x>
-       <y>80</y>
+       <y>90</y>
        <width>281</width>
        <height>26</height>
       </rect>
@@ -80,7 +80,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
+      <y>20</y>
       <width>451</width>
       <height>231</height>
      </rect>
@@ -322,7 +322,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>300</y>
+      <y>290</y>
       <width>451</width>
       <height>231</height>
      </rect>
@@ -420,9 +420,9 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>550</y>
+      <y>540</y>
       <width>1001</width>
-      <height>171</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -434,7 +434,7 @@
        <x>20</x>
        <y>30</y>
        <width>831</width>
-       <height>131</height>
+       <height>141</height>
       </rect>
      </property>
     </widget>
@@ -458,7 +458,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1541</width>
+     <width>1534</width>
      <height>26</height>
     </rect>
    </property>
