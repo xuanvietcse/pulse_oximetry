@@ -99,14 +99,14 @@ uint32_t sys_display_update_threshold(sys_display_t *display, uint8_t *threshold
  * @brief  Show the notification on the display
  *
  * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
- * @param[in]     ...      additional arguments
+ * @param[in]     msg      pointer to the message array
  *
  * @return
  *  - (-2): Error
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t sys_display_show_noti(sys_display_t *display, ...);
+uint32_t sys_display_show_noti(sys_display_t *display, char *msg);
 
 /**
  * @brief  Clear all the contents of display
