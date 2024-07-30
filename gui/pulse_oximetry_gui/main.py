@@ -40,6 +40,9 @@ class MainWindow(QMainWindow):
         self.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
 
+        # Connect the combobox to the slot to switch UI
+        self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_combobox_changed)
+
         # Set the initial widget to user_ui
         self.stacked_widget.setCurrentWidget(self.user_ui)
 
@@ -100,6 +103,11 @@ class MainWindow(QMainWindow):
     @Slot()
     def show_dev_ui(self):
         self.stacked_widget.setCurrentWidget(self.dev_ui)
+
+    @Slot()
+    def on_combobox_changed(self):
+        if self.ui_dev.cbb_mode_time.currentText() == "Date time":
+            self.stacked_widget.setCurrentWidget(self.user_ui)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
