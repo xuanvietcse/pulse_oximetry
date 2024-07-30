@@ -30,7 +30,7 @@
 
 /* Private function prototypes ---------------------------------------- */
 
-uint32_t drv_ssd1306_write_command(uint8_t command);
+uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command);
 /* Function definitions ----------------------------------------------- */
 
 uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
@@ -55,39 +55,39 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   // Init sequence
   drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_OFF);
   // Set display clock divide ratio/oscillator frequency
-  drv_ssd1306_write_command(0xD5);
-  drv_ssd1306_write_command(0x80);
+  drv_ssd1306_write_command(dev, 0xD5);
+  drv_ssd1306_write_command(dev, 0x80);
   // Set multiplex ratio
-  drv_ssd1306_write_command(0xA8);
-  drv_ssd1306_write_command(0x3F);
+  drv_ssd1306_write_command(dev, 0xA8);
+  drv_ssd1306_write_command(dev, 0x3F);
   // Set display offset
-  drv_ssd1306_write_command(0xD3);
-  drv_ssd1306_write_command(0x00);
+  drv_ssd1306_write_command(dev, 0xD3);
+  drv_ssd1306_write_command(dev, 0x00);
   // Set display start line
-  drv_ssd1306_write_command(0x40);
+  drv_ssd1306_write_command(dev, 0x40);
   // Set charge pump
-  drv_ssd1306_write_command(0x8D);
-  drv_ssd1306_write_command(0x14);
+  drv_ssd1306_write_command(dev, 0x8D);
+  drv_ssd1306_write_command(dev, 0x14);
   // Set segment remap
-  drv_ssd1306_write_command(0xA1);
+  drv_ssd1306_write_command(dev, 0xA1);
   // Set COM output scan direction
-  drv_ssd1306_write_command(0xC8);
+  drv_ssd1306_write_command(dev, 0xC8);
   // Set COM pins hardware configuration
-  drv_ssd1306_write_command(0xDA);
-  drv_ssd1306_write_command(0x12);
+  drv_ssd1306_write_command(dev, 0xDA);
+  drv_ssd1306_write_command(dev, 0x12);
   // Set contrast control
-  drv_ssd1306_write_command(0x81);
-  drv_ssd1306_write_command(0xCF);
+  drv_ssd1306_write_command(dev, 0x81);
+  drv_ssd1306_write_command(dev, 0xCF);
   // Set pre-charge period
-  drv_ssd1306_write_command(0xD9);
-  drv_ssd1306_write_command(0xF1);
+  drv_ssd1306_write_command(dev, 0xD9);
+  drv_ssd1306_write_command(dev, 0xF1);
   // Set VCOMH deselect level
-  drv_ssd1306_write_command(0xDB);
-  drv_ssd1306_write_command(0x40);
+  drv_ssd1306_write_command(dev, 0xDB);
+  drv_ssd1306_write_command(dev, 0x40);
   // Set entire display on/off
-  drv_ssd1306_write_command(0xA4);
+  drv_ssd1306_write_command(dev, 0xA4);
   // Set normal/inverse display
-  drv_ssd1306_write_command(0xA6);
+  drv_ssd1306_write_command(dev, 0xA6);
   // Clear display
   drv_ssd1306_fill_screen(dev, DRV_SSD1306_COLOR_BLACK);
   // Set display ON
@@ -112,9 +112,22 @@ uint32_t drv_ssd1306_set_display(drv_ssd1306_t *dev,
     // Do nothing
     break;
   }
-  drv_ssd1306_write_command(value);
+  drv_ssd1306_write_command(dev, value);
   return DRV_SSD1306_OK;
 }
 /* Private definitions ----------------------------------------------- */
 
+uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command)
+{
+  drv_ssd1306_status_t ret = DRV_SSD1306_OK;
+  ret = (drv_ssd1306_t)bsp_i2c_mem_write(dev->i2c,
+                                         (dev->address) << 1,
+                                         0x00,
+                                         1,
+                                         &command,
+                                         1,
+                                         HAL_MAX_DELAY);
+  __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
+  return DRV_SSD1306_OK;
+}
 /* End of file -------------------------------------------------------- */
