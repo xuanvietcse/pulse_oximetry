@@ -108,7 +108,7 @@ int main(void)
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  drv_ssd1306_init(&ssd1306, &hi2c2, 0x3C, buffer, 128, 32);
+  drv_ssd1306_init(&ssd1306, &hi2c2, 0x3C, buffer, 128, 64);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -116,10 +116,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    drv_ssd1306_fill_screen(&ssd1306, DRV_SSD1306_COLOR_WHITE);
-    HAL_Delay(1000);
-    drv_ssd1306_fill_screen(&ssd1306, DRV_SSD1306_COLOR_BLACK);
-    HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
