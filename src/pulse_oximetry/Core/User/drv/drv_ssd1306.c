@@ -20,7 +20,7 @@
 #include "common.h"
 #include <string.h>
 /* Private defines ---------------------------------------------------- */
-
+#define OLD_VER
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -31,7 +31,9 @@
 
 /* Private function prototypes ---------------------------------------- */
 
-uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command);
+static uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command);
+static uint32_t drv_ssd1306_write_data(drv_ssd1306_t *dev, uint8_t *data, uint16_t size);
+static uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev);
 /* Function definitions ----------------------------------------------- */
 
 uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
@@ -55,6 +57,9 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   dev->size.width = dev_width;
   dev->size.height = dev_height;
   // Init sequence
+
+#ifdef OLD_VER
+  HAL_Delay(100);
   // Set display off
   drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_OFF);
   // Set display clock division
@@ -73,6 +78,9 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   // Memory mode
   drv_ssd1306_write_command(dev, 0x20);
   drv_ssd1306_write_command(dev, 0x00);
+
+  drv_ssd1306_set_contrast(dev, 0xFF);
+
   drv_ssd1306_write_command(dev, 0xA0 | 0x1);
   drv_ssd1306_write_command(dev, 0xC8);
   // Set compins
@@ -95,6 +103,68 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   drv_ssd1306_write_command(dev, 0x2E);
   // Turn on
   drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_ON);
+
+  drv_ssd1306_fill_screen(dev, DRV_SSD1306_COLOR_WHITE);
+
+#endif
+
+#ifdef NEW_VER
+  HAL_Delay(100);
+
+  drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_OFF);
+  // Memory mode
+  drv_ssd1306_write_command(dev, 0x20);
+  drv_ssd1306_write_command(dev, 0x00);
+  // Set Page Start Address for Page Addressing Mode,0-7
+  drv_ssd1306_write_command(dev, 0xB0);
+  // Set COM Output Scan Direction
+  drv_ssd1306_write_command(dev, 0xC8);
+  // Set low column address
+  drv_ssd1306_write_command(dev, 0x00);
+  // Set high column address
+  drv_ssd1306_write_command(dev, 0x10);
+  // Set start line address - CHECK
+  drv_ssd1306_write_command(dev, 0x40);
+
+  drv_ssd1306_set_contrast(dev, 0xFF);
+  // Set segment re-map 0 to 127 - CHECK
+  drv_ssd1306_write_command(dev, 0xA1);
+  // Set normal color
+  drv_ssd1306_write_command(dev, 0xA6);
+  // Set multiplex ratio(1 to 64) - CHECK
+  drv_ssd1306_write_command(dev, 0xA8);
+
+  drv_ssd1306_write_command(dev, 0x3F);
+  // 0xA4, Output follows RAM content
+  // 0xA5, Output ignores RAM content
+  drv_ssd1306_write_command(dev, 0xA4);
+  // Set display offset - CHECK
+  drv_ssd1306_write_command(dev, 0xD3);
+  drv_ssd1306_write_command(dev, 0x00);
+  // Set display clock divide ratio/oscillator frequency
+  drv_ssd1306_write_command(dev, 0xD5);
+  // Set divide ratio
+  drv_ssd1306_write_command(dev, 0xF0);
+  // Set pre-charge period
+  drv_ssd1306_write_command(dev, 0xD9);
+  drv_ssd1306_write_command(dev, 0x22);
+  // Set com pins hardware configuration - CHECK
+  drv_ssd1306_write_command(dev, 0xDA);
+  drv_ssd1306_write_command(dev, 0x12);
+  // Set VCOMH
+  drv_ssd1306_write_command(dev, 0xDB);
+  // 0x20,0.77xVCC
+  drv_ssd1306_write_command(dev, 0x20);
+  // Set DC-DC enable
+  drv_ssd1306_write_command(dev, 0x8D);
+  drv_ssd1306_write_command(dev, 0x14);
+
+  drv_ssd1306_set_display(dev, DRV_SSD1306_DISPLAY_ON);
+
+  drv_ssd1306_fill_screen(dev, DRV_SSD1306_COLOR_WHITE);
+#endif
+  // Flush buffer to screen
+  drv_ssd1306_update_screen(dev);
   // Return
   return DRV_SSD1306_OK;
 }
@@ -125,9 +195,16 @@ uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
   memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, 1024);
   return DRV_SSD1306_OK;
 }
+
+uint32_t drv_ssd1306_set_contrast(drv_ssd1306_t *dev, uint8_t value)
+{
+  const uint8_t set_contrast_register = 0x81;
+  drv_ssd1306_write_command(dev, set_contrast_register);
+  drv_ssd1306_write_command(dev, value);
+}
 /* Private definitions ----------------------------------------------- */
 
-uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command)
+static uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command)
 {
   uint32_t ret = DRV_SSD1306_OK;
   ret = bsp_i2c_mem_write(dev->i2c,
@@ -139,5 +216,32 @@ uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command)
                           HAL_MAX_DELAY);
   __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
   return DRV_SSD1306_OK;
+}
+
+static uint32_t drv_ssd1306_write_data(drv_ssd1306_t *dev, uint8_t *data, uint16_t size)
+{
+  uint32_t ret = DRV_SSD1306_OK;
+  ret = bsp_i2c_mem_write(dev->i2c,
+                          (dev->address) << 1,
+                          0x40,
+                          1,
+                          data,
+                          size,
+                          HAL_MAX_DELAY);
+  __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
+  return DRV_SSD1306_OK;
+}
+
+static uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
+{
+  __ASSERT(dev != NULL, DRV_SSD1306_ERROR);
+
+  for (uint8_t i = 0; i < (dev->size.height) / 8; i++)
+  {
+    drv_ssd1306_write_command(dev, 0xB0 + i); // Set the current RAM page address.
+    drv_ssd1306_write_command(dev, 0x00);
+    drv_ssd1306_write_command(dev, 0x10);
+    drv_ssd1306_write_data(dev, &dev->buffer[(dev->size.width) * i], dev->size.width);
+  }
 }
 /* End of file -------------------------------------------------------- */
