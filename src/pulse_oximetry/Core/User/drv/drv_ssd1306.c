@@ -29,7 +29,7 @@
 /* Private variables -------------------------------------------------- */
 
 /* Private function prototypes ---------------------------------------- */
-
+uint32_t drv_ssd1306_write_command(uint8_t command);
 /* Function definitions ----------------------------------------------- */
 uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
                           bsp_i2c_handle_t *dev_i2c,
