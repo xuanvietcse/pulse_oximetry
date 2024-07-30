@@ -18,6 +18,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "drv_ssd1306.h"
 #include "common.h"
+#include <string.h>
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -49,6 +50,7 @@ uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
   __ASSERT((dev_height <= 64), DRV_SSD1306_ERROR);
   // Pass values
   dev->i2c = dev_i2c;
+  dev->address = dev_address;
   dev->buffer = dev_buffer;
   dev->size.width = dev_width;
   dev->size.height = dev_height;
@@ -113,6 +115,13 @@ uint32_t drv_ssd1306_set_display(drv_ssd1306_t *dev,
     break;
   }
   drv_ssd1306_write_command(dev, value);
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
+                                 uint32_t color)
+{
+  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, 1024);
   return DRV_SSD1306_OK;
 }
 /* Private definitions ----------------------------------------------- */
