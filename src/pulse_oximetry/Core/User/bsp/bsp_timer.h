@@ -21,7 +21,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
 /* Public defines ----------------------------------------------------- */
-
+typedef TIM_HandleTypeDef bsp_tim_typedef_t;
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
@@ -47,7 +47,7 @@ typedef enum
  *              -1 if fail to set prescaler,
  *              0 if set prescler successfully.
  */
-bsp_timer_status_t bsp_timer_set_prescaler(TIM_HandleTypeDef *htim, uint32_t prescaler);
+bsp_timer_status_t bsp_timer_set_prescaler(bsp_tim_typedef_t *htim, uint32_t prescaler);
 
 /**
  * @brief       Set the counter period value for clock of timer.
@@ -61,7 +61,7 @@ bsp_timer_status_t bsp_timer_set_prescaler(TIM_HandleTypeDef *htim, uint32_t pre
  *              -1 if fail to set counter,
  *              0 if set counter successfully.
  */
-bsp_timer_status_t bsp_timer_set_autoreload(TIM_HandleTypeDef *htim, uint32_t autoreload);
+bsp_timer_status_t bsp_timer_set_autoreload(bsp_tim_typedef_t *htim, uint32_t autoreload);
 
 /**
  * @brief       Set pulse value for PWM of this channel.
@@ -75,7 +75,7 @@ bsp_timer_status_t bsp_timer_set_autoreload(TIM_HandleTypeDef *htim, uint32_t au
  *              -1 if fail to set pulse value,
  *              0 if set pulse value successfully.
  */
-bsp_timer_status_t bsp_timer_set_output_compare(TIM_HandleTypeDef *htim, uint32_t tim_channel, uint32_t compare);
+bsp_timer_status_t bsp_timer_set_output_compare(bsp_tim_typedef_t *htim, uint32_t tim_channel, uint32_t compare);
 
 /**
  * @brief       Start the PWM generator on a channel of timer.
@@ -88,7 +88,7 @@ bsp_timer_status_t bsp_timer_set_output_compare(TIM_HandleTypeDef *htim, uint32_
  *              -1 if fail to start PWM,
  *              0 if start PWM successfully.
  */
-bsp_timer_status_t bsp_timer_start(TIM_HandleTypeDef *htim);
+bsp_timer_status_t bsp_timer_start(bsp_tim_typedef_t *htim);
 
 /**
  * @brief       Start the PWM generator on a channel of timer and enable this timer interrupt.
@@ -101,7 +101,7 @@ bsp_timer_status_t bsp_timer_start(TIM_HandleTypeDef *htim);
  *              -1 if fail to start PWM,
  *              0 if start PWM successfully.
  */
-bsp_timer_status_t bsp_timer_start_it(TIM_HandleTypeDef *htim);
+bsp_timer_status_t bsp_timer_start_it(bsp_tim_typedef_t *htim);
 
 /**
  * @brief       Stop counter on a channel of timer.
@@ -112,7 +112,7 @@ bsp_timer_status_t bsp_timer_start_it(TIM_HandleTypeDef *htim);
  *              -1 if fail to stop that channel,
  *              0 if stop that channel successfully.
  */
-bsp_timer_status_t bsp_timer_stop(TIM_HandleTypeDef *htim);
+bsp_timer_status_t bsp_timer_stop(bsp_tim_typedef_t *htim);
 
 /**
  * @brief       Stop counter on a channel of timer in interrupt mode.
@@ -123,7 +123,7 @@ bsp_timer_status_t bsp_timer_stop(TIM_HandleTypeDef *htim);
  *              -1 if fail to stop that channel,
  *              0 if stop that channel successfully.
  */
-bsp_timer_status_t bsp_timer_stop_it(TIM_HandleTypeDef *htim);
+bsp_timer_status_t bsp_timer_stop_it(bsp_tim_typedef_t *htim);
 
 /**
  * @brief       Start the PWM generator on a channel of timer.
@@ -137,7 +137,7 @@ bsp_timer_status_t bsp_timer_stop_it(TIM_HandleTypeDef *htim);
  *              -1 if faile to start PWM,
  *              0 if start PWM successfully.
  */
-bsp_timer_status_t bsp_pwm_start(TIM_HandleTypeDef *htim, uint32_t tim_channel);
+bsp_timer_status_t bsp_pwm_start(bsp_tim_typedef_t *htim, uint32_t tim_channel);
 
 /**
  * @brief       Start the PWM generator on a channel of timer and enable this timer interrupt.
@@ -151,7 +151,7 @@ bsp_timer_status_t bsp_pwm_start(TIM_HandleTypeDef *htim, uint32_t tim_channel);
  *              -1 if faile to start PWM,
  *              0 if start PWM successfully.
  */
-bsp_timer_status_t bsp_pwm_start_it(TIM_HandleTypeDef *htim, uint32_t tim_channel);
+bsp_timer_status_t bsp_pwm_start_it(bsp_tim_typedef_t *htim, uint32_t tim_channel);
 
 /**
  * @brief       Stop the PWM generator on a channel of timer.
@@ -163,7 +163,7 @@ bsp_timer_status_t bsp_pwm_start_it(TIM_HandleTypeDef *htim, uint32_t tim_channe
  *              -1 if fail to stop PWM on that channel,
  *              0 if stop PWM on that channel successfully.
  */
-bsp_timer_status_t bsp_pwm_stop(TIM_HandleTypeDef *htim, uint32_t tim_channel);
+bsp_timer_status_t bsp_pwm_stop(bsp_tim_typedef_t *htim, uint32_t tim_channel);
 
 /**
  * @brief       Stop the PWM generator on a channel of timer in interrupt mode.
@@ -175,7 +175,7 @@ bsp_timer_status_t bsp_pwm_stop(TIM_HandleTypeDef *htim, uint32_t tim_channel);
  *              -1 if fail to stop PWM on that channel,
  *              0 if stop PWM on that channel successfully.
  */
-bsp_timer_status_t bsp_pwm_stop_it(TIM_HandleTypeDef *htim, uint32_t tim_channel);
+bsp_timer_status_t bsp_pwm_stop_it(bsp_tim_typedef_t *htim, uint32_t tim_channel);
 
 /**
  * @brief       Get current SysTick value.
@@ -196,7 +196,7 @@ uint32_t bsp_get_systick();
  *              -1 if fail to handle this event,
  *              0 if handle this event successfully.
  */
-bsp_timer_status_t bsp_timer_period_elapsed_handler(TIM_HandleTypeDef *htim);
+bsp_timer_status_t bsp_timer_period_elapsed_handler(bsp_tim_typedef_t *htim);
 
 /**
  * @brief       Trigger the counter overflow event in PWM mode and handle it in BSP.
@@ -207,6 +207,6 @@ bsp_timer_status_t bsp_timer_period_elapsed_handler(TIM_HandleTypeDef *htim);
  *              -1 if fail to handle this event,
  *              0 if handle this event successfully.
  */
-bsp_timer_status_t bsp_pwm_pulse_finished_handler(TIM_HandleTypeDef *htim);
+bsp_timer_status_t bsp_pwm_pulse_finished_handler(bsp_tim_typedef_t *htim);
 
 #endif /* USER_BSP_BSP_TIMER_H_ */
