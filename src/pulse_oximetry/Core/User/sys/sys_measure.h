@@ -34,7 +34,7 @@ typedef struct
 {
   drv_hr_t *dev;
   drv_hr_sampling_rate_t *sampling_rate;
-  float *filtered_data;
+  double *filtered_data;
   uint32_t sample_nums;
 } sys_measure_t;
 

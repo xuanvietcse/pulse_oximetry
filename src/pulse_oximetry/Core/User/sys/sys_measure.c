@@ -18,8 +18,10 @@
 #include "sys_measure.h"
 #include "common.h"
 #include "math.h"
+
 /* Private defines ---------------------------------------------------- */
 #define SYS_MEASURE_MAX_SAMPLES (100)
+#define NUM_OF_COEFFS           (5)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -27,6 +29,14 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
+// Coeffi in z-domain
+// Numerator 
+double a_z[NUM_OF_COEFFS] = {1, -3.71800951758217, 5.19310810021585, 
+                            -3.22909001061018, 0.754109572133735};
+
+// Denominator
+double b_z[NUM_OF_COEFFS] = {0, 5.35617889287357e-06, 5.56603268403827e-05, 
+                            5.26057994909257e-05, 4.52185201307133e-06};
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -39,7 +49,7 @@
  * @return
  *  - the filtered data
  */
-static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
+static uint32_t sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
 
 /**
  * @brief  Detect the peak in dataset of signal
@@ -50,17 +60,50 @@ static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
  * @return
  *  - the number of peaks
  */
-static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data);
+static uint32_t sys_measure_peak_detector(sys_measure_t *signal, double *data);
 /* Function definitions ----------------------------------------------- */
 void public_function(void)
 {
 }
 /* Private definitions ------------------------------------------------ */
-static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input)
+static uint32_t sys_measure_filter_data(sys_measure_t *signal, uint16_t input)
 {
+  __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
+
+  static double recent_input[NUM_OF_COEFFS] = {0};
+  static double recent_output[NUM_OF_COEFFS] = {0};
+
+  // Shift recent value to the right
+  for (int i = NUM_OF_COEFFS - 1; i > 0; --i) 
+  {
+    recent_input[i] = recent_input[i - 1];
+    recent_output[i] = recent_output[i - 1];
+  }
+
+  // Put the current value of the input signal into the first position of the array
+  recent_input[0] = (double)input;
+
+  // Calculate the current output value
+  signal->filtered_data[signal->sample_nums] = b_z[0] * recent_input[0];
+
+  for (int j = 1; j < NUM_OF_COEFFS; ++j) 
+  {
+      signal->filtered_data[signal->sample_nums] += b_z[j] * recent_input[j];
+  }
+
+  for (int j = 1; j < NUM_OF_COEFFS; ++j) 
+  {
+      signal->filtered_data[signal->sample_nums] -= a_z[j] * recent_output[j];
+  }
+
+  // Place the current output value at the first position of the array
+  recent_output[0] = signal->filtered_data[signal->sample_nums];
+
+  return SYS_MEASURE_OK;
 }
 
-static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
+
+static uint32_t sys_measure_peak_detector(sys_measure_t *signal, double *data)
 {
   __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
   __ASSERT(data != NULL, SYS_MEASURE_ERROR);
