@@ -56,6 +56,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/drv/drv_hr.c
     Core/User/drv/drv_button.c
     Core/User/drv/drv_ssd1306.c
+    Core/User/middleware/cbuffer.c
     Core/User/sys/sys_measure.c
     Core/User/sys/sys_display.c
 )
