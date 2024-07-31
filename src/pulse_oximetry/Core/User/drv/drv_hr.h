@@ -23,6 +23,7 @@
 #include "bsp_adc.h"
 #include "bsp_timer.h"
 #include <stdbool.h>
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -44,7 +45,7 @@ typedef struct
 {
   bsp_adc_typedef_t *adc;
   drv_hr_sampling_rate_t sampling_rate;
-  uint16_t adc_cov;
+  cbuffer_t adc_conv;
   bool active;
 } drv_hr_t;
 
