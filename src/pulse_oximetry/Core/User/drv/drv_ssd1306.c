@@ -113,6 +113,34 @@ uint32_t drv_ssd1306_set_cursor(drv_ssd1306_t *dev,
   // Return
   return DRV_SSD1306_OK;
 }
+
+uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
+                                uint8_t pos_x,
+                                uint8_t pos_y,
+                                drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x < 128), DRV_SSD1306_ERROR);
+  __ASSERT((pos_y < 64), DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Pass value
+  switch (color)
+  {
+  case DRV_SSD1306_COLOR_BLACK:
+    dev->buffer[pos_x + (pos_y / 8) * 128] |= (1 << (pos_y % 8));
+    break;
+  case DRV_SSD1306_COLOR_WHITE:
+    dev->buffer[pos_x + (pos_y / 8) * 128] &= (0 << (pos_y % 8));
+    break;
+  default:
+    // Do nothing
+    break;
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
