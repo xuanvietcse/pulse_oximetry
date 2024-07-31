@@ -48,9 +48,9 @@ bsp_timer_status_t bsp_timer_set_output_compare(TIM_HandleTypeDef *htim, uint32_
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
   __ASSERT((tim_channel == TIM_CHANNEL_1) ||
-               (tim_channel == TIM_CHANNEL_2) ||
-               (tim_channel == TIM_CHANNEL_3) ||
-               (tim_channel == TIM_CHANNEL_4),
+           (tim_channel == TIM_CHANNEL_2) ||
+           (tim_channel == TIM_CHANNEL_3) ||
+           (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
   __ASSERT((compare >= 0) && (compare < 65536), BSP_TIMER_ERROR);
 
@@ -107,9 +107,9 @@ bsp_timer_status_t bsp_pwm_start(TIM_HandleTypeDef *htim, uint32_t tim_channel)
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
   __ASSERT((tim_channel == TIM_CHANNEL_1) ||
-               (tim_channel == TIM_CHANNEL_2) ||
-               (tim_channel == TIM_CHANNEL_3) ||
-               (tim_channel == TIM_CHANNEL_4),
+           (tim_channel == TIM_CHANNEL_2) ||
+           (tim_channel == TIM_CHANNEL_3) ||
+           (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
   HAL_StatusTypeDef btim_err = BSP_TIMER_OK;
@@ -123,9 +123,9 @@ bsp_timer_status_t bsp_pwm_start_it(TIM_HandleTypeDef *htim, uint32_t tim_channe
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
   __ASSERT((tim_channel == TIM_CHANNEL_1) ||
-               (tim_channel == TIM_CHANNEL_2) ||
-               (tim_channel == TIM_CHANNEL_3) ||
-               (tim_channel == TIM_CHANNEL_4),
+           (tim_channel == TIM_CHANNEL_2) ||
+           (tim_channel == TIM_CHANNEL_3) ||
+           (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
   HAL_StatusTypeDef btim_err = BSP_TIMER_OK;
@@ -139,9 +139,9 @@ bsp_timer_status_t bsp_pwm_stop(TIM_HandleTypeDef *htim, uint32_t tim_channel)
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
   __ASSERT((tim_channel == TIM_CHANNEL_1) ||
-               (tim_channel == TIM_CHANNEL_2) ||
-               (tim_channel == TIM_CHANNEL_3) ||
-               (tim_channel == TIM_CHANNEL_4),
+           (tim_channel == TIM_CHANNEL_2) ||
+           (tim_channel == TIM_CHANNEL_3) ||
+           (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
   HAL_StatusTypeDef btim_err = BSP_TIMER_OK;
@@ -155,9 +155,9 @@ bsp_timer_status_t bsp_pwm_stop_it(TIM_HandleTypeDef *htim, uint32_t tim_channel
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
   __ASSERT((tim_channel == TIM_CHANNEL_1) ||
-               (tim_channel == TIM_CHANNEL_2) ||
-               (tim_channel == TIM_CHANNEL_3) ||
-               (tim_channel == TIM_CHANNEL_4),
+           (tim_channel == TIM_CHANNEL_2) ||
+           (tim_channel == TIM_CHANNEL_3) ||
+           (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
   HAL_StatusTypeDef btim_err = BSP_TIMER_OK;
