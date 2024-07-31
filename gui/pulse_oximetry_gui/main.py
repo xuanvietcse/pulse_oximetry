@@ -41,7 +41,7 @@ class Widget(QWidget):
         self.raw_ppg_graph.setBackground("w")
         self.raw_ppg_graph.setTitle("Raw PPG signal", color="black", size="10pt")
 
-        styles = {"color": "black", "font-size": "15px"}
+        styles = {"color": "black", "font-size": "12px"}
         self.raw_ppg_graph.setLabel("left", "PPG", **styles)
         self.raw_ppg_graph.setLabel("bottom", "Time (s)", **styles)
 
@@ -59,7 +59,7 @@ class Widget(QWidget):
         self.filtered_ppg_graph.setTitle("Filtered PPG signal", color="black", size="10pt")
 
         self.filtered_ppg_graph.setLabel("left", "PPG", **styles)
-        self.filtered_ppg_graph.setLabel("bottom", "Time (min)", **styles)
+        self.filtered_ppg_graph.setLabel("bottom", "Time (s)", **styles)
 
         pen1 = pg.mkPen(color=(0, 255, 0))  # Green
         ppg1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -160,7 +160,6 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.dev_widget)
         self.stacked_widget.addWidget(self.user_ui)
 
-        #self.dev_widget.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
 
         # Set the initial widget to user_ui
@@ -175,7 +174,7 @@ class MainWindow(QMainWindow):
         self.heart_rate_graph.setBackground("w")
         self.heart_rate_graph.setTitle("Heart Rate Graph", color="black", size="10pt")
 
-        styles = {"color": "black", "font-size": "15px"}
+        styles = {"color": "black", "font-size": "13px"}
         self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
         self.heart_rate_graph.setLabel("bottom", "Time (s)", **styles)
 

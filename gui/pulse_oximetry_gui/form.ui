@@ -20,7 +20,7 @@
       <x>500</x>
       <y>20</y>
       <width>1001</width>
-      <height>501</height>
+      <height>451</height>
      </rect>
     </property>
     <property name="title">
@@ -44,32 +44,55 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>540</y>
+      <y>570</y>
       <width>451</width>
-      <height>181</height>
+      <height>151</height>
      </rect>
     </property>
     <property name="title">
      <string>Notification</string>
     </property>
-    <widget class="QLabel" name="lbl_notification">
+    <widget class="QLabel" name="lbl_thre_noti">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>90</y>
+       <x>20</x>
+       <y>100</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Threshold status:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="line_err_noti">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>100</y>
+       <width>281</width>
+       <height>26</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_err_noti">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
        <width>81</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>Status:</string>
+      <string>Error status:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="line_notification">
+    <widget class="QLineEdit" name="line_thre_noti">
      <property name="geometry">
       <rect>
-       <x>122</x>
-       <y>90</y>
+       <x>150</x>
+       <y>40</y>
        <width>281</width>
        <height>26</height>
       </rect>
@@ -82,7 +105,7 @@
       <x>30</x>
       <y>20</y>
       <width>451</width>
-      <height>231</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="title">
@@ -92,7 +115,7 @@
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>50</y>
+       <y>30</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -105,7 +128,7 @@
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>100</y>
+       <y>80</y>
        <width>71</width>
        <height>20</height>
       </rect>
@@ -118,7 +141,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>170</y>
+       <y>120</y>
        <width>93</width>
        <height>29</height>
       </rect>
@@ -131,7 +154,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>50</y>
+       <y>30</y>
        <width>111</width>
        <height>26</height>
       </rect>
@@ -246,7 +269,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>100</y>
+       <y>80</y>
        <width>111</width>
        <height>26</height>
       </rect>
@@ -322,9 +345,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>290</y>
+      <y>190</y>
       <width>451</width>
-      <height>231</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="title">
@@ -334,7 +357,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>60</y>
+       <y>40</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -347,7 +370,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>120</y>
+       <y>100</y>
        <width>161</width>
        <height>20</height>
       </rect>
@@ -360,9 +383,9 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>60</y>
+       <y>30</y>
        <width>113</width>
-       <height>31</height>
+       <height>41</height>
       </rect>
      </property>
     </widget>
@@ -370,9 +393,9 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>120</y>
+       <y>90</y>
        <width>113</width>
-       <height>31</height>
+       <height>41</height>
       </rect>
      </property>
     </widget>
@@ -380,7 +403,7 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>180</y>
+       <y>150</y>
        <width>111</width>
        <height>29</height>
       </rect>
@@ -392,8 +415,8 @@
     <widget class="QLabel" name="lbl_bpm_1">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>60</y>
+       <x>350</x>
+       <y>40</y>
        <width>71</width>
        <height>20</height>
       </rect>
@@ -405,8 +428,8 @@
     <widget class="QLabel" name="lbl_bpm_2">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>130</y>
+       <x>350</x>
+       <y>100</y>
        <width>71</width>
        <height>20</height>
       </rect>
@@ -420,21 +443,21 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>540</y>
+      <y>480</y>
       <width>1001</width>
-      <height>181</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="title">
      <string>Heart rate record</string>
     </property>
-    <widget class="QTextEdit" name="txt_read_record">
+    <widget class="QTextEdit" name="txt_record">
      <property name="geometry">
       <rect>
        <x>20</x>
        <y>30</y>
        <width>831</width>
-       <height>141</height>
+       <height>201</height>
       </rect>
      </property>
     </widget>
@@ -449,6 +472,81 @@
      </property>
      <property name="text">
       <string>Read record</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_clear_record">
+     <property name="geometry">
+      <rect>
+       <x>870</x>
+       <y>150</y>
+       <width>111</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Clear record</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="Interval">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>390</y>
+      <width>451</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Interval</string>
+    </property>
+    <widget class="QLabel" name="lbl_interval">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>50</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Interval:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="line_set_interval">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>40</y>
+       <width>113</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbl_s">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>50</y>
+       <width>71</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>s</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_set_interval">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>100</y>
+       <width>111</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set interval</string>
      </property>
     </widget>
    </widget>
