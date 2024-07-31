@@ -98,6 +98,21 @@ uint32_t drv_ssd1306_set_contrast(drv_ssd1306_t *dev, uint8_t value)
   drv_ssd1306_write_command(dev, SSD1306_CONTRAST_REGISTER);
   drv_ssd1306_write_command(dev, value);
 }
+
+uint32_t drv_ssd1306_set_cursor(drv_ssd1306_t *dev,
+                                uint8_t pos_x,
+                                uint8_t pos_y)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x <= 128), DRV_SSD1306_ERROR);
+  __ASSERT((pos_y <= 64), DRV_SSD1306_OK);
+  // Pass value
+  dev->cursor.x = pos_x;
+  dev->cursor.y = pos_y;
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
