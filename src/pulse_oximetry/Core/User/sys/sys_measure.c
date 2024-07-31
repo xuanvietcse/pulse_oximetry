@@ -33,18 +33,13 @@
 /**
  * @brief  Filter the interferances of the signal
  *
- * @param[in]     <param_name>  <param_despcription>
- * @param[out]    <param_name>  <param_despcription>
- * @param[inout]  <param_name>  <param_despcription>
- *
- * @attention  <API attention note>
+ * @param[in]     signal  The signal object
+ * @param[in]     input   The input signal
  *
  * @return
- *  - (0): Error
- *  - (1): Fail
- *  - (2): Success
+ *  - the filtered data
  */
-static void sys_measure_filter_data(sys_measure_t *signal, uint16_t *input, float *output);
+static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
 
 /**
  * @brief  Detect the peak in dataset of signal
@@ -61,7 +56,7 @@ void public_function(void)
 {
 }
 /* Private definitions ------------------------------------------------ */
-static void sys_measure_filter_data(sys_measure_t *signal, uint16_t *input, float *output)
+static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input)
 {
 }
 
