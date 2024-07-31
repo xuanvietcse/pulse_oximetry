@@ -34,7 +34,8 @@ typedef struct
 {
   drv_hr_t *dev;
   drv_hr_sampling_rate_t *sampling_rate;
-  uint16_t *raw_data;
+  float *filtered_data;
+  uint32_t sample_nums;
 } sys_measure_t;
 
 /* Public macros ------------------------------------------------------ */
@@ -62,7 +63,7 @@ uint32_t sys_measure_init(sys_measure_t *signal,
                           bsp_tim_typedef_t *tim,
                           uint32_t prescaler,
                           uint32_t autoreload,
-                          uint16_t *raw_data_buf);
+                          uint16_t *data_buf);
 
 /**
  * @brief  Collect the data from source buffer
@@ -90,7 +91,7 @@ uint32_t sys_measure_collect_data(sys_measure_t *signal, uint16_t *src_data, uin
  *  - (1): Fail
  *  - (2) : Success
  */
-uint32_t sys_measure_process_data(sys_measure_t *signal, float *output, uint8_t *heart_rate);
+uint32_t sys_measure_process_data(sys_measure_t *signal);
 
 #endif // __USER_SYS_MEASURE_H
 
