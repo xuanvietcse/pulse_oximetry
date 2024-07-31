@@ -24,7 +24,7 @@
 #include "bsp_timer.h"
 #include <stdbool.h>
 /* Public defines ----------------------------------------------------- */
-typedef void (*drv_hr_cb_t)(bsp_adc_typedef_t *adc_sen);
+
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_hr_status_t
 {
@@ -40,12 +40,11 @@ typedef struct
   uint32_t autoreload;
 } drv_hr_sampling_rate_t;
 
-typedef struct __attribute((__packed__))
+typedef struct
 {
   bsp_adc_typedef_t *adc;
-  drv_hr_sampling_rate_t *sampling_rate;
+  drv_hr_sampling_rate_t sampling_rate;
   uint16_t adc_cov;
-  drv_hr_cb_t buf_full_cb;
   bool active;
 } drv_hr_t;
 
@@ -73,19 +72,6 @@ uint32_t drv_hr_init(drv_hr_t *hr_sen,
                      bsp_tim_typedef_t *tim,
                      uint32_t prescaler,
                      uint32_t autoreload);
-
-/**
- * @brief  Register the upper-layer function to handler when buffer of Heart Rate sensor is full.
- *
- * @param[in]     hr_sen  pointer to a drv_hr_t structure that store the information of Heart Rate sensor
- * @param[in]     full_buf_handler  pointer to a function that handle the data in buffer
- *
- * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
- */
-uint32_t drv_hr_register_handler(drv_hr_t *hr_sen, drv_hr_cb_t full_buf_handler);
 
 /**
  * @brief  Halt the Heart Rate sensor, can not collect data
