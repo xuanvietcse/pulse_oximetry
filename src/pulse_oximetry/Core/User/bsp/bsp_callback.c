@@ -17,6 +17,8 @@
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
 #include "bsp_adc.h"
+#include "bsp_timer.h"
+#include "bsp_gpio.h"
 
 /* Private defines ---------------------------------------------------- */
 
@@ -39,6 +41,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
   bsp_pwm_pulse_finished_handler(htim);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  bsp_gpio_exti_handler(GPIO_Pin);
 }
 /* Private definitions ------------------------------------------------ */
 /* End of file -------------------------------------------------------- */
