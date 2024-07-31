@@ -49,7 +49,13 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/User/bsp/bsp_adc.c
-    Core/User/middleware/filter.c
+    Core/User/bsp/bsp_callback.c
+    Core/User/bsp/bsp_timer.c
+    Core/User/bsp/bsp_i2c.c
+    Core/User/drv/drv_hr.c
+    Core/User/drv/drv_ssd1306.c
+    Core/User/sys/sys_measure.c
+    Core/User/sys/sys_display.c
 )
 
 # Add include paths
