@@ -44,8 +44,7 @@ typedef struct __attribute((__packed__))
 {
   bsp_adc_typedef_t *adc;
   drv_hr_sampling_rate_t *sampling_rate;
-  uint32_t *converted_data_buf;
-  uint32_t buf_size;
+  uint16_t adc_cov;
   drv_hr_cb_t buf_full_cb;
   bool active;
 } drv_hr_t;
@@ -60,9 +59,9 @@ typedef struct __attribute((__packed__))
  *
  * @param[in]     hr_sen  pointer to a drv_hr_t structure that store the information of Heart Rate sensor
  * @param[in]     sen_adc pointer to a ADC structure of Heart Rate Sensor.
- * @param[in]     hr_sampling_rate pointer to Timer trigger ADC conversion.
- * @param[in]     converted_data_buf  pointer to a buffer that store the converted data from Heart Rate sensor
- * @param[in]     buf_size  Size of buffer that store the converted data.
+ * @param[in]     tim     pointer to Timer channel.
+ * @param[in]     prescaler prescaler the clock source to Timer.
+ * @param[in]     autoreload the top of counter.
  *
  * @return
  *  - (-2): Error
@@ -71,9 +70,9 @@ typedef struct __attribute((__packed__))
  */
 uint32_t drv_hr_init(drv_hr_t *hr_sen,
                      bsp_adc_typedef_t *sen_adc,
-                     drv_hr_sampling_rate_t *hr_sampling_rate,
-                     uint32_t *converted_data_buf,
-                     uint32_t buf_size);
+                     bsp_tim_typedef_t *tim,
+                     uint32_t prescaler,
+                     uint32_t autoreload);
 
 /**
  * @brief  Register the upper-layer function to handler when buffer of Heart Rate sensor is full.
