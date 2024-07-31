@@ -27,9 +27,9 @@
 bsp_gpio_status_t bsp_gpio_write_pin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState state)
 {
   __ASSERT((gpio == GPIOA) ||
-               (gpio == GPIOB) ||
-               (gpio == GPIOC) ||
-               (gpio == GPIOE),
+           (gpio == GPIOB) ||
+           (gpio == GPIOC) ||
+           (gpio == GPIOE),
            BSP_GPIO_ERROR);
   __ASSERT((pin >= 0) && (pin < 16), BSP_GPIO_ERROR);
   __ASSERT((state == 0) | (state == 1), BSP_GPIO_ERROR);
@@ -41,9 +41,9 @@ bsp_gpio_status_t bsp_gpio_write_pin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinS
 GPIO_PinState bsp_gpio_read_pin(GPIO_TypeDef *gpio, uint16_t pin)
 {
   __ASSERT((gpio == GPIOA) ||
-               (gpio == GPIOB) ||
-               (gpio == GPIOC) ||
-               (gpio == GPIOE),
+           (gpio == GPIOB) ||
+           (gpio == GPIOC) ||
+           (gpio == GPIOE),
            BSP_GPIO_ERROR);
   __ASSERT((pin >= 0) && (pin < 16), BSP_GPIO_ERROR);
 
@@ -53,9 +53,9 @@ GPIO_PinState bsp_gpio_read_pin(GPIO_TypeDef *gpio, uint16_t pin)
 bsp_gpio_status_t bsp_gpio_toggle_pin(GPIO_TypeDef *gpio, uint16_t pin)
 {
   __ASSERT((gpio == GPIOA) ||
-               (gpio == GPIOB) ||
-               (gpio == GPIOC) ||
-               (gpio == GPIOE),
+           (gpio == GPIOB) ||
+           (gpio == GPIOC) ||
+           (gpio == GPIOE),
            BSP_GPIO_ERROR);
   __ASSERT((pin >= 0) && (pin < 16), BSP_GPIO_ERROR);
   HAL_GPIO_TogglePin(gpio, pin);
