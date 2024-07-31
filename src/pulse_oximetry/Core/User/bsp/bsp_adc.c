@@ -27,7 +27,7 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
-static bsp_adc_cb_t b_adc_conv_cplt = NULL;
+static uint16_t *adc_conv_value = NULL;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -112,18 +112,18 @@ uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc)
   return HAL_ADC_GetValue(badc);
 }
 
-uint32_t bsp_adc_register_handler(bsp_adc_cb_t bsp_adc_cb)
+uint32_t bsp_adc_register_handler(uint16_t *data_buf)
 {
-  __ASSERT(bsp_adc_cb != NULL, BSP_ADC_ERROR);
+  __ASSERT(data_buf != NULL, BSP_ADC_ERROR);
 
-  b_adc_conv_cplt = bsp_adc_cb;
+  adc_conv_value = data_buf;
 
   return BSP_ADC_OK;
 }
 
 void bsp_adc_conv_cplt_callback(bsp_adc_typedef_t *badc)
 {
-  __CALLBACK(b_adc_conv_cplt, badc);
+  *adc_conv_value = bsp_adc_get_value(badc);
 }
 /* Private definitions ------------------------------------------------ */
 

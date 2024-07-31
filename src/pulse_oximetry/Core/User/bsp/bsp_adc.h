@@ -33,7 +33,7 @@ enum bsp_adc_status_t
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-typedef uint32_t (*bsp_adc_cb_t)(bsp_adc_typedef_t *badc);
+
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief  Enable and Start ADC conversion
@@ -142,7 +142,7 @@ uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc);
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t bsp_adc_register_handler(bsp_adc_cb_t bsp_adc_cb);
+uint32_t bsp_adc_register_handler(uint16_t *data_buf);
 
 /**
  * @brief  Regular conversion complete callback in non blocking mode.
