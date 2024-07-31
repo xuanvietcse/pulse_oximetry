@@ -114,7 +114,7 @@
     <widget class="QLabel" name="lbl_com">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>60</x>
        <y>30</y>
        <width>81</width>
        <height>20</height>
@@ -127,7 +127,7 @@
     <widget class="QLabel" name="lbl_baudrate">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>60</x>
        <y>80</y>
        <width>71</width>
        <height>20</height>
@@ -516,7 +516,7 @@
     <widget class="QLineEdit" name="line_set_interval">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>220</x>
        <y>40</y>
        <width>113</width>
        <height>41</height>
@@ -526,9 +526,9 @@
     <widget class="QLabel" name="lbl_s">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>360</x>
        <y>50</y>
-       <width>71</width>
+       <width>31</width>
        <height>20</height>
       </rect>
      </property>
