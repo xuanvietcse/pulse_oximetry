@@ -26,9 +26,9 @@ typedef HAL_StatusTypeDef hal_status_t;
 /* Public enumerate/structure ----------------------------------------- */
 enum bsp_adc_status_t
 {
-  BSP_ADC_ERROR = -2,
-  BSP_ADC_FAILED,
-  BSP_ADC_OK
+  BSP_ADC_ERROR = 0xFFFFFFFF,
+  BSP_ADC_FAILED = 0x7FFFFFFF,
+  BSP_ADC_OK =0x3FFFFFFF
 };
 /* Public macros ------------------------------------------------------ */
 

@@ -25,9 +25,9 @@ typedef I2C_HandleTypeDef bsp_i2c_handle_t;
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
-  BSP_I2C_ERROR = -2,
-  BSP_I2C_FAILED,
-  BSP_I2C_OK
+  BSP_I2C_ERROR = 0xFFFFFFFF,
+  BSP_I2C_FAILED = 0x7FFFFFFF,
+  BSP_I2C_OK = 0x3FFFFFFF
 } bsp_i2c_status_t;
 
 /* Public macros ------------------------------------------------------ */

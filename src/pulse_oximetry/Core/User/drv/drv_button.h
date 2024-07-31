@@ -26,9 +26,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
-  DRV_BUTTON_FAIL = -2,
-  DRV_BUTTON_ERROR,
-  DRV_BUTTON_OK
+  DRV_BUTTON_FAIL = 0xFFFFFFFF,
+  DRV_BUTTON_ERROR = 0x7FFFFFFF,
+  DRV_BUTTON_OK = 0x3FFFFFFF
 } drv_button_status_t;
 
 typedef struct __attribute__((__packed__))

@@ -25,9 +25,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
-  BSP_TIMER_ERROR = -2,
-  BSP_TIMER_FAIL,
-  BSP_TIMER_OK
+  BSP_TIMER_ERROR = 0xFFFFFFFF,
+  BSP_TIMER_FAIL = 0x7FFFFFFF,
+  BSP_TIMER_OK = 0x3FFFFFFF
 } bsp_timer_status_t;
 
 /* Public macros ------------------------------------------------------ */
