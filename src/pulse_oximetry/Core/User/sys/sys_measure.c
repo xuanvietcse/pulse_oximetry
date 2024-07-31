@@ -19,7 +19,7 @@
 #include "common.h"
 #include "math.h"
 /* Private defines ---------------------------------------------------- */
-#define SYS_MEASURE_MAX_SAMPLES (100)
+#define SYS_MEASURE_MAX_SAMPLES_PROCESS (100)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -52,8 +52,19 @@ static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
  */
 static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data);
 /* Function definitions ----------------------------------------------- */
-void public_function(void)
+uint32_t sys_measure_init(sys_measure_t *signal,
+                          bsp_adc_typedef_t *adc,
+                          bsp_tim_typedef_t *tim,
+                          uint32_t prescaler,
+                          uint32_t autoreload,
+                          float *data_buf)
 {
+  __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
+  __ASSERT(data_buf != NULL, SYS_MEASURE_ERROR);
+
+  signal->filtered_data = data_buf;
+  signal->sample_nums = 0;
+  drv_hr_init(&(signal->dev), adc, tim, prescaler, autoreload);
 }
 /* Private definitions ------------------------------------------------ */
 static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input)
@@ -68,21 +79,21 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
   uint32_t w_cycle = 301,
            w_evt = 51;
 
-  float ma_cycle[SYS_MEASURE_MAX_SAMPLES] = {0},
-        ma_evt[SYS_MEASURE_MAX_SAMPLES] = {0};
+  float ma_cycle[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0},
+        ma_evt[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 
   float mean_of_signal = 0;
   uint32_t i, j, k;
 
   // Enhance the signal
-  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES; i++)
+  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
     data[i] = pow(data[i], 2);
   }
 
   // Calculate the Event Duration Moving Average
   k = ((w_evt - 1) / 2);
-  for (i = ((w_evt - 1) / 2); i < SYS_MEASURE_MAX_SAMPLES - ((w_evt - 1) / 2); i++)
+  for (i = ((w_evt - 1) / 2); i < SYS_MEASURE_MAX_SAMPLES_PROCESS - ((w_evt - 1) / 2); i++)
   {
     for (j = -((w_evt - 1) / 2); j < k; j++)
     {
@@ -93,7 +104,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
 
   // Calculate the Event Cycle Moving Average
   k = ((w_cycle - 1) / 2);
-  for (i = ((w_cycle - 1) / 2); i < SYS_MEASURE_MAX_SAMPLES - ((w_cycle - 1) / 2); i++)
+  for (i = ((w_cycle - 1) / 2); i < SYS_MEASURE_MAX_SAMPLES_PROCESS - ((w_cycle - 1) / 2); i++)
   {
     for (j = -((w_cycle - 1) / 2); j < k; j++)
     {
@@ -103,24 +114,24 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
   }
 
   // Calculate the mean of signal
-  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES; i++)
+  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
     mean_of_signal += data[i];
   }
-  mean_of_signal /= SYS_MEASURE_MAX_SAMPLES;
+  mean_of_signal /= SYS_MEASURE_MAX_SAMPLES_PROCESS;
 
   // Calculate the Threshold for generating Block of Interest
   float beta = 0.8;
-  float threshold_1[SYS_MEASURE_MAX_SAMPLES] = {0};
+  float threshold_1[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 
-  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES; i++)
+  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
     threshold_1[i] = ma_cycle[i] + beta * mean_of_signal;
   }
 
   // Generate the Bloock of Interest
-  uint8_t block_of_interest[SYS_MEASURE_MAX_SAMPLES] = {0};
-  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES; i++)
+  uint8_t block_of_interest[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
+  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
     if (ma_evt[i] > threshold_1[i])
     {
@@ -136,7 +147,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
   uint32_t pos_start_block = 0;
   uint32_t pos_stop_block = 0;
   uint32_t peak_num = 0;
-  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES - 1; i++)
+  for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS - 1; i++)
   {
     if ((block_of_interest[i + 1] - block_of_interest[i]) == 1)
     {

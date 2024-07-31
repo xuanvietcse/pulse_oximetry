@@ -32,8 +32,7 @@ enum sys_measure_status_t
 
 typedef struct
 {
-  drv_hr_t *dev;
-  drv_hr_sampling_rate_t *sampling_rate;
+  drv_hr_t dev;
   float *filtered_data;
   uint32_t sample_nums;
 } sys_measure_t;
@@ -59,11 +58,11 @@ typedef struct
  *  - (2) : Success
  */
 uint32_t sys_measure_init(sys_measure_t *signal,
-                          drv_hr_t *dev,
+                          bsp_adc_typedef_t *adc,
                           bsp_tim_typedef_t *tim,
                           uint32_t prescaler,
                           uint32_t autoreload,
-                          uint16_t *data_buf);
+                          float *data_buf);
 
 /**
  * @brief  Collect the data from source buffer
