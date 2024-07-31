@@ -35,5 +35,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
   bsp_adc_conv_cplt_callback(hadc);
 }
+
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+  bsp_pwm_pulse_finished_handler(htim);
+}
 /* Private definitions ------------------------------------------------ */
 /* End of file -------------------------------------------------------- */
