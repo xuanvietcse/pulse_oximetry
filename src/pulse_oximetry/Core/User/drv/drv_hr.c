@@ -63,7 +63,7 @@ uint32_t drv_hr_init(drv_hr_t *hr_sen,
   ret = drv_hr_peri_init(hr_sen);
   __ASSERT(ret == DRV_HR_OK, DRV_HR_FAIL);
 
-  ret = bsp_adc_register_handler(&(hr_sen->adc_cov));
+  ret = bsp_adc_register_handler(&(hr_sen->adc_conv));
   __ASSERT(ret == BSP_ADC_OK, DRV_HR_FAIL);
 
   hr_sen->active = true;

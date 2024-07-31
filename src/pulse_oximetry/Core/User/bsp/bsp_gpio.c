@@ -172,10 +172,6 @@ bsp_gpio_status_t bsp_gpio_exti_disable(uint16_t pin)
 
 bsp_gpio_status_t bsp_gpio_exti_handler(uint16_t pin)
 {
-  drv_button_status_t ret = DRV_BUTTON_OK;
-
-  ret = drv_button_exti_handler(pin);
-  __ASSERT(ret == DRV_BUTTON_OK, BSP_GPIO_ERROR);
 
   return BSP_GPIO_OK;
 }

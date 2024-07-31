@@ -20,6 +20,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
 typedef ADC_HandleTypeDef bsp_adc_typedef_t;
 typedef HAL_StatusTypeDef hal_status_t;
@@ -142,7 +143,7 @@ uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc);
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t bsp_adc_register_handler(uint16_t *data_buf);
+uint32_t bsp_adc_register_handler(cbuffer_t *adc_conv_cbuf);
 
 /**
  * @brief  Regular conversion complete callback in non blocking mode.
