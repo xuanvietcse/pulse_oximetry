@@ -20,6 +20,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "drv_hr.h"
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -33,8 +34,8 @@ enum sys_measure_status_t
 typedef struct
 {
   drv_hr_t dev;
-  float *filtered_data;
-  uint32_t sample_nums;
+  cbuffer_t filtered_data;
+  uint32_t heart_rate;
 } sys_measure_t;
 
 /* Public macros ------------------------------------------------------ */
@@ -62,21 +63,7 @@ uint32_t sys_measure_init(sys_measure_t *signal,
                           bsp_tim_typedef_t *tim,
                           uint32_t prescaler,
                           uint32_t autoreload,
-                          float *data_buf);
-
-/**
- * @brief  Collect the data from source buffer
- *
- * @param[in]     signal      The type of signal
- * @param[in]     src_data    Source of data
- * @param[in]     size        Size of data buffer
- *
- * @return
- *  - (0): Error
- *  - (1): Fail
- *  - (2) : Success
- */
-uint32_t sys_measure_collect_data(sys_measure_t *signal, uint16_t *src_data, uint32_t size);
+                          double *data_buf);
 
 /**
  * @brief Process

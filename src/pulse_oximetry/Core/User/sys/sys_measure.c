@@ -18,15 +18,32 @@
 #include "sys_measure.h"
 #include "common.h"
 #include "math.h"
+
 /* Private defines ---------------------------------------------------- */
-#define SYS_MEASURE_MAX_SAMPLES_PROCESS (100)
+#define SYS_MEASURE_MAX_SAMPLES_PROCESS (240)
+#define SYS_MEASURE_FILTER_NUM_OF_COEFFS (5)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
-
+static uint16_t s_adc_val_buf[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 /* Private variables -------------------------------------------------- */
+
+// Coeffi in z-domain
+// Numerator
+double a_z[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {1,
+                                                -3.71800951758217,
+                                                5.19310810021585,
+                                                -3.22909001061018,
+                                                0.754109572133735};
+
+// Denominator
+double b_z[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {0,
+                                                5.35617889287357e-06,
+                                                5.56603268403827e-05,
+                                                5.26057994909257e-05,
+                                                4.52185201307133e-06};
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -39,7 +56,7 @@
  * @return
  *  - the filtered data
  */
-static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
+static uint32_t sys_measure_filter_data(sys_measure_t *signal);
 
 /**
  * @brief  Detect the peak in dataset of signal
@@ -50,45 +67,101 @@ static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input);
  * @return
  *  - the number of peaks
  */
-static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data);
+static uint32_t sys_measure_peak_detector(sys_measure_t *signal);
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_measure_init(sys_measure_t *signal,
                           bsp_adc_typedef_t *adc,
                           bsp_tim_typedef_t *tim,
                           uint32_t prescaler,
                           uint32_t autoreload,
-                          float *data_buf)
+                          double *data_buf)
 {
   __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
   __ASSERT(data_buf != NULL, SYS_MEASURE_ERROR);
 
-  signal->filtered_data = data_buf;
-  signal->sample_nums = 0;
+  cb_init(&(signal->dev.adc_conv), s_adc_val_buf, SYS_MEASURE_MAX_SAMPLES_PROCESS * 2);
+  cb_init(&(signal->filtered_data), data_buf, SYS_MEASURE_MAX_SAMPLES_PROCESS * 8);
+
+  signal->heart_rate = 0;
   drv_hr_init(&(signal->dev), adc, tim, prescaler, autoreload);
-}
-/* Private definitions ------------------------------------------------ */
-static float sys_measure_filter_data(sys_measure_t *signal, uint16_t input)
-{
+
+  return SYS_MEASURE_OK;
 }
 
-static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
+uint32_t sys_measure_process_data(sys_measure_t *signal)
 {
   __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
-  __ASSERT(data != NULL, SYS_MEASURE_ERROR);
+  __ASSERT(signal->dev.active == true, SYS_MEASURE_ERROR);
+
+  sys_measure_filter_data(signal);
+  if (cb_space_count(&(signal->filtered_data)) == 0)
+  {
+    sys_measure_peak_detector(signal);
+  }
+
+  return SYS_MEASURE_OK;
+}
+
+/* Private definitions ------------------------------------------------ */
+static uint32_t sys_measure_filter_data(sys_measure_t *signal)
+{
+  __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
+
+  while (cb_data_count(&(signal->dev.adc_conv)) != 0)
+  {
+    static double recent_input[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {0};
+    static double recent_output[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {0};
+
+    // Shift recent value to the right
+    for (int i = SYS_MEASURE_FILTER_NUM_OF_COEFFS - 1; i > 0; --i)
+    {
+      recent_input[i] = recent_input[i - 1];
+      recent_output[i] = recent_output[i - 1];
+    }
+
+    // Put the current value of the input signal into the first position of the array
+    uint16_t adc_temp;
+    cb_read(&(signal->dev.adc_conv), &adc_temp, sizeof(adc_temp));
+    recent_input[0] = (double)adc_temp;
+
+    // Calculate the current output value
+    recent_output[0] = b_z[0] * recent_input[0];
+
+    for (int j = 1; j < SYS_MEASURE_FILTER_NUM_OF_COEFFS; ++j)
+    {
+      recent_output[0] += b_z[j] * recent_input[j];
+    }
+
+    for (int j = 1; j < SYS_MEASURE_FILTER_NUM_OF_COEFFS; ++j)
+    {
+      recent_output[0] -= a_z[j] * recent_output[j];
+    }
+
+    // Place the current output value at the first position of the array
+    cb_write(&(signal->filtered_data), &recent_output[0], sizeof(recent_output[0]));
+  }
+  return SYS_MEASURE_OK;
+}
+
+static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
+{
+  __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
   // Choose the Windows Size W1, W2 in TERMA framework
-  uint32_t w_cycle = 301,
-           w_evt = 51;
+  uint32_t w_cycle = 49,
+           w_evt = 15;
 
-  float ma_cycle[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0},
-        ma_evt[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
+  double ma_cycle[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0},
+         ma_evt[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 
-  float mean_of_signal = 0;
-  uint32_t i, j, k;
+  double mean_of_signal = 0;
+  int i, j, k;
+  double hanlde_data[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
+  cb_read(&(signal->filtered_data), hanlde_data, sizeof(hanlde_data));
 
   // Enhance the signal
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
-    data[i] = pow(data[i], 2);
+    hanlde_data[i] = pow(hanlde_data[i], 2);
   }
 
   // Calculate the Event Duration Moving Average
@@ -97,7 +170,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
   {
     for (j = -((w_evt - 1) / 2); j < k; j++)
     {
-      ma_evt[i] += data[i + j];
+      ma_evt[i] += hanlde_data[i + j];
     }
     ma_evt[i] /= w_evt;
   }
@@ -108,7 +181,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
   {
     for (j = -((w_cycle - 1) / 2); j < k; j++)
     {
-      ma_cycle[i] += data[i + j];
+      ma_cycle[i] += hanlde_data[i + j];
     }
     ma_cycle[i] /= w_cycle;
   }
@@ -116,13 +189,13 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
   // Calculate the mean of signal
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
-    mean_of_signal += data[i];
+    mean_of_signal += hanlde_data[i];
   }
   mean_of_signal /= SYS_MEASURE_MAX_SAMPLES_PROCESS;
 
   // Calculate the Threshold for generating Block of Interest
-  float beta = 0.8;
-  float threshold_1[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
+  double beta = 0.8;
+  double threshold_1[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
   {
@@ -153,7 +226,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
     {
       pos_start_block = i;
     }
-    else if ((block_of_interest[i] - block_of_interest[i + 1]) == 1)
+    if ((block_of_interest[i] - block_of_interest[i + 1]) == 1)
     {
       pos_stop_block = i;
       if (pos_stop_block - pos_start_block >= w_evt)
@@ -163,6 +236,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal, float *data)
       }
     }
   }
-  return peak_num;
+  signal->heart_rate = peak_num * 38;
+  return SYS_MEASURE_OK;
 }
 /* End of file -------------------------------------------------------- */
