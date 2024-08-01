@@ -2252,16 +2252,16 @@ const uint8_t char_width[] = {
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_6x8
-const SSD1306_Font_t Font_6x8 = {6, 8, Font6x8, NULL};
+const drv_ssd1306_font_t font_6x8 = {6, 8, Font6x8, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_7x10
-const SSD1306_Font_t Font_7x10 = {7, 10, Font7x10, NULL};
+const drv_ssd1306_font_t font_7x10 = {7, 10, Font7x10, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_11x18
-const SSD1306_Font_t Font_11x18 = {11, 18, Font11x18, NULL};
+const drv_ssd1306_font_t font_11x18 = {11, 18, Font11x18, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_16x26
-const SSD1306_Font_t Font_16x26 = {16, 26, Font16x26, NULL};
+const drv_ssd1306_font_t font_16x26 = {16, 26, Font16x26, NULL};
 #endif
 
 /* see ./examples/custom-fonts/ */
