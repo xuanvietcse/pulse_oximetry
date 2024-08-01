@@ -69,6 +69,7 @@ typedef struct
   const uint8_t width;
   const uint8_t height;
   const uint16_t *const data_font;
+  const uint8_t *const char_width;
 } drv_ssd1306_font_t;
 
 /* Public macros ------------------------------------------------------ */
