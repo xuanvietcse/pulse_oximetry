@@ -95,8 +95,16 @@ uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_set_contrast(drv_ssd1306_t *dev, uint8_t value)
 {
-  drv_ssd1306_write_command(dev, SSD1306_CONTRAST_REGISTER);
-  drv_ssd1306_write_command(dev, value);
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  // Operations
+  enum drv_ssd1306_status_t ret = DRV_SSD1306_OK;
+  ret = drv_ssd1306_write_command(dev, SSD1306_CONTRAST_REGISTER);
+  __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
+  ret = drv_ssd1306_write_command(dev, value);
+  __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
+  // Return
+  return DRV_SSD1306_OK;
 }
 
 uint32_t drv_ssd1306_set_cursor(drv_ssd1306_t *dev,
