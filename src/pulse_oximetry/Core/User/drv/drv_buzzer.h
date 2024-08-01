@@ -25,20 +25,26 @@
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
-typedef enum
+enum drv_buzzer_status_t
 {
   DRV_BUZZER_FAIL = 0xFFFFFFFF,
   DRV_BUZZER_ERROR = 0x7FFFFFFF,
   DRV_BUZZER_OK = 0x3FFFFFFF
-} drv_buzzer_status_t;
+};
 
 typedef struct __attribute__((__packed__))
 {
-  TIM_HandleTypeDef *htim;
+  bsp_tim_typedef_t *htim;
   uint32_t pwm_channel;
   uint32_t prescaler;
   uint16_t period;
   uint16_t duty_cycle;
+} drv_buzzer_tim_config_t;
+
+typedef struct __attribute__((__packed__))
+{
+  drv_buzzer_tim_config_t config;
+  uint32_t *sound_track;
 } drv_buzzer_t;
 
 /* Public macros ------------------------------------------------------ */
