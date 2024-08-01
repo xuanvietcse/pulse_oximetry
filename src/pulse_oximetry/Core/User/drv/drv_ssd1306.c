@@ -121,8 +121,8 @@ uint32_t drv_ssd1306_set_cursor(drv_ssd1306_t *dev,
 {
   // Check parameters
   __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
-  __ASSERT((pos_x <= 128), DRV_SSD1306_ERROR);
-  __ASSERT((pos_y <= 64), DRV_SSD1306_OK);
+  __ASSERT((pos_x < dev->size.width), DRV_SSD1306_ERROR);
+  __ASSERT((pos_y < dev->size.height), DRV_SSD1306_OK);
   // Pass value
   dev->cursor.x = pos_x;
   dev->cursor.y = pos_y;
