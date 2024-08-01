@@ -19,8 +19,8 @@
 #define USER_DRV_DRV_BUZZER_H_
 
 /* Includes ----------------------------------------------------------- */
-#include "bsp_gpio.h"
 #include "bsp_timer.h"
+#include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
 
@@ -45,6 +45,7 @@ typedef struct __attribute__((__packed__))
 {
   drv_buzzer_tim_config_t config;
   uint32_t *sound_effect;
+  bool active;
 } drv_buzzer_t;
 
 /* Public macros ------------------------------------------------------ */
