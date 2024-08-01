@@ -22,7 +22,9 @@
 #include "bsp_i2c.h"
 #include <stdbool.h>
 /* Public defines ----------------------------------------------------- */
-
+#define SSD1306_I2C_ADDRESS (0x3C << 1)
+#define SSD1306_WIDTH (128)
+#define SSD1306_HEIGHT (64)
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_ssd1306_status_t
 {
