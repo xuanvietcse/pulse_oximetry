@@ -179,11 +179,11 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
     {
       if ((temp << j) & 0x8000)
       {
-        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, DRV_SSD1306_COLOR_WHITE);
+        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, color);
       }
       else
       {
-        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, DRV_SSD1306_COLOR_BLACK);
+        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, !color);
       }
     }
   }
