@@ -144,11 +144,11 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
   // Pass value
   switch (color)
   {
-  case DRV_SSD1306_COLOR_BLACK:
+  case DRV_SSD1306_COLOR_WHITE:
     dev->buffer[pos_x + (pos_y / 8) * 128] |= (1 << (pos_y % 8));
     break;
-  case DRV_SSD1306_COLOR_WHITE:
-    dev->buffer[pos_x + (pos_y / 8) * 128] &= (0 << (pos_y % 8));
+  case DRV_SSD1306_COLOR_BLACK:
+    dev->buffer[pos_x + (pos_y / 8) * 128] &= ~(1 << (pos_y % 8));
     break;
   default:
     // Do nothing
