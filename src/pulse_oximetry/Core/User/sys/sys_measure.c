@@ -22,6 +22,7 @@
 /* Private defines ---------------------------------------------------- */
 #define SYS_MEASURE_MAX_SAMPLES_PROCESS (200)
 #define SYS_MEASURE_FILTER_NUM_OF_COEFFS (5)
+#define SYS_MEASURE_SAMPLING_RATE (100.0)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -147,8 +148,8 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
 {
   __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
   // Choose the Windows Size W1, W2 in TERMA framework
-  int w_cycle = 67,
-      w_evt = 17;
+  int w_cycle = 97,
+      w_evt = 13;
 
   double ma_cycle[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0},
          ma_evt[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
@@ -219,9 +220,10 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
   uint32_t pos_stop_block = 0;
 
   double peak = 0;
-  double peak_buf[5] = {0};
-  cbuffer_t peak_cbuf;
-  cb_init(&peak_cbuf, peak_buf, sizeof(peak_buf));
+  uint32_t peak_index = 0;
+  double heart_rate_avg = 0;
+  uint32_t peak_index_buf[5] = {0};
+  uint32_t peak_nums = 0;
 
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS - 1; i++)
   {
@@ -241,20 +243,25 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
           if (handle_data[i] > peak)
           {
             peak = handle_data[i];
-          }
-          else
-          {
-            continue;
+            peak_index = i;
           }
         }
-        if (cb_space_count(&peak_cbuf) > 0)
-        {
-          cb_write(&peak_cbuf, &peak, sizeof(peak));
-        }
+        peak_index_buf[peak_nums] = peak_index;
+        peak_nums++;
       }
     }
   }
-  signal->heart_rate = (cb_data_count(&peak_cbuf) / sizeof(double)) * (60 / 0.01 / SYS_MEASURE_MAX_SAMPLES_PROCESS);
+
+  for (uint32_t i = 0; i < peak_nums - 1; i++)
+  {
+    heart_rate_avg += (peak_index_buf[i + 1] - peak_index_buf[i]);
+  }
+  // Calculate the average peak interval (in second unit)
+  heart_rate_avg /= peak_nums;
+  heart_rate_avg *= (1 / SYS_MEASURE_SAMPLING_RATE);
+  // Estimate the heart rate (beats per minute unit)
+  heart_rate_avg = 60 / heart_rate_avg;
+  signal->heart_rate = (uint32_t)heart_rate_avg;
   return SYS_MEASURE_OK;
 }
 /* End of file -------------------------------------------------------- */
