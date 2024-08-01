@@ -20,17 +20,19 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "drv_button.h"
+
 /* Public defines ----------------------------------------------------- */
 #define BUTTON_DEBOUNCE_TIME (50UL)
 #define BUTTON_RELEASE_TIME (300UL)
 #define BUTTON_SINGLE_CLICK_TIME (500UL)
 #define BUTTON_HOLD_TIME (3000UL)
+
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
-  SYS_BUTTON_ERROR = -2,
-  SYS_BUTTON_FAIL,
-  SYS_BUTTON_OK
+  SYS_BUTTON_ERROR = 0xFFFFFFFF,
+  SYS_BUTTON_FAIL = 0x7FFFFFFF,
+  SYS_BUTTON_OK = 0x3FFFFFFF
 } sys_button_status_t;
 
 typedef enum
@@ -72,6 +74,8 @@ typedef struct __attribute__((__packed__))
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
+typedef void (*sys_button_evt_on_power)();
+typedef void (*sys_button_evt_off_power)();
 
 /* Public function prototypes ----------------------------------------- */
 /**
@@ -89,9 +93,21 @@ sys_button_status_t sys_button_init(GPIO_TypeDef *gpio, uint16_t pin, uint32_t b
 /**
  * @brief       Manage the system button
  *
- * @return      event of button
+ * @return      -2 if error,
+ *              -1 if fail,
+ *              0 if success.
  */
-sys_button_evt_t sys_button_manage();
+sys_button_status_t sys_button_manage();
+
+/**
+ * @brief       Register button event callback: ON/OFF power.
+ *
+ * @return      -2 if error,
+ *              -1 if fail,
+ *              0 if success.
+ */
+sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb, 
+                                                    sys_button_evt_off_power off_power_cb);
 
 #endif // __USER_SYS_SYS_BUTTON_H
 

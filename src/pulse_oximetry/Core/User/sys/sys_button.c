@@ -18,6 +18,8 @@
 #include "sys_button.h"
 #include "bsp_timer.h"
 #include "common.h"
+#include <stdbool.h>
+
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -26,10 +28,16 @@
 
 /* Public variables --------------------------------------------------- */
 sys_button_t sbutton;
+
 /* Private variables -------------------------------------------------- */
+sys_button_evt_on_power s_on_power_cb;
+sys_button_evt_off_power s_off_power_cb;
+
+bool s_button_is_power_off_flag = false;
 
 /* Private function prototypes ---------------------------------------- */
 static void sys_button_detect_edge(uint16_t exti_line);
+
 /* Function definitions ----------------------------------------------- */
 sys_button_status_t sys_button_init(GPIO_TypeDef *gpio, uint16_t pin, uint32_t button_active_level)
 {
@@ -47,7 +55,7 @@ sys_button_status_t sys_button_init(GPIO_TypeDef *gpio, uint16_t pin, uint32_t b
   return SYS_BUTTON_OK;
 }
 
-sys_button_evt_t sys_button_manage()
+sys_button_status_t sys_button_manage()
 {
   if (sbutton.transient_state == SYS_BUTTON_STATE_DEBOUNCE)
   {
@@ -64,144 +72,158 @@ sys_button_evt_t sys_button_manage()
 
   switch (sbutton.fsm_state)
   {
-  case SYS_BUTTON_FSM_STATE_IDLE:
-  {
-    if (sbutton.dbutton.current_state == sbutton.dbutton.active_level)
-    {
-      sbutton.fsm_state = SYS_BUTTON_FSM_STATE_PRESS;
-      sbutton.dbutton.time_change = bsp_get_systick();
-    }
-    break;
-  }
-
-  case SYS_BUTTON_FSM_STATE_PRESS:
-  {
-    uint32_t current_tick = bsp_get_systick();
-    if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
-    {
-      if (current_tick - sbutton.dbutton.time_change < BUTTON_SINGLE_CLICK_TIME)
-      {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_SINGLE_CLICK;
-        sbutton.dbutton.time_change = bsp_get_systick();
-      }
-      else
-      {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-      }
-    }
-    else if ((sbutton.dbutton.current_state == sbutton.dbutton.active_level) &&
-             (current_tick - sbutton.dbutton.time_change >= BUTTON_SINGLE_CLICK_TIME))
-    {
-      sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_HOLD;
-    }
-    break;
-  }
-
-  case SYS_BUTTON_FSM_STATE_WAIT_SINGLE_CLICK:
-  {
-    uint32_t current_tick = bsp_get_systick();
-    if (current_tick - sbutton.dbutton.time_change >= BUTTON_RELEASE_TIME)
-    {
-      if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
-      {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_SINGLE_CLICK;
-      }
-    }
-    else if ((sbutton.dbutton.current_state == sbutton.dbutton.active_level) &&
-             (current_tick - sbutton.dbutton.time_change < BUTTON_RELEASE_TIME))
-    {
-      sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_DOUBLE_CLICK;
-      sbutton.dbutton.time_change = bsp_get_systick();
-    }
-    break;
-  }
-
-  case SYS_BUTTON_FSM_STATE_WAIT_DOUBLE_CLICK:
-  {
-    uint32_t current_tick = bsp_get_systick();
-    if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
-    {
-      if (current_tick - sbutton.dbutton.time_change < BUTTON_SINGLE_CLICK_TIME)
-      {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_DOUBLE_CLICK;
-      }
-      else
-      {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-      }
-    }
-    else if ((sbutton.dbutton.current_state == sbutton.dbutton.active_level) &&
-             (current_tick - sbutton.dbutton.time_change >= BUTTON_SINGLE_CLICK_TIME))
-    {
-      sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-    }
-    break;
-  }
-
-  case SYS_BUTTON_FSM_STATE_WAIT_HOLD:
-  {
-    uint32_t current_tick = bsp_get_systick();
-    if (current_tick - sbutton.dbutton.time_change >= BUTTON_HOLD_TIME)
+    case SYS_BUTTON_FSM_STATE_IDLE:
     {
       if (sbutton.dbutton.current_state == sbutton.dbutton.active_level)
       {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_HOLD;
+        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_PRESS;
+        sbutton.dbutton.time_change = bsp_get_systick();
       }
-      else
+      break;
+    }
+
+    case SYS_BUTTON_FSM_STATE_PRESS:
+    {
+      uint32_t current_tick = bsp_get_systick();
+      if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
+      {
+        if (current_tick - sbutton.dbutton.time_change < BUTTON_SINGLE_CLICK_TIME)
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_SINGLE_CLICK;
+          sbutton.dbutton.time_change = bsp_get_systick();
+        }
+        else
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
+        }
+      }
+      else if ((sbutton.dbutton.current_state == sbutton.dbutton.active_level) &&
+               (current_tick - sbutton.dbutton.time_change >= BUTTON_SINGLE_CLICK_TIME))
+      {
+        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_HOLD;
+      }
+      break;
+    }
+
+    case SYS_BUTTON_FSM_STATE_WAIT_SINGLE_CLICK:
+    {
+      uint32_t current_tick = bsp_get_systick();
+      if (current_tick - sbutton.dbutton.time_change >= BUTTON_RELEASE_TIME)
+      {
+        if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_SINGLE_CLICK;
+        }
+      }
+      else if ((sbutton.dbutton.current_state == sbutton.dbutton.active_level) &&
+                (current_tick - sbutton.dbutton.time_change < BUTTON_RELEASE_TIME))
+      {
+        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_DOUBLE_CLICK;
+        sbutton.dbutton.time_change = bsp_get_systick();
+      }
+      break;
+    }
+
+    case SYS_BUTTON_FSM_STATE_WAIT_DOUBLE_CLICK:
+    {
+      uint32_t current_tick = bsp_get_systick();
+      if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
+      {
+        if (current_tick - sbutton.dbutton.time_change < BUTTON_SINGLE_CLICK_TIME)
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_DOUBLE_CLICK;
+        }
+        else
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
+        }
+      }
+      else if ((sbutton.dbutton.current_state == sbutton.dbutton.active_level) &&
+                (current_tick - sbutton.dbutton.time_change >= BUTTON_SINGLE_CLICK_TIME))
       {
         sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
       }
+      break;
     }
-    break;
+
+    case SYS_BUTTON_FSM_STATE_WAIT_HOLD:
+    {
+      uint32_t current_tick = bsp_get_systick();
+      if (current_tick - sbutton.dbutton.time_change >= BUTTON_HOLD_TIME)
+      {
+        if (sbutton.dbutton.current_state == sbutton.dbutton.active_level)
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_HOLD;
+        }
+        else
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
+        }
+      }
+      break;
+    }
+
+    case SYS_BUTTON_FSM_STATE_WAIT_RELEASE:
+    {
+      uint32_t current_tick = bsp_get_systick();
+      if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
+      {
+        if (current_tick - sbutton.dbutton.time_change >= BUTTON_RELEASE_TIME)
+        {
+          sbutton.fsm_state = SYS_BUTTON_FSM_STATE_RELEASE;
+        }
+      }
+      break;
+    }
+
+    case SYS_BUTTON_FSM_STATE_HOLD:
+    {
+      sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_RELEASE;
+      sbutton.dbutton.time_change = bsp_get_systick();
+    }
+
+    default:
+    {
+      sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
+      break;
+    }
   }
 
-  case SYS_BUTTON_FSM_STATE_WAIT_RELEASE:
+  switch (sbutton.fsm_state)
   {
-    uint32_t current_tick = bsp_get_systick();
-    if (sbutton.dbutton.current_state != sbutton.dbutton.active_level)
+    case(SYS_BUTTON_FSM_STATE_HOLD)
     {
-      if (current_tick - sbutton.dbutton.time_change >= BUTTON_RELEASE_TIME)
+      if (s_button_is_power_off_flag == false)
       {
-        sbutton.fsm_state = SYS_BUTTON_FSM_STATE_RELEASE;
+        __CALLBACK(s_off_power_cb);
+        s_button_is_power_off_flag = true;
+      }
+      else if (s_button_is_power_off_flag == true)
+      {
+        __CALLBACK(s_on_power_cb);
+        s_button_is_power_off_flag = false;
       }
     }
-    break;
-  }
 
-  case SYS_BUTTON_FSM_STATE_SINGLE_CLICK:
-  {
-    sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-    return SYS_BUTTON_EVT_SINGLE_CLICK;
+    default:
+    {
+      break;
+    }
   }
-
-  case SYS_BUTTON_FSM_STATE_DOUBLE_CLICK:
-  {
-    sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-    return SYS_BUTTON_EVT_DOUBLE_CLICK;
-  }
-
-  case SYS_BUTTON_FSM_STATE_HOLD:
-  {
-    sbutton.fsm_state = SYS_BUTTON_FSM_STATE_WAIT_RELEASE;
-    sbutton.dbutton.time_change = bsp_get_systick();
-    return SYS_BUTTON_EVT_HOLD;
-  }
-
-  case SYS_BUTTON_FSM_STATE_RELEASE:
-  {
-    sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-    return SYS_BUTTON_EVT_RELEASE;
-  }
-
-  default:
-  {
-    sbutton.fsm_state = SYS_BUTTON_FSM_STATE_IDLE;
-    break;
-  }
-  }
-  return SYS_BUTTON_EVT_NONE;
+  return SYS_BUTTON_OK;
 }
 
+sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb, 
+                                                    sys_button_evt_off_power off_power_cb)
+{
+   __ASSERT(on_power_cb != NULL, SYS_BUTTON_ERROR);
+   __ASSERT(off_power_cb != NULL, SYS_BUTTON_ERROR);
+
+   s_on_power_cb = on_power_cb;
+   s_off_power_cb = off_power_cb;
+
+   return SYS_BUTTON_OK;
+}
 /* Private definitions ------------------------------------------------ */
 static void sys_button_detect_edge(uint16_t exti_line)
 {

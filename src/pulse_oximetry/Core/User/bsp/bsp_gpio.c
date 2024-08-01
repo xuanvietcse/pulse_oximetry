@@ -13,6 +13,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_gpio.h"
+#include "drv_button.h"
 #include "common.h"
 
 /* Private defines ---------------------------------------------------- */
