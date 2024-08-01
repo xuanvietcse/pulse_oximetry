@@ -176,6 +176,29 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
   // Return
   return DRV_SSD1306_OK;
 }
+
+uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev,
+                                  char *str,
+                                  drv_ssd1306_font_t font,
+                                  drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((str != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Writing operation
+  while (*str)
+  {
+    if (drv_ssd1306_write_char(dev, *str, font, color) != DRV_SSD1306_OK)
+    {
+      return DRV_SSD1306_FAILED;
+    }
+    str++;
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
