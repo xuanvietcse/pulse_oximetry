@@ -98,6 +98,72 @@ uint32_t drv_ssd1306_set_contrast(drv_ssd1306_t *dev, uint8_t value)
   drv_ssd1306_write_command(dev, SSD1306_CONTRAST_REGISTER);
   drv_ssd1306_write_command(dev, value);
 }
+
+uint32_t drv_ssd1306_set_cursor(drv_ssd1306_t *dev,
+                                uint8_t pos_x,
+                                uint8_t pos_y)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x <= 128), DRV_SSD1306_ERROR);
+  __ASSERT((pos_y <= 64), DRV_SSD1306_OK);
+  // Pass value
+  dev->cursor.x = pos_x;
+  dev->cursor.y = pos_y;
+  // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
+                                uint8_t pos_x,
+                                uint8_t pos_y,
+                                drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x < 128), DRV_SSD1306_ERROR);
+  __ASSERT((pos_y < 64), DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Pass value
+  switch (color)
+  {
+  case DRV_SSD1306_COLOR_BLACK:
+    dev->buffer[pos_x + (pos_y / 8) * 128] |= (1 << (pos_y % 8));
+    break;
+  case DRV_SSD1306_COLOR_WHITE:
+    dev->buffer[pos_x + (pos_y / 8) * 128] &= (0 << (pos_y % 8));
+    break;
+  default:
+    // Do nothing
+    break;
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
+                                char ch,
+                                drv_ssd1306_font_t *font,
+                                drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((ch >= 32) && (ch <= 126), DRV_SSD1306_ERROR);
+  __ASSERT((font != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Check remaining space on current line
+  __ASSERT(((dev->cursor.x + font->width) <= 128) && ((dev->cursor.y + font->height) <= 64),
+           DRV_SSD1306_FAILED);
+  // Writing operation
+  for (uint8_t i = 0; i < font->height; i++)
+  {
+    uint16_t temp = font->data_font[(ch - 32) * font->height + i];
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
