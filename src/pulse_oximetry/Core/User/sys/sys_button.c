@@ -191,7 +191,7 @@ sys_button_status_t sys_button_manage()
 
   switch (sbutton.fsm_state)
   {
-    case(SYS_BUTTON_FSM_STATE_HOLD)
+    case SYS_BUTTON_FSM_STATE_HOLD:
     {
       if (s_button_is_power_off_flag == false)
       {
@@ -203,6 +203,7 @@ sys_button_status_t sys_button_manage()
         s_button_is_power_off_flag = false;
         __CALLBACK(s_on_power_cb);
       }
+      break;
     }
 
     default:
