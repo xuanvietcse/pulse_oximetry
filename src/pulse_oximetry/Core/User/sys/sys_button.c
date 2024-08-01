@@ -195,13 +195,13 @@ sys_button_status_t sys_button_manage()
     {
       if (s_button_is_power_off_flag == false)
       {
-        __CALLBACK(s_off_power_cb);
         s_button_is_power_off_flag = true;
+        __CALLBACK(s_off_power_cb);
       }
       else if (s_button_is_power_off_flag == true)
       {
-        __CALLBACK(s_on_power_cb);
         s_button_is_power_off_flag = false;
+        __CALLBACK(s_on_power_cb);
       }
     }
 
