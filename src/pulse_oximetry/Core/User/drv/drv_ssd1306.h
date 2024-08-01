@@ -194,6 +194,18 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev, char ch, drv_ssd1306_font_t 
  */
 uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev, char *str, drv_ssd1306_font_t font, drv_ssd1306_color_t color);
 
+/**
+ * @brief         Update screen on the SSD1306 OLED
+ *
+ * @param[in]     dev             Pointer to drv_ssd1306_t struct to manage device
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Fail
+ *  - (0) : Success
+ */
+uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev);
+
 #endif // __USER_DRV_SSD1306_H
 
 /* End of file -------------------------------------------------------- */
