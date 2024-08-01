@@ -169,7 +169,7 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
   __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
            DRV_SSD1306_ERROR);
   // Check remaining space on current line
-  __ASSERT(((dev->cursor.x + font.width) <= 128) && ((dev->cursor.y + font.height) <= 64),
+  __ASSERT(((dev->cursor.x + font.width) <= dev->size.width) && ((dev->cursor.y + font.height) <= dev->size.height),
            DRV_SSD1306_FAILED);
   // Writing operation
   for (uint8_t i = 0; i < font.height; i++)
