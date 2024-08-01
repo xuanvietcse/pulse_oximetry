@@ -89,8 +89,15 @@ uint32_t drv_ssd1306_set_display(drv_ssd1306_t *dev,
 uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
                                  uint32_t color)
 {
-  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, 1024);
-  drv_ssd1306_update_screen(dev);
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_WHITE) || (color == DRV_SSD1306_COLOR_BLACK),
+           DRV_SSD1306_ERROR);
+  // Operation
+  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, sizeof(dev->buffer));
+  uint32_t ret = DRV_SSD1306_OK;
+  ret = drv_ssd1306_update_screen(dev);
+  __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
   return DRV_SSD1306_OK;
 }
 
