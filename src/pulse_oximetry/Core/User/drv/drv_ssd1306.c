@@ -160,7 +160,20 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
   for (uint8_t i = 0; i < font->height; i++)
   {
     uint16_t temp = font->data_font[(ch - 32) * font->height + i];
+    for (uint8_t j = 0; j < font->width; j++)
+    {
+      if ((temp << j) & 0x8000)
+      {
+        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, DRV_SSD1306_COLOR_WHITE);
+      }
+      else
+      {
+        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, DRV_SSD1306_COLOR_BLACK);
+      }
+    }
   }
+  // Update space
+  dev->cursor.x += font->char_width ? font->char_width[ch - 32] : font->width;
   // Return
   return DRV_SSD1306_OK;
 }
