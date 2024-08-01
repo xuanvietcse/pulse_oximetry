@@ -305,5 +305,7 @@ static uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
     drv_ssd1306_write_command(dev, 0x10);
     drv_ssd1306_write_data(dev, &dev->buffer[(dev->size.width) * i], dev->size.width);
   }
+  // Return
+  return DRV_SSD1306_OK;
 }
 /* End of file -------------------------------------------------------- */
