@@ -144,23 +144,22 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
                                 char ch,
-                                drv_ssd1306_font_t *font,
+                                drv_ssd1306_font_t font,
                                 drv_ssd1306_color_t color)
 {
   // Check parameters
   __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
   __ASSERT((ch >= 32) && (ch <= 126), DRV_SSD1306_ERROR);
-  __ASSERT((font != NULL), DRV_SSD1306_ERROR);
   __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
            DRV_SSD1306_ERROR);
   // Check remaining space on current line
-  __ASSERT(((dev->cursor.x + font->width) <= 128) && ((dev->cursor.y + font->height) <= 64),
+  __ASSERT(((dev->cursor.x + font.width) <= 128) && ((dev->cursor.y + font.height) <= 64),
            DRV_SSD1306_FAILED);
   // Writing operation
-  for (uint8_t i = 0; i < font->height; i++)
+  for (uint8_t i = 0; i < font.height; i++)
   {
-    uint16_t temp = font->data_font[(ch - 32) * font->height + i];
-    for (uint8_t j = 0; j < font->width; j++)
+    uint16_t temp = font.data_font[(ch - 32) * font.height + i];
+    for (uint8_t j = 0; j < font.width; j++)
     {
       if ((temp << j) & 0x8000)
       {
@@ -173,7 +172,7 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
     }
   }
   // Update space
-  dev->cursor.x += font->char_width ? font->char_width[ch - 32] : font->width;
+  dev->cursor.x += font.char_width ? font.char_width[ch - 32] : font.width;
   // Return
   return DRV_SSD1306_OK;
 }
