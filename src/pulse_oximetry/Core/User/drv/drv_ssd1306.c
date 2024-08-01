@@ -94,7 +94,7 @@ uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
   __ASSERT((color == DRV_SSD1306_COLOR_WHITE) || (color == DRV_SSD1306_COLOR_BLACK),
            DRV_SSD1306_ERROR);
   // Operation
-  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, sizeof(dev->buffer));
+  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, (dev->size.height * dev->size.width));
   uint32_t ret = DRV_SSD1306_OK;
   ret = drv_ssd1306_update_screen(dev);
   __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
