@@ -137,8 +137,8 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
 {
   // Check parameters
   __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
-  __ASSERT((pos_x < 128), DRV_SSD1306_ERROR);
-  __ASSERT((pos_y < 64), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x < dev->size.width), DRV_SSD1306_ERROR);
+  __ASSERT((pos_y < dev->size.height), DRV_SSD1306_ERROR);
   __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
            DRV_SSD1306_ERROR);
   // Pass value
