@@ -52,7 +52,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 sys_measure_t ppg;
-double buffer[240];
+double filtered_data[240];
 uint32_t peak_nums;
 /* USER CODE END PV */
 
@@ -108,7 +108,7 @@ int main(void)
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  sys_measure_init(&ppg, &hadc1, &htim2, 95, 19999, buffer);
+  sys_measure_init(&ppg, &hadc1, &htim2, 95, 9999, filtered_data);
   /* USER CODE END 2 */
 
   /* Infinite loop */
