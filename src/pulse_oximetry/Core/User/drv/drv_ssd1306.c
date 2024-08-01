@@ -33,7 +33,6 @@
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev);
 static uint32_t drv_ssd1306_write_command(drv_ssd1306_t *dev, uint8_t command);
 static uint32_t drv_ssd1306_write_data(drv_ssd1306_t *dev, uint8_t *data, uint16_t size);
-static uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev);
 /* Function definitions ----------------------------------------------- */
 
 uint32_t drv_ssd1306_init(drv_ssd1306_t *dev,
@@ -207,6 +206,22 @@ uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev,
   // Return
   return DRV_SSD1306_OK;
 }
+
+uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
+{
+  __ASSERT(dev != NULL, DRV_SSD1306_ERROR);
+
+  for (uint8_t i = 0; i < (dev->size.height) / 8; i++)
+  {
+    drv_ssd1306_write_command(dev, 0xB0 + i); // Set the current RAM page address.
+    drv_ssd1306_write_command(dev, 0x00);
+    drv_ssd1306_write_command(dev, 0x10);
+    drv_ssd1306_write_data(dev, &dev->buffer[(dev->size.width) * i], dev->size.width);
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
+
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
@@ -294,18 +309,4 @@ static uint32_t drv_ssd1306_write_data(drv_ssd1306_t *dev, uint8_t *data, uint16
   return DRV_SSD1306_OK;
 }
 
-static uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
-{
-  __ASSERT(dev != NULL, DRV_SSD1306_ERROR);
-
-  for (uint8_t i = 0; i < (dev->size.height) / 8; i++)
-  {
-    drv_ssd1306_write_command(dev, 0xB0 + i); // Set the current RAM page address.
-    drv_ssd1306_write_command(dev, 0x00);
-    drv_ssd1306_write_command(dev, 0x10);
-    drv_ssd1306_write_data(dev, &dev->buffer[(dev->size.width) * i], dev->size.width);
-  }
-  // Return
-  return DRV_SSD1306_OK;
-}
 /* End of file -------------------------------------------------------- */
