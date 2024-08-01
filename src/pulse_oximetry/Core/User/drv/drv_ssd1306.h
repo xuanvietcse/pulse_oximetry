@@ -209,6 +209,24 @@ uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev, char *str, drv_ssd1306_fon
  */
 uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev);
 
+/**
+ * @brief         Draw bitmap on OLED
+ *
+ * @param[in]     dev             Pointer to drv_ssd1306_t struct to manage device
+ * @param[in]     bitmap          Pointer to bitmap array to draw
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Fail
+ *  - (0) : Success
+ */
+uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_color_t *dev,
+                                 uint8_t pos_x,
+                                 uint8_t pos_y,
+                                 uint8_t *bitmap,
+                                 uint8_t bitmap_width,
+                                 uint8_t bitmap_height,
+                                 drv_ssd1306_color_t color);
 #endif // __USER_DRV_SSD1306_H
 
 /* End of file -------------------------------------------------------- */
