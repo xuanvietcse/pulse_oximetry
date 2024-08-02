@@ -13,236 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QGroupBox" name="Set_filter_coeffs">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>390</y>
-     <width>631</width>
-     <height>231</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Set Filter Coefficients in s-domain (4-order Butterworth Filter)</string>
-   </property>
-   <widget class="QLabel" name="lbl_numerator">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>90</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Numerator:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_denominator">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>101</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Denominator:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_nume_order_4">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>90</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_nume_order_3">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>90</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_nume_order_2">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>90</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_nume_order_1">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>90</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_order_4">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>40</y>
-      <width>63</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>order 4</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_order_3">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>40</y>
-      <width>63</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>order 3</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_order_2">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>40</y>
-      <width>63</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>order 2</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_order_1">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>40</y>
-      <width>63</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>order 1</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_coefficients">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Coefficients:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_nume_order_0">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>90</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_order_0">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>40</y>
-      <width>63</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>order 0</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_deno_order_2">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>140</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_deno_order_3">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>140</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_deno_order_0">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>140</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_deno_order_1">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>140</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="line_deno_order_4">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>140</y>
-      <width>81</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btn_set_filter_coeffs">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>190</y>
-      <width>131</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set coefficients</string>
-    </property>
-   </widget>
-  </widget>
   <widget class="QGroupBox" name="Filtered_PPG">
    <property name="geometry">
     <rect>
@@ -260,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>720</x>
-     <y>740</y>
+     <y>730</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -288,62 +58,17 @@
      <x>30</x>
      <y>20</y>
      <width>631</width>
-     <height>351</height>
+     <height>601</height>
     </rect>
    </property>
    <property name="title">
     <string>Set RTC</string>
    </property>
-   <widget class="QComboBox" name="cbb_set_day">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>80</y>
-      <width>91</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>Monday</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Tuesday</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Wednesday</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Thursday</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Friday</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Saturday</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Sunday</string>
-     </property>
-    </item>
-   </widget>
    <widget class="QPushButton" name="btn_set_rtc">
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>310</y>
+      <y>560</y>
       <width>93</width>
       <height>29</height>
      </rect>
@@ -363,7 +88,17 @@
     </property>
     <item>
      <property name="text">
-      <string>Date time</string>
+      <string>None</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Date time mode 12h</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Date time mode 24h</string>
      </property>
     </item>
     <item>
@@ -376,7 +111,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>270</y>
+      <y>520</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -402,8 +137,8 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>270</y>
-      <width>251</width>
+      <y>520</y>
+      <width>291</width>
       <height>26</height>
      </rect>
     </property>
@@ -412,7 +147,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>80</y>
+      <y>70</y>
       <width>131</width>
       <height>20</height>
      </rect>
@@ -421,155 +156,79 @@
      <string>Date time (GMT7):</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lbl_day">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>80</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Day:</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cbb_set_date">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>80</y>
-      <width>91</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_date">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>80</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Date:</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cbb_set_month">
+   <widget class="QTimeEdit" name="te_mode_24">
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>130</y>
-      <width>91</width>
+      <y>410</y>
+      <width>141</width>
       <height>26</height>
      </rect>
     </property>
+    <property name="displayFormat">
+     <string>hh:mm:ss</string>
+    </property>
    </widget>
-   <widget class="QLabel" name="lbl_month">
+   <widget class="QCalendarWidget" name="calendar_widget">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>130</y>
-      <width>51</width>
+      <x>110</x>
+      <y>140</y>
+      <width>392</width>
+      <height>236</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_set_ddmy">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>100</y>
+      <width>201</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Month:</string>
+     <string>Set day, date, month, year:</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cbb_set_year">
+   <widget class="QLabel" name="lbl_mode_24">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>130</y>
-      <width>91</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_year">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>130</y>
-      <width>41</width>
+      <x>60</x>
+      <y>410</y>
+      <width>151</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Year:</string>
+     <string>Set time (mode 24h):</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="cbb_set_hour">
+   <widget class="QLabel" name="lbl_mode_12">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>460</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set time (mode 12h):</string>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="te_mode_12">
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>180</y>
-      <width>91</width>
+      <y>460</y>
+      <width>141</width>
       <height>26</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QLabel" name="lbl_hour">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>180</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Hour:</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cbb_set_min">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>180</y>
-      <width>91</width>
-      <height>26</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_min">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>180</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Min:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lbl_sec">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>220</y>
-      <width>51</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Sec:</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cbb_set_sec">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>220</y>
-      <width>91</width>
-      <height>26</height>
-     </rect>
+    <property name="displayFormat">
+     <string>hh:mm:ss AP</string>
     </property>
    </widget>
   </widget>

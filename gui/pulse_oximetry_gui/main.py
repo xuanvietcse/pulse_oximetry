@@ -10,9 +10,10 @@
 
 import sys
 import serial
+import serial.tools.list_ports
 import pyqtgraph as pg
 import numpy as np
-from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox, QVBoxLayout
 from PySide6.QtCore import Slot
 from ui_dev import Ui_Dev_UI
 from ui_form import Ui_User_UI
@@ -149,16 +150,14 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.stacked_widget)
 
         # Set up the QWidget from dev.ui
-        self.dev_ui = QWidget()
-        self.ui_dev = Ui_Dev_UI()
-        self.ui_dev.setupUi(self.dev_ui)
+        self.dev_widget = Widget(self)
 
         # Set up the QMainWindow from form.ui
         self.user_ui = QMainWindow()
         self.ui_user = Ui_User_UI()
         self.ui_user.setupUi(self.user_ui)
 
-        self.stacked_widget.addWidget(self.dev_ui)
+        self.stacked_widget.addWidget(self.dev_widget)
         self.stacked_widget.addWidget(self.user_ui)
 
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
@@ -167,32 +166,61 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.user_ui)
 
         # Add the heart rate plot to the layout in user.ui
-        self.heart_rate_plot = pg.PlotWidget()
+        self.heart_rate_graph = pg.PlotWidget()
         layout_hr = QVBoxLayout(self.ui_user.Heart_rate_graph)
         self.ui_user.Heart_rate_graph.setLayout(layout_hr)
-        layout_hr.addWidget(self.heart_rate_plot)
+        layout_hr.addWidget(self.heart_rate_graph)
 
-        self.heart_rate_plot.setBackground("w")
-        self.heart_rate_plot.setTitle("Heart Rate Graph", color="black", size="10pt")
+        self.heart_rate_graph.setBackground("w")
+        self.heart_rate_graph.setTitle("Heart Rate Graph", color="black", size="10pt")
 
-        self.heart_rate_plot.setLabel("left", "Heart Rate (bpm)", **styles)
-        self.heart_rate_plot.setLabel("bottom", "Time (s)", **styles)
         styles = {"color": "black", "font-size": "13px"}
         self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
         self.heart_rate_graph.setLabel("bottom", "Time (s)", **styles)
 
-        pen_hr = pg.mkPen(color=(0, 0, 255)) # Blue
+        pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
         heart_rate_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         heart_rate = [72, 75, 78, 76, 77, 79, 74, 73, 78, 80]
-        self.heart_rate_plot.plot(heart_rate_time, heart_rate, pen=pen_hr)
+        self.heart_rate_graph.plot(heart_rate_time, heart_rate, pen=pen_hr)
+
+        # Initialize serial communication
+        self.serial_connection = None
+        self.ui_user.cbb_com.addItems(self.get_available_ports())
+        self.ui_user.btn_connect.clicked.connect(self.toggle_serial_connection)
+
+    def get_available_ports(self):
+        """Get a list of available COM ports."""
+        ports = serial.tools.list_ports.comports()
+        return [port.device for port in ports]
 
     @Slot()
-    def show_user_ui(self):
-        self.stacked_widget.setCurrentWidget(self.user_ui)
+    def toggle_serial_connection(self):
+        if self.serial_connection and self.serial_connection.is_open:
+            self.disconnect_serial()
+        else:
+            self.connect_serial()
+
+    @Slot()
+    def connect_serial(self):
+        port = self.ui_user.cbb_com.currentText()
+        baudrate = self.ui_user.cbb_baudrate.currentText()
+        try:
+            self.serial_connection = serial.Serial(port, baudrate, timeout=1)
+            self.ui_user.btn_connect.setText("Disconnect")  # Update button text
+            QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", str(e))
+
+    @Slot()
+    def disconnect_serial(self):
+        if self.serial_connection and self.serial_connection.is_open:
+            self.serial_connection.close()
+            self.ui_user.btn_connect.setText("Connect")  # Update button text
+            QMessageBox.information(self, "Disconnection", "Serial port disconnected.")
 
     @Slot()
     def show_dev_ui(self):
-        self.stacked_widget.setCurrentWidget(self.dev_ui)
+        self.stacked_widget.setCurrentWidget(self.dev_widget)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

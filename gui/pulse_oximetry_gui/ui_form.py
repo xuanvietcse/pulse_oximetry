@@ -23,7 +23,7 @@ class Ui_User_UI(object):
     def setupUi(self, User_UI):
         if not User_UI.objectName():
             User_UI.setObjectName(u"User_UI")
-        User_UI.resize(1642, 880)
+        User_UI.resize(1534, 845)
         self.centralwidget = QWidget(User_UI)
         self.centralwidget.setObjectName(u"centralwidget")
         self.Heart_rate_graph = QGroupBox(self.centralwidget)
@@ -31,7 +31,7 @@ class Ui_User_UI(object):
         self.Heart_rate_graph.setGeometry(QRect(500, 20, 1001, 451))
         self.btn_switch_to_dev_ui = QPushButton(self.centralwidget)
         self.btn_switch_to_dev_ui.setObjectName(u"btn_switch_to_dev_ui")
-        self.btn_switch_to_dev_ui.setGeometry(QRect(720, 740, 141, 41))
+        self.btn_switch_to_dev_ui.setGeometry(QRect(720, 730, 141, 41))
         self.Notification = QGroupBox(self.centralwidget)
         self.Notification.setObjectName(u"Notification")
         self.Notification.setGeometry(QRect(30, 570, 451, 151))
@@ -153,7 +153,7 @@ class Ui_User_UI(object):
         User_UI.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(User_UI)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1642, 26))
+        self.menubar.setGeometry(QRect(0, 0, 1534, 26))
         User_UI.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(User_UI)
         self.statusbar.setObjectName(u"statusbar")
@@ -225,4 +225,3 @@ class Ui_User_UI(object):
         self.lbl_s.setText(QCoreApplication.translate("User_UI", u"s", None))
         self.btn_set_interval.setText(QCoreApplication.translate("User_UI", u"Set interval", None))
     # retranslateUi
-
