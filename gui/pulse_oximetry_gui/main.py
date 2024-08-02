@@ -181,8 +181,8 @@ class MainWindow(QMainWindow):
             self.serial_connection = serial.Serial(port, baudrate, timeout=1)
             self.ui_user.btn_connect.setText("Disconnect")  # Update button text
             QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
-        except Exception as e:
-            QMessageBox.critical(self, "Error", str(e))
+        except Exception:
+            QMessageBox.warning(self, "Error", "Serial port not found.")
 
     @Slot()
     def disconnect_serial(self):
@@ -224,7 +224,7 @@ class MainWindow(QMainWindow):
             else:
                 # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
-        except ValueError as e:
+        except ValueError:
             # Show warning if the input value is not a valid positive integer
             QMessageBox.warning(self, "Error", "Invalid interval value. Please enter a valid positive integer.")
         except Exception as e:
