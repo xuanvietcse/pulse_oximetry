@@ -26,10 +26,6 @@ Users can clear all previous records which are unneeded to reduce memory.
 
 Whenever heart rate overcomes the threshold, system must signal to users.
 
-7. **DEV ONLY: Tune filters**
-
-Developers can tune their filter on system based on GUI.
-
 8. **Error notification**
 
 If there is any error, system must notify to users.
@@ -52,8 +48,7 @@ If there is any error, system must notify to users.
     - 0x3: Set interval.
     - 0x4: Set time.
     - 0x5: Clear records.
-    - 0x6: Tune filter.
-    - 0x7: Error notification.
+    - 0x6: Error notification.
 - Data (DATA):
   - Length: 4 bytes.
   - Value: Based on CMD.
