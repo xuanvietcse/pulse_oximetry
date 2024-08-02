@@ -20,7 +20,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_timer.h"
-#include "sound_effects.h"
+#include "sound_effect.h"
 #include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */

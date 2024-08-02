@@ -17,6 +17,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "drv_buzzer.h"
 #include "bsp_utils.h"
+#include "list_of_sound_effects.h"
 #include "common.h"
 
 /* Private defines ---------------------------------------------------- */
@@ -27,10 +28,7 @@
 
 #define __DRV_BUZZER_CALCULATE_PRESCALER(__FREQUENCY__) (TIM_CLOCK_SRC / (1000 * (__FREQUENCY__)) - 1)
 /* Public variables --------------------------------------------------- */
-sound_effect_t m_win_11_startup[] =
-    {{NOTE_FS5, 50},
-     {NOTE_CS6, 250},
-     {NOTE_GS7, 500}};
+
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -46,8 +44,8 @@ uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
   buzzer->config.prescaler = 0;
   buzzer->config.duty_cycle = 500;
   buzzer->config.period = 1000;
-  buzzer->sound_effect = m_win_11_startup;
-  buzzer->note_nums = 3;
+  buzzer->sound_effect = win_11_startup;
+  buzzer->note_nums = 4;
   bsp_timer_set_prescaler(buzzer->config.htim, buzzer->config.prescaler);
   bsp_timer_set_autoreload(buzzer->config.htim, buzzer->config.period);
   bsp_timer_set_output_compare(buzzer->config.htim,
