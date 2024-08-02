@@ -20,6 +20,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_timer.h"
+#include "sound_effects.h"
 #include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
@@ -44,7 +45,8 @@ typedef struct __attribute__((__packed__))
 typedef struct __attribute__((__packed__))
 {
   drv_buzzer_tim_config_t config;
-  uint32_t *sound_effect;
+  sound_effect_t *sound_effect;
+  uint32_t note_nums;
   bool active;
 } drv_buzzer_t;
 
@@ -79,7 +81,7 @@ uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
  *
  * @return      drv_buzzer_status_t value.
  */
-uint32_t drv_buzzer_set_sound_effect(drv_buzzer_t *buzzer, uint32_t *sound_effect_buf);
+uint32_t drv_buzzer_set_sound_effect(drv_buzzer_t *buzzer, sound_effect_t *sound_effect_buf);
 
 /**
  * @brief       Buzzer plays the Windows 10 Error sound.
