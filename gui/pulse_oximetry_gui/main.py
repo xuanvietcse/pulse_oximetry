@@ -1,13 +1,3 @@
-# This Python file uses the following encoding: utf-8
-# Important:
-# You need to run the following command to generate the ui_dev.py file
-#     pyside6-uic dev.ui -o ui_dev.py, or
-#     pyside2-uic dev.ui -o ui_dev.py
-
-# And similarly for the user UI:
-#     pyside6-uic form.ui -o ui_form.py, or
-#     pyside2-uic form.ui -o ui_form.py.py
-
 import sys
 import serial
 import serial.tools.list_ports
@@ -126,6 +116,7 @@ class MainWindow(QMainWindow):
         # Add the user_ui (form.ui) to the stacked widget
         self.stacked_widget.addWidget(self.user_ui)
 
+        # Connect the button to switch UI
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
 
         # Connect btn_set_interval to send_interval_code method
@@ -154,17 +145,22 @@ class MainWindow(QMainWindow):
 
         # Initialize serial communication
         self.serial_connection = None
-        self.ui_user.cbb_com.addItems(self.get_available_ports())
+        self.update_available_ports()
         self.ui_user.btn_connect.clicked.connect(self.toggle_serial_connection)
 
         # Set default values for cbb_com and cbb_baudrate
-        self.ui_user.cbb_com.setCurrentText("COM3")
+        self.ui_user.cbb_com.setCurrentText("None")
         self.ui_user.cbb_baudrate.setCurrentText("115200")
 
-    def get_available_ports(self):
-        """Get a list of available COM ports."""
+    def update_available_ports(self):
+        # Update the combobox with available COM ports.
         ports = serial.tools.list_ports.comports()
-        return [port.device for port in ports]
+        if ports:
+            self.ui_user.cbb_com.clear()
+            self.ui_user.cbb_com.addItems([port.device for port in ports])
+        else:
+            self.ui_user.cbb_com.clear()
+            self.ui_user.cbb_com.addItem("None")
 
     @Slot()
     def toggle_serial_connection(self):
@@ -182,6 +178,7 @@ class MainWindow(QMainWindow):
             self.ui_user.btn_connect.setText("Disconnect")  # Update button text
             QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
         except Exception:
+            self.update_available_ports()
             QMessageBox.warning(self, "Error", "Serial port not found.")
 
     @Slot()
