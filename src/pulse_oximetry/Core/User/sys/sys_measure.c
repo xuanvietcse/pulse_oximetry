@@ -20,31 +20,18 @@
 #include "math.h"
 
 /* Private defines ---------------------------------------------------- */
-#define SYS_MEASURE_MAX_SAMPLES_PROCESS (200)
-#define SYS_MEASURE_FILTER_NUM_OF_COEFFS (5)
-#define SYS_MEASURE_SAMPLING_RATE (100.0)
+#define SYS_MEASURE_MAX_SAMPLES_PROCESS   (200)
+#define SYS_MEASURE_LPF_NUM_OF_COEFFS     (5)      // 4-order
+#define SYS_MEASURE_HPF_NUM_OF_COEFFS     (3)      // 2-order
+#define SYS_MEASURE_SAMPLING_RATE         (100.0)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
 static uint16_t s_adc_val_buf[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
+
 /* Private variables -------------------------------------------------- */
-
-// Coeffi in z-domain
-// Numerator
-double a_z[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {1,
-                                                -3.71800951758217,
-                                                5.19310810021585,
-                                                -3.22909001061018,
-                                                0.754109572133735};
-
-// Denominator
-double b_z[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {0,
-                                                5.35617889287357e-06,
-                                                5.56603268403827e-05,
-                                                5.26057994909257e-05,
-                                                4.52185201307133e-06};
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -108,38 +95,96 @@ static uint32_t sys_measure_filter_data(sys_measure_t *signal)
 {
   __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
 
+  // Coeffi in z-domain
+
+  // LPF params:
+  // fs = 100.0
+  // ws = 12
+  // wp = 3
+  // wc = 4
+  // order = 4
+  const double lpf_numerator_z[SYS_MEASURE_LPF_NUM_OF_COEFFS] = {0.000177296607979,
+                                                                 0.000709186431917,
+                                                                 0.001063779647875,
+                                                                 0.000709186431917,
+                                                                 0.000177296607979};
+
+  const double lpf_denominator_z[SYS_MEASURE_LPF_NUM_OF_COEFFS] = {1,
+                                                                   -3.349831562667920,
+                                                                   4.252610698953553,
+                                                                   -2.420450670140820,
+                                                                   0.520508279582855};
+
+  // HPF params:
+  // fs = 100.0
+  // ws = 0.0005
+  // wp = 0.01
+  // wc = 0.005
+  // order = 2
+  const double hpf_numerator_z[SYS_MEASURE_HPF_NUM_OF_COEFFS] = {0.999777886079662,
+                                                                 -1.999555772159325,
+                                                                 0.999777886079662};
+
+  const double hpf_denominator_z[SYS_MEASURE_HPF_NUM_OF_COEFFS] = {1,
+                                                                   -1.999555722824731,
+                                                                   0.999555821493919};
+
   while (cb_data_count(&(signal->dev.adc_conv)) != 0)
   {
-    static double recent_input[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {0};
-    static double recent_output[SYS_MEASURE_FILTER_NUM_OF_COEFFS] = {0};
+    // Apply LPF
+    static double lpf_recent_input[SYS_MEASURE_LPF_NUM_OF_COEFFS] = {0};
+    static double lpf_recent_output[SYS_MEASURE_LPF_NUM_OF_COEFFS] = {0};
 
-    // Shift recent value to the right
-    for (int i = SYS_MEASURE_FILTER_NUM_OF_COEFFS - 1; i > 0; --i)
+    // Shift lpf recent value to the right
+    for (int i = SYS_MEASURE_LPF_NUM_OF_COEFFS - 1; i > 0; --i)
     {
-      recent_input[i] = recent_input[i - 1];
-      recent_output[i] = recent_output[i - 1];
+      lpf_recent_input[i] = lpf_recent_input[i - 1];
+      lpf_recent_output[i] = lpf_recent_output[i - 1];
     }
 
     // Put the current value of the input signal into the first position of the array
     uint16_t adc_temp;
     cb_read(&(signal->dev.adc_conv), &adc_temp, sizeof(adc_temp));
-    recent_input[0] = (double)adc_temp;
+    lpf_recent_input[0] = (double)adc_temp;
 
     // Calculate the current output value
-    recent_output[0] = b_z[0] * recent_input[0];
+    lpf_recent_output[0] = lpf_numerator_z[0] * lpf_recent_input[0];
 
-    for (int j = 1; j < SYS_MEASURE_FILTER_NUM_OF_COEFFS; ++j)
+    for (int j = 1; j < SYS_MEASURE_LPF_NUM_OF_COEFFS; ++j)
     {
-      recent_output[0] += b_z[j] * recent_input[j];
+      lpf_recent_output[0] += lpf_numerator_z[j] * lpf_recent_input[j];
     }
 
-    for (int j = 1; j < SYS_MEASURE_FILTER_NUM_OF_COEFFS; ++j)
+    for (int j = 1; j < SYS_MEASURE_LPF_NUM_OF_COEFFS; ++j)
     {
-      recent_output[0] -= a_z[j] * recent_output[j];
+      lpf_recent_output[0] -= lpf_denominator_z[j] * lpf_recent_output[j];
+    }
+
+
+    // Apply HPF
+    static double hpf_recent_output[SYS_MEASURE_HPF_NUM_OF_COEFFS] = {0};
+    // lpf output is the hpf input, dont need to shift it because it's shifted in lpf
+    // Shift hpf recent output to the right
+    for (int i = SYS_MEASURE_HPF_NUM_OF_COEFFS - 1; i > 0; --i)
+    {
+      hpf_recent_output[i] = hpf_recent_output[i - 1];
+    }
+
+    // Calculate the current output value
+    hpf_recent_output[0] = hpf_numerator_z[0] * lpf_recent_output[0];
+
+    for (int j = 1; j < SYS_MEASURE_HPF_NUM_OF_COEFFS; ++j)
+    {
+      hpf_recent_output[0] += hpf_numerator_z[j] * lpf_recent_output[j];
+    }
+
+    for (int j = 1; j < SYS_MEASURE_HPF_NUM_OF_COEFFS; ++j)
+    {
+      hpf_recent_output[0] -= hpf_denominator_z[j] * hpf_recent_output[j];
     }
 
     // Place the current output value at the first position of the array
-    cb_write(&(signal->filtered_data), &recent_output[0], sizeof(recent_output[0]));
+    cb_write(&(signal->filtered_data), &hpf_recent_output[0], sizeof(hpf_recent_output[0]));
   }
   return SYS_MEASURE_OK;
 }

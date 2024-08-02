@@ -28,9 +28,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_ssd1306_status_t
 {
-  DRV_SSD1306_ERROR = -2,
-  DRV_SSD1306_FAILED,
-  DRV_SSD1306_OK
+  DRV_SSD1306_ERROR = 0xFFFFFFFF,
+  DRV_SSD1306_FAILED = 0x7FFFFFFF,
+  DRV_SSD1306_OK = 0x3FFFFFFF
 };
 
 typedef enum

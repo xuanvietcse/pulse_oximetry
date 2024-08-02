@@ -1,24 +1,22 @@
 /**
- * @file       bso_callback.c
- * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
- * @license    This project is released under the Fiot License.
- * @version    v1.0.0
- * @date       2024-07-27
+ * @file       drv_buzzer.C
+ * @copyright
+ * @license
+ * @version    1.0.0
+ * @date       31/07/2024
  * @author     Giang Phan Truong
  *             Khanh Nguyen Ngoc
  *             Viet Hoang Xuan
  *
- * @brief      None
+ * @brief      Driver for interfacing with the buzzer
  *
  * @note       None
  * @example    None
  */
 
 /* Includes ----------------------------------------------------------- */
-#include "main.h"
-#include "bsp_adc.h"
-#include "bsp_timer.h"
-#include "bsp_gpio.h"
+#include "drv_buzzer.h"
+#include "common.h"
 
 /* Private defines ---------------------------------------------------- */
 
@@ -28,24 +26,18 @@
 
 /* Public variables --------------------------------------------------- */
 
-/* Private variables -------------------------------------------------- */
-
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
+                         bsp_tim_typedef_t *tim,
+                         uint32_t prescaler,
+                         uint32_t pwm_channel,
+                         uint16_t period,
+                         uint16_t duty_cycle)
 {
-  bsp_adc_conv_cplt_callback(hadc);
+  return DRV_BUZZER_OK;
 }
+/* Private definitions ----------------------------------------------- */
 
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-{
-  bsp_pwm_pulse_finished_handler(htim);
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  bsp_gpio_exti_handler(GPIO_Pin);
-}
-/* Private definitions ------------------------------------------------ */
 /* End of file -------------------------------------------------------- */

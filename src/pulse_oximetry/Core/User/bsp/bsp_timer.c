@@ -63,10 +63,10 @@ bsp_timer_status_t bsp_timer_start(bsp_tim_typedef_t *htim)
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_Base_Start(htim);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_Base_Start(htim);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -74,10 +74,10 @@ bsp_timer_status_t bsp_timer_start_it(bsp_tim_typedef_t *htim)
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_Base_Start_IT(htim);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_Base_Start_IT(htim);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -85,10 +85,10 @@ bsp_timer_status_t bsp_timer_stop(bsp_tim_typedef_t *htim)
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_Base_Stop(htim);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_Base_Stop(htim);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -96,10 +96,10 @@ bsp_timer_status_t bsp_timer_stop_it(bsp_tim_typedef_t *htim)
 {
   __ASSERT(htim != NULL, BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_Base_Stop_IT(htim);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_Base_Stop_IT(htim);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -112,10 +112,10 @@ bsp_timer_status_t bsp_pwm_start(bsp_tim_typedef_t *htim, uint32_t tim_channel)
                (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_OC_Start(htim, tim_channel);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_OC_Start(htim, tim_channel);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -128,10 +128,10 @@ bsp_timer_status_t bsp_pwm_start_it(bsp_tim_typedef_t *htim, uint32_t tim_channe
                (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_OC_Start_IT(htim, tim_channel);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_OC_Start_IT(htim, tim_channel);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -144,10 +144,10 @@ bsp_timer_status_t bsp_pwm_stop(bsp_tim_typedef_t *htim, uint32_t tim_channel)
                (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_OC_Stop(htim, tim_channel);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_OC_Stop(htim, tim_channel);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
@@ -160,10 +160,10 @@ bsp_timer_status_t bsp_pwm_stop_it(bsp_tim_typedef_t *htim, uint32_t tim_channel
                (tim_channel == TIM_CHANNEL_4),
            BSP_TIMER_ERROR);
 
-  HAL_StatusTypeDef btim_err = HAL_OK;
-  btim_err = HAL_TIM_OC_Stop_IT(htim, tim_channel);
+  HAL_StatusTypeDef ret = HAL_OK;
+  ret = HAL_TIM_OC_Stop_IT(htim, tim_channel);
 
-  __ASSERT(btim_err == HAL_OK, BSP_TIMER_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
   return BSP_TIMER_OK;
 }
 
