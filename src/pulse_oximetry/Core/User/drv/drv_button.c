@@ -33,13 +33,13 @@ drv_button_status_t drv_button_init(drv_button_t *button,
 {
   __ASSERT(button != NULL, DRV_BUTTON_ERROR);
   __ASSERT((button_port == GPIOA) ||
-               (button_port == GPIOB) ||
-               (button_port == GPIOC) ||
-               (button_port == GPIOE),
+           (button_port == GPIOB) ||
+           (button_port == GPIOC) ||
+           (button_port == GPIOE),
            DRV_BUTTON_ERROR);
   __ASSERT((button_pin >= 0) && (button_pin < 16), DRV_BUTTON_ERROR);
   __ASSERT((button_active_level == 0) ||
-               (button_active_level == 1),
+           (button_active_level == 1),
            DRV_BUTTON_ERROR);
 
   button->port = button_port;

@@ -29,9 +29,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_hr_status_t
 {
-  DRV_HR_ERROR = -2,
-  DRV_HR_FAIL,
-  DRV_HR_OK
+  DRV_HR_ERROR = 0xFFFFFFFF,
+  DRV_HR_FAIL = 0x7FFFFFFF,
+  DRV_HR_OK = 0x3FFFFFFF
 };
 
 typedef struct
