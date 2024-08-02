@@ -58,10 +58,7 @@ typedef struct __attribute__((__packed__))
  *
  * @param[in]   buzzer         Pointer to buzzer handler.
  * @param[in]   tim            Pointer of timer buzzer handler.
- * @param[in]   prescaler      Prescaler for timer clock source.
  * @param[in]   pwm_channel    Channel PWM connect to buzzer.
- * @param[in]   period         buzzer blink period.
- * @param[in]   duty_cycle     buzzer on-time.
  *
  * @attention   the valid buzzer period and duty cycle.
  * @note        Module buzzer low level trigger.
@@ -70,10 +67,7 @@ typedef struct __attribute__((__packed__))
  */
 uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
                          bsp_tim_typedef_t *tim,
-                         uint32_t prescaler,
-                         uint32_t pwm_channel,
-                         uint16_t period,
-                         uint16_t duty_cycle);
+                         uint32_t pwm_channel);
 
 /**
  * @brief       Set the buzzer on-time.
