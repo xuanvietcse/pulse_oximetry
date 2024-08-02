@@ -137,10 +137,10 @@
       <string>Baudrate:</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_connect">
+    <widget class="QPushButton" name="btn_connect_com">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>110</x>
        <y>120</y>
        <width>93</width>
        <height>29</height>
@@ -344,6 +344,19 @@
        <string>1000000</string>
       </property>
      </item>
+    </widget>
+    <widget class="QPushButton" name="btn_check_com">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>120</y>
+       <width>93</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Check COM</string>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="Threshold">
