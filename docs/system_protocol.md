@@ -26,11 +26,7 @@ Users can clear all previous records which are unneeded to reduce memory.
 
 Whenever heart rate overcomes the threshold, system must signal to users.
 
-7. **DEV ONLY: Tune filters**
-
-Developers can tune their filter on system based on GUI.
-
-8. **Error notification**
+7. **Error notification**
 
 If there is any error, system must notify to users.
 
@@ -52,22 +48,23 @@ If there is any error, system must notify to users.
     - 0x3: Set interval.
     - 0x4: Set time.
     - 0x5: Clear records.
-    - 0x6: Tune filter.
-    - 0x7: Error notification.
+    - 0x6: Error notification.
 - Data (DATA):
   - Length: 4 bytes.
   - Value: Based on CMD.
     - Check UART: 0xFFFFFFFF.
     - Get data: 0xFFFFFFFX. The last nibble X depends on what users want to get. 0x0: hear rate, 0x1: logs, 0x2: PPG signal after filtered, 0x3: PPG signal before filtered.
-    - Set threshold: Based on Nes, *et al.* (2013)[[1]](https://sci-hub.se/https://doi.org/10.1111/j.1600-0838.2012.01445.x), Heart rate max = 211 - (0.64 * age). So maximum heart rate we can get is 211. Therefore, we will need 1 byte to store the heart rate we want to set. 0xFFFFFFXX, XX is the hex value of heart rate to be set.
-    - Set interval: Default unit is nanosecond (ns). 0xXXXXXXXX, we should read datasheet before to ensure the interval we set is supported by MCU.
+    - Set threshold: Based on Nes, *et al.* (2013)[[1]](https://sci-hub.se/https://doi.org/10.1111/j.1600-0838.2012.01445.x), Heart rate max = 211 - (0.64 * age). So maximum heart rate we can get is 211. Therefore, we will need 2 bytes to store the heart rate thresholds (one upper and one lower) we want to set. 0xFFFFXXYY, XX is the hex value of upper and YY is the hex value of lower heart rate we want to set.
+    - Set interval: Default unit is second (s). 0xXXXXXXXX, we should read datasheet before to ensure the interval we set is supported by MCU.
     - Set time: 0xXXXXXXXX. From the 24-hour format on GUI, converting to epoch time for setting time on RTC.
     - Clear records: 0xFFFFFFFF.
-    - Tune filter: 0xXXXXXXXX.
     - Error notification: 0xFFFFFFFF.
 - Threshold:
   - Length: 1 byte.
-  - Value: 0xFFFX. X = F, heart rate below threshold. X = 0, heart rate above threshold.
+  - Value: 0xFFXY. 
+    - XY = FF, heart rate stays between upper and lower threshold. 
+    - XY = F0, heart rate is lower than the lower heart rate. 
+    - XY = 0F, heart rate is higher than the upper heart rate.
 - End of frame (EOF):
   - Length: 1 byte.
   - Value: 0x04.
