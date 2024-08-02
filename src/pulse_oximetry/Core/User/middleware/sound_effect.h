@@ -1,5 +1,5 @@
 /**
- * @file       sound_effects.h
+ * @file       sound_effect.h
  * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
  * @license    This project is released under the Fiot License.
  * @version    v1.0.0
@@ -14,8 +14,8 @@
  */
 
 /* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __USER_MIDDLEWARE_SOUND_EFFECTS_H
-#define __USER_MIDDLEWARE_SOUND_EFFECTS_H
+#ifndef __USER_MIDDLEWARE_SOUND_EFFECT_H
+#define __USER_MIDDLEWARE_SOUND_EFFECT_H
 
 /* Includes ----------------------------------------------------------- */
 #include "music_notes.h"
@@ -36,6 +36,6 @@ typedef struct
 
 /* Public function prototypes ----------------------------------------- */
 
-#endif // __USER_MIDDLEWARE_SOUND_EFFECTS_H
+#endif // __USER_MIDDLEWARE_SOUND_EFFECT_H
 
 /* End of file -------------------------------------------------------- */
