@@ -220,7 +220,7 @@ uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev);
  *  - (-1): Fail
  *  - (0) : Success
  */
-uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_color_t *dev,
+uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
                                  uint8_t pos_x,
                                  uint8_t pos_y,
                                  uint8_t *bitmap,
