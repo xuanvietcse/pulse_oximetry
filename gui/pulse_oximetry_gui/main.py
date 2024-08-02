@@ -31,6 +31,7 @@ class Widget(QWidget):
         # Connect the button to switch UI
         self.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
 
+        # Connect the combobox to mode time changed event handler
         self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_cbb_mode_time_changed)
 
         # Set default value for cbb_mode_time to "None"
@@ -119,7 +120,10 @@ class MainWindow(QMainWindow):
         self.ui_user = Ui_User_UI()
         self.ui_user.setupUi(self.user_ui)
 
+        # Add the dev_widget (dev.ui) to the stacked widget
         self.stacked_widget.addWidget(self.dev_widget)
+
+        # Add the user_ui (form.ui) to the stacked widget
         self.stacked_widget.addWidget(self.user_ui)
 
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
@@ -149,6 +153,10 @@ class MainWindow(QMainWindow):
         self.serial_connection = None
         self.ui_user.cbb_com.addItems(self.get_available_ports())
         self.ui_user.btn_connect.clicked.connect(self.toggle_serial_connection)
+
+        # Set default values for cbb_com and cbb_baudrate
+        self.ui_user.cbb_com.setCurrentText("COM3")
+        self.ui_user.cbb_baudrate.setCurrentText("115200")
 
     def get_available_ports(self):
         """Get a list of available COM ports."""

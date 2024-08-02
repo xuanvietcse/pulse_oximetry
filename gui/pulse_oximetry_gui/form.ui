@@ -523,7 +523,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="lbl_s">
+    <widget class="QLabel" name="lbl_ns">
      <property name="geometry">
       <rect>
        <x>360</x>
@@ -533,7 +533,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>s</string>
+      <string>ns</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_set_interval">
