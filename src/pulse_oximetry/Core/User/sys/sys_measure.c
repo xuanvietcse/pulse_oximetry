@@ -20,10 +20,11 @@
 #include "math.h"
 
 /* Private defines ---------------------------------------------------- */
-#define SYS_MEASURE_MAX_SAMPLES_PROCESS   (200)
-#define SYS_MEASURE_LPF_NUM_OF_COEFFS     (5)      // 4-order
-#define SYS_MEASURE_HPF_NUM_OF_COEFFS     (3)      // 2-order
-#define SYS_MEASURE_SAMPLING_RATE         (100.0)
+
+#define SYS_MEASURE_MAX_SAMPLES_PROCESS (200)
+#define SYS_MEASURE_LPF_NUM_OF_COEFFS (5) // 4-order
+#define SYS_MEASURE_HPF_NUM_OF_COEFFS (3) // 2-order
+#define SYS_MEASURE_SAMPLING_RATE (100.0)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -160,7 +161,6 @@ static uint32_t sys_measure_filter_data(sys_measure_t *signal)
       lpf_recent_output[0] -= lpf_denominator_z[j] * lpf_recent_output[j];
     }
 
-
     // Apply HPF
     static double hpf_recent_output[SYS_MEASURE_HPF_NUM_OF_COEFFS] = {0};
     // lpf output is the hpf input, dont need to shift it because it's shifted in lpf
@@ -194,7 +194,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
   __ASSERT(signal != NULL, SYS_MEASURE_ERROR);
   // Choose the Windows Size W1, W2 in TERMA framework
   int w_cycle = 97,
-      w_evt = 13;
+      w_evt = 17;
 
   double ma_cycle[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0},
          ma_evt[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
@@ -238,7 +238,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
   mean_of_signal /= SYS_MEASURE_MAX_SAMPLES_PROCESS;
 
   // Calculate the Threshold for generating Block of Interest
-  double beta = 0.4;
+  double beta = 0.5;
   double threshold[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
@@ -267,7 +267,8 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
   double peak = 0;
   uint32_t peak_index = 0;
   double heart_rate_avg = 0;
-  uint32_t peak_index_buf[5] = {0};
+  uint32_t is_block_of_interest = 0;
+  uint32_t peak_index_buf[8] = {0};
   uint32_t peak_nums = 0;
 
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS - 1; i++)
@@ -275,8 +276,9 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
     if ((block_of_interest[i + 1] - block_of_interest[i]) == 1)
     {
       pos_start_block = i;
+      is_block_of_interest = 1;
     }
-    if ((block_of_interest[i] - block_of_interest[i + 1]) == 1)
+    if (((block_of_interest[i] - block_of_interest[i + 1]) == 1) && (is_block_of_interest == 1))
     {
       pos_stop_block = i;
       if (pos_stop_block - pos_start_block >= w_evt)
@@ -294,19 +296,20 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
         peak_index_buf[peak_nums] = peak_index;
         peak_nums++;
       }
+      is_block_of_interest = 0;
     }
   }
 
-  for (uint32_t i = 0; i < peak_nums - 1; i++)
-  {
-    heart_rate_avg += (peak_index_buf[i + 1] - peak_index_buf[i]);
-  }
   // Calculate the average peak interval (in second unit)
-  heart_rate_avg /= peak_nums;
+  heart_rate_avg = peak_index_buf[peak_nums - 1] - peak_index_buf[0];
+  heart_rate_avg /= (peak_nums - 1);
   heart_rate_avg *= (1 / SYS_MEASURE_SAMPLING_RATE);
+  // Calibration
+  heart_rate_avg -= 0.0065;
   // Estimate the heart rate (beats per minute unit)
   heart_rate_avg = 60 / heart_rate_avg;
   signal->heart_rate = (uint32_t)heart_rate_avg;
+
   return SYS_MEASURE_OK;
 }
 /* End of file -------------------------------------------------------- */
