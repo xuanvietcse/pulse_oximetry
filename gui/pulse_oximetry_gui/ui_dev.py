@@ -45,7 +45,7 @@ class Ui_Dev_UI(object):
         self.cbb_mode_time.addItem("")
         self.cbb_mode_time.addItem("")
         self.cbb_mode_time.setObjectName(u"cbb_mode_time")
-        self.cbb_mode_time.setGeometry(QRect(170, 30, 111, 26))
+        self.cbb_mode_time.setGeometry(QRect(170, 30, 231, 26))
         self.lbl_epoch_time = QLabel(self.Set_RTC)
         self.lbl_epoch_time.setObjectName(u"lbl_epoch_time")
         self.lbl_epoch_time.setGeometry(QRect(20, 520, 141, 21))
@@ -60,7 +60,7 @@ class Ui_Dev_UI(object):
         self.lbl_date_time.setGeometry(QRect(20, 70, 131, 20))
         self.te_mode_24 = QTimeEdit(self.Set_RTC)
         self.te_mode_24.setObjectName(u"te_mode_24")
-        self.te_mode_24.setGeometry(QRect(230, 410, 141, 26))
+        self.te_mode_24.setGeometry(QRect(230, 410, 161, 26))
         self.calendar_widget = QCalendarWidget(self.Set_RTC)
         self.calendar_widget.setObjectName(u"calendar_widget")
         self.calendar_widget.setGeometry(QRect(110, 140, 392, 236))
@@ -75,7 +75,7 @@ class Ui_Dev_UI(object):
         self.lbl_mode_12.setGeometry(QRect(60, 460, 151, 20))
         self.te_mode_12 = QTimeEdit(self.Set_RTC)
         self.te_mode_12.setObjectName(u"te_mode_12")
-        self.te_mode_12.setGeometry(QRect(230, 460, 141, 26))
+        self.te_mode_12.setGeometry(QRect(230, 460, 161, 26))
         self.Notification = QGroupBox(Dev_UI)
         self.Notification.setObjectName(u"Notification")
         self.Notification.setGeometry(QRect(30, 630, 631, 91))
@@ -114,3 +114,4 @@ class Ui_Dev_UI(object):
         self.Notification.setTitle(QCoreApplication.translate("Dev_UI", u"Notification", None))
         self.lbl_notification.setText(QCoreApplication.translate("Dev_UI", u"Status:", None))
     # retranslateUi
+
