@@ -31,7 +31,7 @@ class Widget(QWidget):
         # Connect the button to switch UI
         self.ui_dev.btn_switch_to_user_ui.clicked.connect(self.show_user_ui)
 
-        # Connect the combobox to mode time changed event handler
+        # Connect the combobox to mode time changed method
         self.ui_dev.cbb_mode_time.currentIndexChanged.connect(self.on_cbb_mode_time_changed)
 
         # Set default value for cbb_mode_time to "None"
@@ -128,6 +128,9 @@ class MainWindow(QMainWindow):
 
         self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
 
+        # Connect btn_set_interval to send_interval_code method
+        self.ui_user.btn_set_interval.clicked.connect(self.send_interval_code)
+
         # Set the initial widget to user_ui
         self.stacked_widget.setCurrentWidget(self.user_ui)
 
@@ -191,6 +194,42 @@ class MainWindow(QMainWindow):
     @Slot()
     def show_dev_ui(self):
         self.stacked_widget.setCurrentWidget(self.dev_widget)
+
+    @Slot()
+    def send_interval_code(self):
+        # Send the interval code based on the value in line_set_interval.
+        try:
+            # Read the value from line_set_interval and convert it to an integer
+            interval_value = int(self.ui_user.line_set_interval.text())
+
+            # Check if the interval value is positive
+            if interval_value <= 0:
+                raise ValueError("Interval value must be a positive integer.")
+
+            # Convert the integer value to an 8-character hex string
+            interval_hex = f'{interval_value:08X}'
+
+            # Create the command string by concatenating the start code (0x13), hex value, and end code (0xFF04)
+            command = f'13{interval_hex}FF04'
+
+            # Convert the command string to bytes for sending over serial
+            command_bytes = bytes.fromhex(command)
+
+            # Check if serial_connection has been established and is open
+            if self.serial_connection and self.serial_connection.is_open:
+                # Send the byte command over serial
+                self.serial_connection.write(command_bytes)
+                # Show success message
+                QMessageBox.information(self, "Success", f"Sent: {command}")
+            else:
+                # Show warning if serial port is not connected
+                QMessageBox.warning(self, "Error", "Serial port is not connected.")
+        except ValueError as e:
+            # Show warning if the input value is not a valid positive integer
+            QMessageBox.warning(self, "Error", "Invalid interval value. Please enter a valid positive integer.")
+        except Exception as e:
+            # Show error message for any other exceptions
+            QMessageBox.critical(self, "Error", str(e))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
