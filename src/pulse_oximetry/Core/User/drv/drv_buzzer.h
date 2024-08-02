@@ -72,7 +72,7 @@ uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
                          uint32_t pwm_channel);
 
 /**
- * @brief       Set the buzzer on-time.
+ * @brief       Play the buzzer with desired sond effect.
  *
  * @param[in]   buzzer                Pointer to buzzer handler.
  * @param[in]   sound_effect_buf      Pointer to sound effect buffer.
@@ -81,50 +81,6 @@ uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
  *
  * @return      drv_buzzer_status_t value.
  */
-uint32_t drv_buzzer_set_sound_effect(drv_buzzer_t *buzzer, sound_effect_t *sound_effect_buf);
-
-/**
- * @brief       Buzzer plays the Windows 10 Error sound.
- *
- * @param[in]   buzzer     Pointer to buzzer handler.
- *
- * @note        Devs can change the effect in buzzer_effect.h.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_sound_system_fail(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Buzzer plays the "beep beep" sound.
- *
- * @param[in]   buzzer      Pointer to buzzer handler.
- *
- * @note        Devs can change the effect in buzzer_effect.h.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_sound_alert(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Enable the buzzer.
- *
- * @param[in]   buzzer                Pointer to buzzer handler.
- *
- * @note        Should be configured before use this function.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_enable(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Disable the buzzer.
- *
- * @param[in]   buzzer                Pointer to buzzer handler.
- *
- * @note        Should be configuared before use this function.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_disable(drv_buzzer_t *buzzer);
+uint32_t drv_buzzer_play(drv_buzzer_t *buzzer, sound_effect_t *sound_effect_buf, uint32_t length);
 
 #endif /* USER_DRV_DRV_BUZZER_H_ */
