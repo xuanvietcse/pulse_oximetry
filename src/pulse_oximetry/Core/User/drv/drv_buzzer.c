@@ -16,14 +16,16 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "drv_buzzer.h"
+#include "bsp_utils.h"
 #include "common.h"
 
 /* Private defines ---------------------------------------------------- */
-
+#define TIM_CLOCK_SRC (96000000)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
 
+#define __DRV_BUZZER_CALCULATE_PRESCALER(__FREQUENCY__) (TIM_CLOCK_SRC / (1000 * (__FREQUENCY__)) - 1)
 /* Public variables --------------------------------------------------- */
 
 /* Private function prototypes ---------------------------------------- */
@@ -36,11 +38,38 @@ uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
   __ASSERT(buzzer != NULL, DRV_BUZZER_ERROR);
   __ASSERT(tim != NULL, DRV_BUZZER_ERROR);
 
+  uint32_t init_effect[] = {1000, 3000, 6000, 9000, 12000};
+  uint32_t note_effect_duration = 250;
+
   buzzer->config.htim = tim;
   buzzer->config.pwm_channel = pwm_channel;
+  buzzer->config.prescaler = 0;
+  buzzer->config.duty_cycle = 500;
+  buzzer->config.period = 1000;
+  buzzer->sound_effect = init_effect;
+  bsp_timer_set_prescaler(buzzer->config.htim, buzzer->config.prescaler);
+  bsp_timer_set_autoreload(buzzer->config.htim, buzzer->config.period);
+  bsp_timer_set_output_compare(buzzer->config.htim,
+                               buzzer->config.pwm_channel,
+                               buzzer->config.duty_cycle);
+  bsp_pwm_start(buzzer->config.htim, buzzer->config.pwm_channel);
+  buzzer->active = true;
 
-  const uint32_t init_effect[] = {1000, 3000, 6000, 9000, 12000};
-  const uint32_t note_effect_duration = 250;
+  uint8_t i = 0;
+  uint32_t current_tick = bsp_utils_get_tick();
+  do
+  {
+    if (bsp_utils_get_tick() - current_tick > note_effect_duration)
+    {
+      uint16_t prescaler = __DRV_BUZZER_CALCULATE_PRESCALER(buzzer->sound_effect[i]);
+      bsp_timer_set_prescaler(buzzer->config.htim, prescaler);
+      current_tick = bsp_utils_get_tick();
+      i++;
+    }
+  } while (i < __SIZE_OF(init_effect));
+
+  buzzer->config.prescaler = 0;
+  bsp_timer_set_prescaler(buzzer->config.htim, buzzer->config.prescaler);
 
   return DRV_BUZZER_OK;
 }
