@@ -8,7 +8,7 @@
  *             Khanh Nguyen Ngoc
  *             Viet Hoang Xuan
  *
- * @brief      Driver for interfacing with the buzzer
+ * @brief      Driver for interfacing with the passive buzzer
  *
  * @note       None
  * @example    None
@@ -19,134 +19,116 @@
 #define USER_DRV_DRV_BUZZER_H_
 
 /* Includes ----------------------------------------------------------- */
-#include "bsp_gpio.h"
 #include "bsp_timer.h"
+#include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
-typedef enum
+enum drv_buzzer_status_t
 {
   DRV_BUZZER_FAIL = 0xFFFFFFFF,
   DRV_BUZZER_ERROR = 0x7FFFFFFF,
   DRV_BUZZER_OK = 0x3FFFFFFF
-} drv_buzzer_status_t;
+};
 
 typedef struct __attribute__((__packed__))
 {
-  TIM_HandleTypeDef *htim;
+  bsp_tim_typedef_t *htim;
   uint32_t pwm_channel;
   uint32_t prescaler;
   uint16_t period;
   uint16_t duty_cycle;
+} drv_buzzer_tim_config_t;
+
+typedef struct __attribute__((__packed__))
+{
+  drv_buzzer_tim_config_t config;
+  uint32_t *sound_effect;
+  bool active;
 } drv_buzzer_t;
 
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-typedef void (*drv_buzzer_callback)(TIM_HandleTypeDef *);
 
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief       Inititialize the buzzer.
  *
- * @param[in]   buzzer                Pointer to buzzer handler.
- * @param[in]   buzzer_htim           Pointer of timer buzzer handler.
- * @param[in]   buzzer_htim_prescaler Prescaler for timer clock source.
- * @param[in]   buzzer_pwm_channel    Channel PWM connect to buzzer.
- * @param[in]   buzzer_period         buzzer blink period.
- * @param[in]   buzzer_duty_cycle     buzzer on-time.
+ * @param[in]   buzzer         Pointer to buzzer handler.
+ * @param[in]   tim            Pointer of timer buzzer handler.
+ * @param[in]   prescaler      Prescaler for timer clock source.
+ * @param[in]   pwm_channel    Channel PWM connect to buzzer.
+ * @param[in]   period         buzzer blink period.
+ * @param[in]   duty_cycle     buzzer on-time.
  *
  * @attention   the valid buzzer period and duty cycle.
+ * @note        Module buzzer low level trigger.
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to initialize buzzer,
- *              0 if initialize buzzer successfully.
+ * @return      drv_buzzer_status_t value.
  */
-drv_buzzer_status_t drv_buzzer_init(drv_buzzer_t *buzzer,
-                                    TIM_HandleTypeDef *buzzer_htim,
-                                    uint32_t buzzer_htim_prescaler,
-                                    uint32_t buzzer_pwm_channel,
-                                    uint16_t buzzer_period,
-                                    uint16_t buzzer_duty_cycle);
-
-/**
- * @brief       Set the frequency for blinking buzzer.
- *
- * @param[in]   buzzer                Pointer to buzzer handler.
- * @param[in]   buzzer_frequency      Desired frequency of buzzer.
- *
- * @attention   the range of the frequency and valid frequency value,
- *              remember to determine the clock source.
- *
- * @return      -2 if input parameters error,
- *              -1 if fail to set frequency,
- *              0 if set frequency successfully.
- */
-drv_buzzer_status_t drv_buzzer_set_period(drv_buzzer_t *buzzer, uint16_t buzzer_period);
+uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
+                         bsp_tim_typedef_t *tim,
+                         uint32_t prescaler,
+                         uint32_t pwm_channel,
+                         uint16_t period,
+                         uint16_t duty_cycle);
 
 /**
  * @brief       Set the buzzer on-time.
  *
  * @param[in]   buzzer                Pointer to buzzer handler.
- * @param[in]   buzzer_frequency      Desired frequency of buzzer.
+ * @param[in]   sound_effect_buf      Pointer to sound effect buffer.
  *
- * @note        Duty cycle equal to buzzer_on_time divided by buzzer_period.
+ * @note        sound_effect_buf contains the notes for sound effect.
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to set duty cycle,
- *              0 if set duty cycle successfully.
+ * @return      drv_buzzer_status_t value.
  */
-drv_buzzer_status_t drv_buzzer_set_duty_cycle(drv_buzzer_t *buzzer, uint16_t buzzer_on_time);
+uint32_t drv_buzzer_set_sound_effect(drv_buzzer_t *buzzer, uint32_t *sound_effect_buf);
 
 /**
- * @brief       Enable PWM channel connect to the buzzer.
+ * @brief       Buzzer plays the Windows 10 Error sound.
+ *
+ * @param[in]   buzzer     Pointer to buzzer handler.
+ *
+ * @note        Devs can change the effect in buzzer_effect.h.
+ *
+ * @return      drv_buzzer_status_t value.
+ */
+uint32_t drv_buzzer_sound_system_fail(drv_buzzer_t *buzzer);
+
+/**
+ * @brief       Buzzer plays the "beep beep" sound.
+ *
+ * @param[in]   buzzer      Pointer to buzzer handler.
+ *
+ * @note        Devs can change the effect in buzzer_effect.h.
+ *
+ * @return      drv_buzzer_status_t value.
+ */
+uint32_t drv_buzzer_sound_alert(drv_buzzer_t *buzzer);
+
+/**
+ * @brief       Enable the buzzer.
  *
  * @param[in]   buzzer                Pointer to buzzer handler.
  *
  * @note        Should be configured before use this function.
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to enable this buzzer,
- *              0 if enable this buzzer successfully.
+ * @return      drv_buzzer_status_t value.
  */
-drv_buzzer_status_t drv_buzzer_enable(drv_buzzer_t *buzzer);
+uint32_t drv_buzzer_enable(drv_buzzer_t *buzzer);
 
 /**
- * @brief       Disable PWM channel connect to the buzzer.
+ * @brief       Disable the buzzer.
  *
  * @param[in]   buzzer                Pointer to buzzer handler.
  *
  * @note        Should be configuared before use this function.
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to disable this buzzer,
- *              0 if disable this buzzer successfully.
+ * @return      drv_buzzer_status_t value.
  */
-drv_buzzer_status_t drv_buzzer_disable(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Register PWM period elapsed callback.
- *
- * @param[in]   pulse_finished_callback Function pointer point to pulse finished callback function.
- * @param[in]   period_elapsed_callback Function pointer point to period elapsed callback function.
- *
- * @return      -2 if input parameters error,
- *              -1 if fail to register this callback,
- *              0 if register this callback successfully.
- */
-drv_buzzer_status_t drv_buzzer_register_callback(drv_buzzer_callback pulse_finished_callback,
-                                                 drv_buzzer_callback period_elapsed_callback);
-
-/**
- * @brief       Function to PWM period elapsed callback.
- *
- * @param[in]   htim          Pointer of timer handler.
- *
- * @return      -2 if input parameters error,
- *              -1 if fail to register this callback,
- *              0 if register this callback successfully.
- */
-drv_buzzer_status_t drv_buzzer_pulse_finished_handler(TIM_HandleTypeDef *htim);
+uint32_t drv_buzzer_disable(drv_buzzer_t *buzzer);
 
 #endif /* USER_DRV_DRV_BUZZER_H_ */
