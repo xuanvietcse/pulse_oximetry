@@ -242,27 +242,27 @@
     </rect>
    </property>
    <property name="title">
-    <string>Notification</string>
+    <string>Error Notification</string>
    </property>
-   <widget class="QLabel" name="lbl_notification">
+   <widget class="QLabel" name="lbl_err_noti">
     <property name="geometry">
      <rect>
       <x>28</x>
       <y>40</y>
-      <width>81</width>
+      <width>91</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Status:</string>
+     <string>Error Status:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="line_notification">
+   <widget class="QLineEdit" name="line_err_noti">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>150</x>
       <y>40</y>
-      <width>491</width>
+      <width>451</width>
       <height>26</height>
      </rect>
     </property>
