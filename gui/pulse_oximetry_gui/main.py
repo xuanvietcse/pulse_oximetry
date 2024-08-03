@@ -1,10 +1,11 @@
 import sys
 import serial
+import time
 import serial.tools.list_ports
 import pyqtgraph as pg
 import numpy as np
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox, QVBoxLayout
-from PySide6.QtCore import Slot, QTimer
+from PySide6.QtCore import Slot, QTimer, QDateTime, QDate, QTime
 from ui_dev import Ui_Dev_UI
 from ui_form import Ui_User_UI
 
@@ -28,6 +29,9 @@ class Widget(QWidget):
         self.ui_dev.cbb_mode_time.setCurrentText("None")
         self.on_cbb_mode_time_changed()  # Update UI elements according to default value
 
+        # Connect the btn_set_rtc to send_rtc_time method
+        self.ui_dev.btn_set_rtc.clicked.connect(self.send_rtc_time)
+
         # Add the plot widget raw_ppg to the layout in dev.ui
         self.raw_ppg_graph = pg.PlotWidget()
         layout = QVBoxLayout(self.ui_dev.Raw_PPG)
@@ -42,8 +46,8 @@ class Widget(QWidget):
 
         pen = pg.mkPen(color=(255, 0, 0))  # Red
         ppg = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        time = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
-        self.raw_ppg_graph.plot(ppg, time, pen=pen)
+        tim = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
+        self.raw_ppg_graph.plot(ppg, tim, pen=pen)
 
         # Add the plot widget filtered_ppg to the layout in dev.ui
         self.filtered_ppg_graph = pg.PlotWidget()
@@ -65,7 +69,6 @@ class Widget(QWidget):
     def show_user_ui(self):
         self.main_window.stacked_widget.setCurrentWidget(self.main_window.user_ui)
 
-    @Slot()
     @Slot()
     def on_cbb_mode_time_changed(self):
         current_mode = self.ui_dev.cbb_mode_time.currentText()
@@ -94,6 +97,62 @@ class Widget(QWidget):
         self.ui_dev.line_epoch_time.setVisible(line_epoch_time)
         self.ui_dev.calendar_widget.setVisible(calendar_widget)
         self.ui_dev.btn_set_rtc.setVisible(btn_set_rtc)
+
+    @Slot()
+    def send_rtc_time(self):
+        try:
+            if not (self.main_window.serial_connection and self.main_window.serial_connection.is_open):
+                raise Exception("Serial port not connected.")
+
+            mode = self.ui_dev.cbb_mode_time.currentText()
+
+            if mode == "Date time mode 12h":
+                selected_date = self.ui_dev.calendar_widget.selectedDate()
+                selected_time = self.ui_dev.te_mode_12.time()
+                date_time_str = f"{selected_date.toString('yyyy-MM-dd')} {selected_time.toString('hh:mm:ss AP')}"
+                dt = QDateTime.fromString(date_time_str, 'yyyy-MM-dd hh:mm:ss AP')
+                if not (dt.isValid()):
+                    raise ValueError("Invalid date or time.")
+
+            elif mode == "Date time mode 24h":
+                selected_date = self.ui_dev.calendar_widget.selectedDate()
+                selected_time = self.ui_dev.te_mode_24.time()
+                date_time_str = f"{selected_date.toString('yyyy-MM-dd')} {selected_time.toString('hh:mm:ss')}"
+                dt = QDateTime.fromString(date_time_str, 'yyyy-MM-dd hh:mm:ss')
+                if not (dt.isValid()):
+                    raise ValueError("Invalid date or time.")
+
+            elif mode == "Epoch time":
+                epoch_time_str = self.ui_dev.line_epoch_time.text()
+                try:
+                    epoch_time = int(epoch_time_str)
+                    epoch_hex = f'{epoch_time:08X}'
+                    dt = QDateTime.fromSecsSinceEpoch(epoch_time)
+                except ValueError:
+                    QMessageBox.warning(self, "Error", "Invalid epoch time.")
+                    return
+            else:
+                QMessageBox.warning(self, "Error", "Invalid mode selected.")
+                return
+
+            epoch_time = dt.toSecsSinceEpoch() if mode != "Epoch time" else epoch_time
+            epoch_hex = f'{epoch_time:08X}'
+
+            rtc_command = f'14{epoch_hex}FF04'
+            rtc_command_bytes = bytes.fromhex(rtc_command)
+
+            if self.main_window.serial_connection and self.main_window.serial_connection.is_open:
+                self.main_window.serial_connection.write(rtc_command_bytes)
+                QMessageBox.information(self, "Success", f"Sent: {rtc_command}")
+            else:
+                QMessageBox.warning(self, "Error", "Serial port is not connected.")
+
+        except ValueError:
+            QMessageBox.warning(self, "Error", "Invalid date or time.")
+
+        except Exception:
+            QMessageBox.warning(self, "Error", "Serial port not connected.")
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
