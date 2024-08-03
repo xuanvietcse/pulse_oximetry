@@ -4,7 +4,7 @@ import serial.tools.list_ports
 import pyqtgraph as pg
 import numpy as np
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget, QMessageBox, QVBoxLayout
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, QTimer
 from ui_dev import Ui_Dev_UI
 from ui_form import Ui_User_UI
 
@@ -155,24 +155,28 @@ class MainWindow(QMainWindow):
         heart_rate = [72, 75, 78, 76, 77, 79, 74, 73, 78, 80]
         self.heart_rate_graph.plot(heart_rate_time, heart_rate, pen=pen_hr)
 
+        # Set default value for cbb_baudrate
+        self.ui_user.cbb_baudrate.setCurrentText("115200")
+
         # Initialize serial communication
         self.serial_connection = None
         self.update_available_ports()
         self.ui_user.btn_connect_com.clicked.connect(self.toggle_serial_connection)
 
-        # Set default values for cbb_com and cbb_baudrate
-        self.ui_user.cbb_com.setCurrentText("None")
-        self.ui_user.cbb_baudrate.setCurrentText("115200")
+        # Initialize and start the timer to check for COM port updates
+        self.port_check_timer = QTimer(self)
+        self.port_check_timer.timeout.connect(self.update_available_ports)
+        self.port_check_timer.start(3000)  # Check every 3000 ms (3 second)
 
     def update_available_ports(self):
-        # Update the combobox with available COM ports.
-        ports = serial.tools.list_ports.comports()
-        if ports:
+        # Update available COM ports
+        available_ports = [port.device for port in serial.tools.list_ports.comports()]
+        current_ports = [self.ui_user.cbb_com.itemText(i) for i in range(self.ui_user.cbb_com.count())]
+
+        # Update the combobox only if there is a change in available ports
+        if set(available_ports) != set(current_ports):
             self.ui_user.cbb_com.clear()
-            self.ui_user.cbb_com.addItems([port.device for port in ports])
-        else:
-            self.ui_user.cbb_com.clear()
-            self.ui_user.cbb_com.addItem("None")
+            self.ui_user.cbb_com.addItems(available_ports)
 
     @Slot()
     def toggle_serial_connection(self):
