@@ -31,7 +31,7 @@ class Ui_User_UI(object):
         self.Heart_rate_graph.setGeometry(QRect(500, 20, 1001, 451))
         self.btn_switch_to_dev_ui = QPushButton(self.centralwidget)
         self.btn_switch_to_dev_ui.setObjectName(u"btn_switch_to_dev_ui")
-        self.btn_switch_to_dev_ui.setGeometry(QRect(720, 730, 141, 41))
+        self.btn_switch_to_dev_ui.setGeometry(QRect(690, 730, 141, 41))
         self.Notification = QGroupBox(self.centralwidget)
         self.Notification.setObjectName(u"Notification")
         self.Notification.setGeometry(QRect(30, 610, 451, 111))

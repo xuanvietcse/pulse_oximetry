@@ -29,7 +29,7 @@ class Ui_Dev_UI(object):
         self.Filtered_PPG.setGeometry(QRect(680, 390, 821, 331))
         self.btn_switch_to_user_ui = QPushButton(Dev_UI)
         self.btn_switch_to_user_ui.setObjectName(u"btn_switch_to_user_ui")
-        self.btn_switch_to_user_ui.setGeometry(QRect(720, 730, 141, 41))
+        self.btn_switch_to_user_ui.setGeometry(QRect(690, 730, 141, 41))
         self.Raw_PPG = QGroupBox(Dev_UI)
         self.Raw_PPG.setObjectName(u"Raw_PPG")
         self.Raw_PPG.setGeometry(QRect(680, 20, 821, 351))

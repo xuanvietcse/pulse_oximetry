@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="btn_switch_to_dev_ui">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>690</x>
       <y>730</y>
       <width>141</width>
       <height>41</height>
