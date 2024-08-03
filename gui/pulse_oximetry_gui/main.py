@@ -237,6 +237,11 @@ class MainWindow(QMainWindow):
         self.port_check_timer.timeout.connect(self.update_available_ports)
         self.port_check_timer.start(1000)  # Check every 1000 ms (1 second)
 
+        # Initialize and start the timer for updating serial data
+        self.serial_data_check_timer = QTimer()
+        self.serial_data_check_timer.timeout.connect(self.receive_serial_data)
+        self.serial_data_check_timer.start(10)  # Check for serial data every 10 ms
+
     def update_available_ports(self):
         # Update available COM ports
         available_ports = [port.device for port in serial.tools.list_ports.comports()]
@@ -376,7 +381,6 @@ class MainWindow(QMainWindow):
             # Create the command string by concatenating the start code (0x1), cmd (0x0), hex value, threshold (0xFF) and end code (0x04)
             check_com_hex_command = '10FFFFFFFFFF04'
             check_com_command_bytes = bytes.fromhex(check_com_hex_command)
-            self.serial_connection.write(check_com_command_bytes)
 
             # Check if serial_connection has been established and is open
             if self.serial_connection and self.serial_connection.is_open:
@@ -400,7 +404,6 @@ class MainWindow(QMainWindow):
             # Create the command string by concatenating the start code (0x1), cmd (0x1), hex value, threshold (0xFF) and end code (0x04)
             read_record_hex_command = '11FFFFFFF1FF04'
             read_record_command_bytes = bytes.fromhex(read_record_hex_command)
-            self.serial_connection.write(read_record_command_bytes)
 
             # Check if serial_connection has been established and is open
             if self.serial_connection and self.serial_connection.is_open:
@@ -424,7 +427,6 @@ class MainWindow(QMainWindow):
             # Create the command string by concatenating the start code (0x1), cmd (0x5), hex value, threshold (0xFF) and end code (0x04)
             clear_record_hex_command = '15FFFFFFFFFF04'
             clear_record_command_bytes = bytes.fromhex(clear_record_hex_command)
-            self.serial_connection.write(clear_record_command_bytes)
 
             # Check if serial_connection has been established and is open
             if self.serial_connection and self.serial_connection.is_open:
@@ -440,6 +442,24 @@ class MainWindow(QMainWindow):
 
         except Exception:
             QMessageBox.warning(self, "Error", "Serial port not connected.")
+
+    @Slot()
+    def receive_serial_data(self):
+        if self.serial_connection and self.serial_connection.is_open:
+            try:
+                data = self.serial_connection.read_all()
+                if data:
+                    packet = data.hex().upper()
+                    if packet.startswith("16") and packet.endswith("04"):
+                        XY = packet[10:12]
+                        if XY in ["FF", "0F", "F0"]:
+                            self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
+                            if XY == "0F":
+                                self.ui_user.line_thre_noti.setText("Heart rate too high")
+                            elif XY == "F0":
+                                self.ui_user.line_thre_noti.setText("Heart rate too low")
+            except Exception as e:
+                QMessageBox.warning(self, "Error", f"Failed to read serial data: {str(e)}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
