@@ -231,6 +231,51 @@ uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
   return DRV_SSD1306_OK;
 }
 
+uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
+                                 uint8_t pos_x,
+                                 uint8_t pos_y,
+                                 uint8_t *bitmap,
+                                 uint8_t bitmap_width,
+                                 uint8_t bitmap_height,
+                                 drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x < dev->size.width) && (pos_y < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((bitmap != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((bitmap_width < dev->size.width) && (bitmap_height < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  // Compute the number of bytes to store one row of the bitmap
+  uint8_t byte_width = (bitmap_width + 7) / 8;
+  uint8_t byte = 0;
+  for (uint8_t j = 0; j < bitmap_height; j++, pos_y++)
+  {
+    for (uint8_t i = 0; i < bitmap_width; i++)
+    {
+      if (i & 7)
+      {
+        byte <<= 1;
+      }
+      else
+      {
+        byte = bitmap[j * byte_width + i / 8];
+      }
+      if (byte & 0x80)
+      {
+        drv_ssd1306_draw_pixel(dev,
+                               pos_x,
+                               pos_y,
+                               color);
+      }
+    }
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
