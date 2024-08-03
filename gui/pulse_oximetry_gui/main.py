@@ -29,6 +29,9 @@ class Widget(QWidget):
         self.ui_dev.cbb_mode_time.setCurrentText("None")
         self.on_cbb_mode_time_changed()  # Update UI elements according to default value
 
+        # Set default value for line_err_noti
+        self.ui_dev.line_err_noti.setText("No error")
+
         # Connect the btn_set_rtc to send_rtc_time method
         self.ui_dev.btn_set_rtc.clicked.connect(self.send_rtc_time)
 
@@ -172,6 +175,9 @@ class MainWindow(QMainWindow):
 
         # Set the window title for the User UI window
         self.set_window_title("User UI")
+
+        # Set default value for line_thre_noti
+        self.ui_user.line_thre_noti.setText("Normal heart rate")
 
         # Add the dev_widget (dev.ui) to the stacked widget
         self.stacked_widget.addWidget(self.dev_widget)
