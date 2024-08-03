@@ -68,6 +68,7 @@ class Widget(QWidget):
     @Slot()
     def show_user_ui(self):
         self.main_window.stacked_widget.setCurrentWidget(self.main_window.user_ui)
+        self.main_window.set_window_title("User UI")
 
     @Slot()
     def on_cbb_mode_time_changed(self):
@@ -169,6 +170,9 @@ class MainWindow(QMainWindow):
         self.ui_user = Ui_User_UI()
         self.ui_user.setupUi(self.user_ui)
 
+        # Set the window title for the User UI window
+        self.set_window_title("User UI")
+
         # Add the dev_widget (dev.ui) to the stacked widget
         self.stacked_widget.addWidget(self.dev_widget)
 
@@ -264,9 +268,14 @@ class MainWindow(QMainWindow):
             self.ui_user.btn_connect_com.setText("Connect")  # Update button text
             QMessageBox.information(self, "Disconnection", "Serial port disconnected.")
 
+    def set_window_title(self, title):
+        self.setWindowTitle(title)
+
     @Slot()
     def show_dev_ui(self):
         self.stacked_widget.setCurrentWidget(self.dev_widget)
+        # Set the title to "Dev UI"
+        self.set_window_title("Dev UI")
 
     @Slot()
     def send_interval_code(self):
