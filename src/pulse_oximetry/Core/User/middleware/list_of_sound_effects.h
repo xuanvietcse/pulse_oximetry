@@ -27,12 +27,22 @@
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
+
 sound_effect_t win_11_startup[] =
     {
         {NOTE_FS5, 50},
         {NOTE_CS6, 100},
-        {NOTE_GS7, 400},
-        {NOTE_C5, 50}};
+        {NOTE_GS7, 200},
+        {NOTE_C5, 500}};
+
+sound_effect_t system_alert[] =
+    {
+        {NOTE_AS7, 200},
+        {0, 50},
+        {NOTE_AS7, 200},
+        {0, 50},
+        {NOTE_AS7, 200}};
+
 /* Public function prototypes ----------------------------------------- */
 
 #endif // __USER_MIDDLEWARE_LIST_OF_SOUND_EFFECTS_H
