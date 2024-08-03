@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QWidget
 from PySide6.QtCore import Slot, QTimer, QDateTime, QDate, QTime
 from ui_dev import Ui_Dev_UI
 from ui_form import Ui_User_UI
+from serial_manage import serial_manage
 
 class Widget(QWidget):
     def __init__(self, main_window):
@@ -146,7 +147,7 @@ class Widget(QWidget):
             rtc_command_bytes = bytes.fromhex(rtc_command)
 
             if self.main_window.serial_connection and self.main_window.serial_connection.is_open:
-                self.main_window.serial_connection.write(rtc_command_bytes)
+                self.main_window.serial_connection.send(rtc_command_bytes)
                 QMessageBox.information(self, "Success", f"Sent: {rtc_command}")
             else:
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
@@ -237,11 +238,6 @@ class MainWindow(QMainWindow):
         self.port_check_timer.timeout.connect(self.update_available_ports)
         self.port_check_timer.start(1000)  # Check every 1000 ms (1 second)
 
-        # Initialize and start the timer for updating serial data
-        self.serial_data_check_timer = QTimer()
-        self.serial_data_check_timer.timeout.connect(self.receive_serial_data)
-        self.serial_data_check_timer.start(10)  # Check for serial data every 10 ms
-
     def update_available_ports(self):
         # Update available COM ports
         available_ports = [port.device for port in serial.tools.list_ports.comports()]
@@ -254,7 +250,7 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def toggle_serial_connection(self):
-        if self.serial_connection and self.serial_connection.is_open:
+        if self.serial_connection:
             self.disconnect_serial()
         else:
             self.connect_serial()
@@ -264,7 +260,9 @@ class MainWindow(QMainWindow):
         port = self.ui_user.cbb_com.currentText()
         baudrate = self.ui_user.cbb_baudrate.currentText()
         try:
-            self.serial_connection = serial.Serial(port, baudrate, timeout=1)
+            self.serial_connection = serial_manage(port, baudrate)
+            self.serial_connection.data_received.connect(self.process_serial_data)
+            self.serial_connection.start()
             self.ui_user.btn_connect_com.setText("Disconnect")  # Update button text
             QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
 
@@ -274,8 +272,8 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def disconnect_serial(self):
-        if self.serial_connection and self.serial_connection.is_open:
-            self.serial_connection.close()
+        if self.serial_connection:
+            self.serial_connection.stop()
             self.ui_user.btn_connect_com.setText("Connect")  # Update button text
             QMessageBox.information(self, "Disconnection", "Serial port disconnected.")
 
@@ -292,7 +290,7 @@ class MainWindow(QMainWindow):
     def send_interval_code(self):
         # Send the interval code based on the value in line_set_interval.
         try:
-            if not (self.serial_connection and self.serial_connection.is_open):
+            if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
             # Read the value from line_set_interval and convert it to an integer
@@ -312,9 +310,9 @@ class MainWindow(QMainWindow):
             interval_command_bytes = bytes.fromhex(interval_command)
 
             # Check if serial_connection has been established and is open
-            if self.serial_connection and self.serial_connection.is_open:
+            if self.serial_connection:
                 # Send the byte command over serial
-                self.serial_connection.write(interval_command_bytes)
+                self.serial_connection.send(interval_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {interval_command}")
             else:
@@ -332,7 +330,7 @@ class MainWindow(QMainWindow):
     def send_threshold_code(self):
         # Send the threshold code based on the value in line_high_level and line_low_level.
         try:
-            if not (self.serial_connection and self.serial_connection.is_open):
+            if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
             # Read the value from line_high_level and convert it to an integer
@@ -356,9 +354,9 @@ class MainWindow(QMainWindow):
             threshold_command_bytes = bytes.fromhex(threshold_command)
 
             # Check if serial_connection has been established and is open
-            if self.serial_connection and self.serial_connection.is_open:
+            if self.serial_connection:
                 # Send the byte command over serial
-                self.serial_connection.write(threshold_command_bytes)
+                self.serial_connection.send(threshold_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {threshold_command}")
             else:
@@ -375,7 +373,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def send_check_com_code(self):
         try:
-            if not (self.serial_connection and self.serial_connection.is_open):
+            if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x0), hex value, threshold (0xFF) and end code (0x04)
@@ -383,9 +381,9 @@ class MainWindow(QMainWindow):
             check_com_command_bytes = bytes.fromhex(check_com_hex_command)
 
             # Check if serial_connection has been established and is open
-            if self.serial_connection and self.serial_connection.is_open:
+            if self.serial_connection:
                 # Send the byte command over serial
-                self.serial_connection.write(check_com_command_bytes)
+                self.serial_connection.send(check_com_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {check_com_hex_command}")
             else:
@@ -398,7 +396,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def send_read_record_code(self):
         try:
-            if not (self.serial_connection and self.serial_connection.is_open):
+            if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x1), hex value, threshold (0xFF) and end code (0x04)
@@ -406,9 +404,9 @@ class MainWindow(QMainWindow):
             read_record_command_bytes = bytes.fromhex(read_record_hex_command)
 
             # Check if serial_connection has been established and is open
-            if self.serial_connection and self.serial_connection.is_open:
+            if self.serial_connection:
                 # Send the byte command over serial
-                self.serial_connection.write(read_record_command_bytes)
+                self.serial_connection.send(read_record_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {read_record_hex_command}")
             else:
@@ -421,7 +419,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def send_clear_record_code(self):
         try:
-            if not (self.serial_connection and self.serial_connection.is_open):
+            if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x5), hex value, threshold (0xFF) and end code (0x04)
@@ -429,9 +427,9 @@ class MainWindow(QMainWindow):
             clear_record_command_bytes = bytes.fromhex(clear_record_hex_command)
 
             # Check if serial_connection has been established and is open
-            if self.serial_connection and self.serial_connection.is_open:
+            if self.serial_connection:
                 # Send the byte command over serial
-                self.serial_connection.write(clear_record_command_bytes)
+                self.serial_connection.send(clear_record_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {clear_record_hex_command}")
                 # Clear the content of txt_record
@@ -443,12 +441,11 @@ class MainWindow(QMainWindow):
         except Exception:
             QMessageBox.warning(self, "Error", "Serial port not connected.")
 
-    @Slot()
-    def receive_serial_data(self):
-        if self.serial_connection and self.serial_connection.is_open:
+    @Slot(bytes)
+    def process_serial_data(self, data):
+        if self.serial_connection:
             try:
-                data = self.serial_connection.read_all()
-                if data:
+                if len(data) == 7:
                     packet = data.hex().upper()
                     if packet.startswith("16") and packet.endswith("04"):
                         XY = packet[10:12]
@@ -458,6 +455,8 @@ class MainWindow(QMainWindow):
                                 self.ui_user.line_thre_noti.setText("Heart rate too high")
                             elif XY == "F0":
                                 self.ui_user.line_thre_noti.setText("Heart rate too low")
+                else:
+                    QMessageBox.warning(self, "Error", "Invalid data length received from serial port")
             except Exception as e:
                 QMessageBox.warning(self, "Error", f"Failed to read serial data: {str(e)}")
 

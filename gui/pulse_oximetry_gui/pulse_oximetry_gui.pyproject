@@ -2,6 +2,7 @@
     "files": [
         "main.py",
         "form.ui",
-        "dev.ui"
+        "dev.ui",
+        "serial_manage.py"
     ]
 }
