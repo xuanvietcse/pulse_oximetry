@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "drv_buzzer.h"
+#include "list_of_sound_effects.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -110,6 +111,8 @@ int main(void)
   MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
   drv_buzzer_init(&buzzer, &htim11, TIM_CHANNEL_1);
+  HAL_Delay(2000);
+  drv_buzzer_play(&buzzer, system_alert, 5);
   /* USER CODE END 2 */
 
   /* Infinite loop */
