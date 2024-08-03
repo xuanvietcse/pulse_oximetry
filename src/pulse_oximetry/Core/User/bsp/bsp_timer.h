@@ -177,36 +177,4 @@ bsp_timer_status_t bsp_pwm_stop(bsp_tim_typedef_t *htim, uint32_t tim_channel);
  */
 bsp_timer_status_t bsp_pwm_stop_it(bsp_tim_typedef_t *htim, uint32_t tim_channel);
 
-/**
- * @brief       Get current SysTick value.
- *
- * @param[in]   None
- * @param[in]   None
- *
- * @return      SysTick value.
- */
-uint32_t bsp_get_systick();
-
-/**
- * @brief       Trigger the counter overflow event and handle it in BSP.
- *
- * @param[in]   htim          Pointer of timer handler.
- *
- * @return      -2 if error,
- *              -1 if fail to handle this event,
- *              0 if handle this event successfully.
- */
-bsp_timer_status_t bsp_timer_period_elapsed_handler(bsp_tim_typedef_t *htim);
-
-/**
- * @brief       Trigger the counter overflow event in PWM mode and handle it in BSP.
- *
- * @param[in]   htim          Pointer of timer handler.
- *
- * @return      -2 if error,
- *              -1 if fail to handle this event,
- *              0 if handle this event successfully.
- */
-bsp_timer_status_t bsp_pwm_pulse_finished_handler(bsp_tim_typedef_t *htim);
-
 #endif /* USER_BSP_BSP_TIMER_H_ */
