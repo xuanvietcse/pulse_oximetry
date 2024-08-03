@@ -166,7 +166,7 @@ class MainWindow(QMainWindow):
         # Initialize and start the timer to check for COM port updates
         self.port_check_timer = QTimer(self)
         self.port_check_timer.timeout.connect(self.update_available_ports)
-        self.port_check_timer.start(3000)  # Check every 3000 ms (3 second)
+        self.port_check_timer.start(1000)  # Check every 1000 ms (1 second)
 
     def update_available_ports(self):
         # Update available COM ports
