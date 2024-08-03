@@ -245,7 +245,7 @@ uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
   __ASSERT((pos_x < dev->size.width) && (pos_y < dev->size.height),
            DRV_SSD1306_ERROR);
   __ASSERT((bitmap != NULL), DRV_SSD1306_ERROR);
-  __ASSERT((bitmap_width < dev->size.width) && (bitmap_height < dev->size.height),
+  __ASSERT((bitmap_width <= dev->size.width) && (bitmap_height <= dev->size.height),
            DRV_SSD1306_ERROR);
   __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
            DRV_SSD1306_ERROR);
@@ -268,7 +268,7 @@ uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
       if (byte & 0x80)
       {
         drv_ssd1306_draw_pixel(dev,
-                               pos_x,
+                               pos_x + i,
                                pos_y,
                                color);
       }
