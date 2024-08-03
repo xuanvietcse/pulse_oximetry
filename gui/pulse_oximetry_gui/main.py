@@ -128,6 +128,9 @@ class MainWindow(QMainWindow):
         # Connect btn_read_record to send_read_record_code method
         self.ui_user.btn_read_record.clicked.connect(self.send_read_record_code)
 
+        # Connect btn_clear_record to send_clear_record_code method
+        self.ui_user.btn_clear_record.clicked.connect(self.send_clear_record_code)
+
         # Connect btn_check_com to send_check_com_code method
         self.ui_user.btn_check_com.clicked.connect(self.send_check_com_code)
 
@@ -327,6 +330,32 @@ class MainWindow(QMainWindow):
                 self.serial_connection.write(read_record_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {read_record_hex_command}")
+            else:
+                # Show warning if serial port is not connected
+                QMessageBox.warning(self, "Error", "Serial port is not connected.")
+
+        except Exception:
+            QMessageBox.warning(self, "Error", "Serial port not connected.")
+
+    @Slot()
+    def send_clear_record_code(self):
+        try:
+            if not (self.serial_connection and self.serial_connection.is_open):
+                raise Exception("Serial port not connected.")
+
+            # Create the command string by concatenating the start code (0x1), cmd (0x5), hex value, threshold (0xFF) and end code (0x04)
+            clear_record_hex_command = '15FFFFFFFFFF04'
+            clear_record_command_bytes = bytes.fromhex(clear_record_hex_command)
+            self.serial_connection.write(clear_record_command_bytes)
+
+            # Check if serial_connection has been established and is open
+            if self.serial_connection and self.serial_connection.is_open:
+                # Send the byte command over serial
+                self.serial_connection.write(clear_record_command_bytes)
+                # Show success message
+                QMessageBox.information(self, "Success", f"Sent: {clear_record_hex_command}")
+                # Clear the content of txt_record
+                self.ui_user.txt_record.clear()
             else:
                 # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
