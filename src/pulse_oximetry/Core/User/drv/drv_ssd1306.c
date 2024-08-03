@@ -321,6 +321,30 @@ uint32_t drv_ssd1306_draw_line(drv_ssd1306_t *dev,
   // Return
   return DRV_SSD1306_OK;
 }
+
+uint32_t drv_ssd1306_draw_rectangle(drv_ssd1306_t *dev,
+                                    uint8_t pos_x1,
+                                    uint8_t pos_y1,
+                                    uint8_t pos_x2,
+                                    uint8_t pos_y2,
+                                    drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x1 < dev->size.width) && (pos_x2 < dev->size.width),
+           DRV_SSD1306_ERROR);
+  __ASSERT((pos_y1 < dev->size.height) && (pos_y2 < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  drv_ssd1306_draw_line(dev, pos_x1, pos_y1, pos_x2, pos_y1, color);
+  drv_ssd1306_draw_line(dev, pos_x2, pos_y1, pos_x2, pos_y2, color);
+  drv_ssd1306_draw_line(dev, pos_x2, pos_y2, pos_x1, pos_y2, color);
+  drv_ssd1306_draw_line(dev, pos_x1, pos_y2, pos_x1, pos_y1, color);
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
