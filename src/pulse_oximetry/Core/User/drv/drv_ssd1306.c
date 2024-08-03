@@ -19,6 +19,7 @@
 #include "drv_ssd1306.h"
 #include "common.h"
 #include <string.h>
+#include <stdlib.h>
 /* Private defines ---------------------------------------------------- */
 #define SSD1306_CONTRAST_REGISTER (0x81)
 /* Private enumerate/structure ---------------------------------------- */
@@ -271,6 +272,50 @@ uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
                                pos_y,
                                color);
       }
+    }
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_draw_line(drv_ssd1306_t *dev,
+                               uint8_t pos_x1,
+                               uint8_t pos_y1,
+                               uint8_t pos_x2,
+                               uint8_t pos_y2,
+                               drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x1 < dev->size.width) && (pos_x2 < dev->size.width),
+           DRV_SSD1306_ERROR);
+  __ASSERT((pos_y1 < dev->size.height) && (pos_y2 < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  uint16_t delta_x = abs(pos_x2 - pos_x1);
+  uint16_t delta_y = abs(pos_y2 - pos_y1);
+  int8_t sign_of_x = ((pos_x1 < pos_x2) ? 1 : -1);
+  int8_t sign_of_y = ((pos_y1 < pos_y2) ? 1 : -1);
+  int32_t error = delta_x - delta_y;
+  int32_t error_2;
+
+  drv_ssd1306_draw_pixel(dev, pos_x2, pos_y2, color);
+
+  while ((pos_x1 != pos_x2) || (pos_y1 != pos_y2))
+  {
+    drv_ssd1306_draw_pixel(dev, pos_x1, pos_y1, color);
+    error_2 = error * 2;
+    if (error_2 > -delta_y)
+    {
+      error -= delta_y;
+      pos_x1 += sign_of_x;
+    }
+    if (error_2 < delta_x)
+    {
+      error += delta_x;
+      pos_y1 += sign_of_y;
     }
   }
   // Return
