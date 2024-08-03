@@ -227,6 +227,26 @@ uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
                                  uint8_t bitmap_width,
                                  uint8_t bitmap_height,
                                  drv_ssd1306_color_t color);
+
+/**
+ * @brief         Draw a line on OLED
+ *
+ * @param[in]     dev             Pointer to drv_ssd1306_t struct to manage device
+ * @param[in]     pos_x1, pos_y1  Starting point of the line
+ * @param[in]     pos_x2, pos_y2  Ending point of the line
+ * @param[in]     color           Color of the line
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t drv_ssd1306_draw_line(drv_ssd1306_t *dev,
+                               uint8_t pos_x1,
+                               uint8_t pos_y1,
+                               uint8_t pos_x2,
+                               uint8_t pos_y2,
+                               drv_ssd1306_color_t color);
 #endif // __USER_DRV_SSD1306_H
 
 /* End of file -------------------------------------------------------- */
