@@ -30,18 +30,6 @@ enum bsp_flash_status_t
   BSP_FLASH_OK = 0x3FFFFFF
 };
 
-enum bsp_flash_sector_num_t
-{
-  BSP_FLASH_SECTOR_0 = 0,
-  BSP_FLASH_SECTOR_1,
-  BSP_FLASH_SECTOR_2,
-  BSP_FLASH_SECTOR_3,
-  BSP_FLASH_SECTOR_4,
-  BSP_FLASH_SECTOR_5,
-  BSP_FLASH_SECTOR_6,
-  BSP_FLASH_SECTOR_7
-};
-
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
