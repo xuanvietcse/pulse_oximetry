@@ -29,7 +29,7 @@ class Ui_Dev_UI(object):
         self.Filtered_PPG.setGeometry(QRect(680, 390, 821, 331))
         self.btn_switch_to_user_ui = QPushButton(Dev_UI)
         self.btn_switch_to_user_ui.setObjectName(u"btn_switch_to_user_ui")
-        self.btn_switch_to_user_ui.setGeometry(QRect(720, 730, 141, 41))
+        self.btn_switch_to_user_ui.setGeometry(QRect(690, 730, 141, 41))
         self.Raw_PPG = QGroupBox(Dev_UI)
         self.Raw_PPG.setObjectName(u"Raw_PPG")
         self.Raw_PPG.setGeometry(QRect(680, 20, 821, 351))
@@ -79,12 +79,12 @@ class Ui_Dev_UI(object):
         self.Notification = QGroupBox(Dev_UI)
         self.Notification.setObjectName(u"Notification")
         self.Notification.setGeometry(QRect(30, 630, 631, 91))
-        self.lbl_notification = QLabel(self.Notification)
-        self.lbl_notification.setObjectName(u"lbl_notification")
-        self.lbl_notification.setGeometry(QRect(28, 40, 81, 20))
-        self.line_notification = QLineEdit(self.Notification)
-        self.line_notification.setObjectName(u"line_notification")
-        self.line_notification.setGeometry(QRect(110, 40, 491, 26))
+        self.lbl_err_noti = QLabel(self.Notification)
+        self.lbl_err_noti.setObjectName(u"lbl_err_noti")
+        self.lbl_err_noti.setGeometry(QRect(28, 40, 91, 20))
+        self.line_err_noti = QLineEdit(self.Notification)
+        self.line_err_noti.setObjectName(u"line_err_noti")
+        self.line_err_noti.setGeometry(QRect(150, 40, 451, 26))
 
         self.retranslateUi(Dev_UI)
 
@@ -111,7 +111,7 @@ class Ui_Dev_UI(object):
         self.lbl_mode_24.setText(QCoreApplication.translate("Dev_UI", u"Set time (mode 24h):", None))
         self.lbl_mode_12.setText(QCoreApplication.translate("Dev_UI", u"Set time (mode 12h):", None))
         self.te_mode_12.setDisplayFormat(QCoreApplication.translate("Dev_UI", u"hh:mm:ss AP", None))
-        self.Notification.setTitle(QCoreApplication.translate("Dev_UI", u"Notification", None))
-        self.lbl_notification.setText(QCoreApplication.translate("Dev_UI", u"Status:", None))
+        self.Notification.setTitle(QCoreApplication.translate("Dev_UI", u"Error Notification", None))
+        self.lbl_err_noti.setText(QCoreApplication.translate("Dev_UI", u"Error Status:", None))
     # retranslateUi
 
