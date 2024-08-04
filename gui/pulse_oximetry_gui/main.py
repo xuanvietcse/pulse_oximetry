@@ -447,14 +447,46 @@ class MainWindow(QMainWindow):
             try:
                 if len(data) == 7:
                     packet = data.hex().upper()
-                    if packet.startswith("16") and packet.endswith("04"):
-                        XY = packet[10:12]
-                        if XY in ["FF", "0F", "F0"]:
-                            self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
-                            if XY == "0F":
+                    if packet.startswith("1") and packet.endswith("04"):
+
+                        cmd = packet[1:2]
+                        data = packet[2:10]
+                        threshold = packet[10:12]
+
+                        if threshold in ["FF", "0F", "F0"]:
+                            if threshold == "0F":
                                 self.ui_user.line_thre_noti.setText("Heart rate too high")
-                            elif XY == "F0":
+                            elif threshold == "F0":
                                 self.ui_user.line_thre_noti.setText("Heart rate too low")
+                            elif threshold == "FF":
+                                self.ui_user.line_thre_noti.setText("Normal heart rate")
+                        else:
+                            QMessageBox.warning(self, "Error", "Wrong threshold byte")
+
+                        if cmd in ["1", "6"]:
+                            if cmd == "6":
+                                if data == "FFFFFFFF":
+                                    self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
+                                else:
+                                    QMessageBox.warning(self, "Error", "Invalid data")
+                            elif cmd == "1":
+                                data_type = data[7:8]
+                                if data_type in ["0", "1", "2", "3"]:
+                                    if data_type == "0":
+                                        #plot heart rate
+                                    elif data_type == "1":
+                                        #print log
+                                    elif data_type == "2":
+                                        #plot filtered ppg signal
+                                    elif data_type == "3":
+                                        #plot raw ppg signal
+                                    else:
+                                        QMessageBox.warning(self, "Error", "Invalid data")
+                                else:
+                                    QMessageBox.warning(self, "Error", "Invalid data")
+
+                        else:
+                            QMessageBox.warning(self, "Error", "Wrong threshold byte")
                 else:
                     QMessageBox.warning(self, "Error", "Invalid data length received from serial port")
             except Exception as e:
