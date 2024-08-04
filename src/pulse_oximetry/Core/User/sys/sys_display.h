@@ -21,6 +21,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
 #include "drv_ssd1306.h"
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
 #define SSD1306_INCLUDE_FONT_6x8 true
 /* Public enumerate/structure ----------------------------------------- */
