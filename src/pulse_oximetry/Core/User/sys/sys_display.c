@@ -44,11 +44,11 @@ uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c, uint8_t
                    dev_buffer,
                    SSD1306_WIDTH,
                    SSD1306_HEIGHT);
-  drv_ssd1306_write_string(&(display->screen), "Con cac", Font_6x8, DRV_SSD1306_COLOR_WHITE);
-  // drv_ssd1306_draw_bitmap(&ssd1306, 121, 0, heart_icon, 9, 9, DRV_SSD1306_COLOR_WHITE);
-  // drv_ssd1306_draw_rectangle(&ssd1306, 0, 9, 127, 54, DRV_SSD1306_COLOR_WHITE);
-  // drv_ssd1306_set_cursor(&ssd1306, 37, 57);
-  // drv_ssd1306_write_string(&ssd1306, "Notifications", Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_write_string(&(display->screen), "HeartRate: --- bpm", Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_draw_bitmap(&(display->screen), 121, 0, heart_icon, 9, 9, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_draw_rectangle(&(display->screen), 0, 9, 127, 54, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen), 25, 55);
+  drv_ssd1306_write_string(&(display->screen), "Notifications", Font_6x8, DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
