@@ -156,11 +156,19 @@ uint32_t sys_display_show_noti(sys_display_t *display, char *noti)
   __ASSERT((display != NULL), SYS_DISPLAY_ERROR);
   __ASSERT((noti != NULL), SYS_DISPLAY_ERROR);
   // Operation
-  drv_ssd1306_set_cursor(&(display->screen), 0, 55);
-  drv_ssd1306_write_string(&(display->screen), "          ", Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen), 0, MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           "          ", // Clear old notification before show new one
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
-  drv_ssd1306_set_cursor(&(display->screen), 0, 55);
-  drv_ssd1306_write_string(&(display->screen), noti, Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen),
+                         0,
+                         MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           noti,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
