@@ -52,6 +52,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/bsp/bsp_callback.c
     Core/User/bsp/bsp_timer.c
     Core/User/bsp/bsp_gpio.c
+    Core/User/bsp/bsp_utils.c
     Core/User/bsp/bsp_i2c.c
     Core/User/drv/drv_hr.c
     Core/User/drv/drv_button.c

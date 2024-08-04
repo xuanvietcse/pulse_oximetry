@@ -167,16 +167,6 @@ bsp_timer_status_t bsp_pwm_stop_it(bsp_tim_typedef_t *htim, uint32_t tim_channel
   return BSP_TIMER_OK;
 }
 
-uint32_t bsp_get_systick()
-{
-  return HAL_GetTick();
-}
-bsp_timer_status_t bsp_pwm_pulse_finished_handler(bsp_tim_typedef_t *htim)
-{
-
-  return BSP_TIMER_OK;
-}
-
 /* Private function definitions --------------------------------------- */
 
 /* End of file -------------------------------------------------------- */

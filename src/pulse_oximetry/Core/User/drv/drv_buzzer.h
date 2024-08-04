@@ -20,6 +20,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_timer.h"
+#include "sound_effect.h"
 #include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
@@ -44,7 +45,8 @@ typedef struct __attribute__((__packed__))
 typedef struct __attribute__((__packed__))
 {
   drv_buzzer_tim_config_t config;
-  uint32_t *sound_effect;
+  sound_effect_t *sound_effect;
+  uint32_t note_nums;
   bool active;
 } drv_buzzer_t;
 
@@ -58,10 +60,7 @@ typedef struct __attribute__((__packed__))
  *
  * @param[in]   buzzer         Pointer to buzzer handler.
  * @param[in]   tim            Pointer of timer buzzer handler.
- * @param[in]   prescaler      Prescaler for timer clock source.
  * @param[in]   pwm_channel    Channel PWM connect to buzzer.
- * @param[in]   period         buzzer blink period.
- * @param[in]   duty_cycle     buzzer on-time.
  *
  * @attention   the valid buzzer period and duty cycle.
  * @note        Module buzzer low level trigger.
@@ -70,13 +69,10 @@ typedef struct __attribute__((__packed__))
  */
 uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
                          bsp_tim_typedef_t *tim,
-                         uint32_t prescaler,
-                         uint32_t pwm_channel,
-                         uint16_t period,
-                         uint16_t duty_cycle);
+                         uint32_t pwm_channel);
 
 /**
- * @brief       Set the buzzer on-time.
+ * @brief       Play the buzzer with desired sond effect.
  *
  * @param[in]   buzzer                Pointer to buzzer handler.
  * @param[in]   sound_effect_buf      Pointer to sound effect buffer.
@@ -85,50 +81,6 @@ uint32_t drv_buzzer_init(drv_buzzer_t *buzzer,
  *
  * @return      drv_buzzer_status_t value.
  */
-uint32_t drv_buzzer_set_sound_effect(drv_buzzer_t *buzzer, uint32_t *sound_effect_buf);
-
-/**
- * @brief       Buzzer plays the Windows 10 Error sound.
- *
- * @param[in]   buzzer     Pointer to buzzer handler.
- *
- * @note        Devs can change the effect in buzzer_effect.h.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_sound_system_fail(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Buzzer plays the "beep beep" sound.
- *
- * @param[in]   buzzer      Pointer to buzzer handler.
- *
- * @note        Devs can change the effect in buzzer_effect.h.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_sound_alert(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Enable the buzzer.
- *
- * @param[in]   buzzer                Pointer to buzzer handler.
- *
- * @note        Should be configured before use this function.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_enable(drv_buzzer_t *buzzer);
-
-/**
- * @brief       Disable the buzzer.
- *
- * @param[in]   buzzer                Pointer to buzzer handler.
- *
- * @note        Should be configuared before use this function.
- *
- * @return      drv_buzzer_status_t value.
- */
-uint32_t drv_buzzer_disable(drv_buzzer_t *buzzer);
+uint32_t drv_buzzer_play(drv_buzzer_t *buzzer, sound_effect_t *sound_effect_buf, uint32_t length);
 
 #endif /* USER_DRV_DRV_BUZZER_H_ */
