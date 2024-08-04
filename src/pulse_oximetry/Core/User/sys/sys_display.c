@@ -31,7 +31,7 @@
 
 /* Private variables -------------------------------------------------- */
 static char s_heart_rate[18] = "HeartRate: --- bpm";
-static char s_notifications[5] = "Noti";
+static char s_notifications[11] = "Noti";
 static char s_high_threshold[6] = "H:---";
 static char s_low_threshold[6] = "L:---";
 /* Private function prototypes ---------------------------------------- */
@@ -94,6 +94,22 @@ uint32_t sys_display_update_threshold(sys_display_t *display, uint8_t *threshold
   drv_ssd1306_write_string(&(display->screen), s_high_threshold, Font_6x8, DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_set_cursor(&(display->screen), 123 - 6 * 5, 55);
   drv_ssd1306_write_string(&(display->screen), s_low_threshold, Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_update_screen(&(display->screen));
+  // Return
+  return SYS_DISPLAY_OK;
+}
+
+uint32_t sys_display_show_noti(sys_display_t *display, char *noti)
+{
+  // Check parameters
+  __ASSERT((display != NULL), SYS_DISPLAY_ERROR);
+  __ASSERT((noti != NULL), SYS_DISPLAY_ERROR);
+  // Operation
+  drv_ssd1306_set_cursor(&(display->screen), 0, 55);
+  drv_ssd1306_write_string(&(display->screen), "          ", Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_update_screen(&(display->screen));
+  drv_ssd1306_set_cursor(&(display->screen), 0, 55);
+  drv_ssd1306_write_string(&(display->screen), noti, Font_6x8, DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
