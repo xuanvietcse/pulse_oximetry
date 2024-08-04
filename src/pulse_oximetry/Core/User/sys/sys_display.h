@@ -22,7 +22,7 @@
 #include "main.h"
 #include "drv_ssd1306.h"
 /* Public defines ----------------------------------------------------- */
-
+#define SSD1306_INCLUDE_FONT_6x8
 /* Public enumerate/structure ----------------------------------------- */
 enum sys_display_status_t
 {
