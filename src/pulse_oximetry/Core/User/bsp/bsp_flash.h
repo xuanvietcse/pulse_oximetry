@@ -23,6 +23,12 @@
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
+enum bsp_flash_status_t
+{
+  BSP_FLASH_ERROR = 0xFFFFFFFF,
+  BSP_FLASH_FAIL = 0x7FFFFFF,
+  BSP_FLASH_OK = 0x3FFFFFF
+};
 
 /* Public macros ------------------------------------------------------ */
 
@@ -30,19 +36,27 @@
 
 /* Public function prototypes ----------------------------------------- */
 /**
- * @brief  <function description>
- *
- * @param[in]     <param_name>  <param_despcription>
- * @param[out]    <param_name>  <param_despcription>
- * @param[inout]  <param_name>  <param_despcription>
- *
- * @attention  <API attention note>
+ * @brief  Unlock the FLASH memory
  *
  * @return
- *  - 0: Success
- *  - 1: Error
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Fail
+ *  - 0x3FFFFFFF: Success
  */
-void public_function(void);
+uint32_t bsp_flash_unlock(void);
+
+/**
+ * @brief  Erase byte(s) from address
+ *
+ * @param[in]   address   Address that start the erase operation.
+ * @param[in]   nbytes   Number of bytes want to be erased.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Fail
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t bsp_flash_erase_address(uint32_t address, uint32_t nbytes);
 
 #endif // __USER_BSP_FLASH_H
 
