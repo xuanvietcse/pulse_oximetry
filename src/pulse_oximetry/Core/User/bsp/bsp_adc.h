@@ -20,20 +20,21 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
 typedef ADC_HandleTypeDef bsp_adc_typedef_t;
 typedef HAL_StatusTypeDef hal_status_t;
 /* Public enumerate/structure ----------------------------------------- */
 enum bsp_adc_status_t
 {
-  BSP_ADC_ERROR = -2,
-  BSP_ADC_FAILED,
-  BSP_ADC_OK
+  BSP_ADC_ERROR = 0xFFFFFFFF,
+  BSP_ADC_FAILED = 0x7FFFFFFF,
+  BSP_ADC_OK = 0x3FFFFFFF
 };
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-typedef uint32_t (*bsp_adc_cb_t)(bsp_adc_typedef_t *badc);
+
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief  Enable and Start ADC conversion
@@ -142,7 +143,7 @@ uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc);
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t bsp_adc_register_handler(bsp_adc_cb_t bsp_adc_cb);
+uint32_t bsp_adc_register_handler(cbuffer_t *adc_conv_cbuf);
 
 /**
  * @brief  Regular conversion complete callback in non blocking mode.
