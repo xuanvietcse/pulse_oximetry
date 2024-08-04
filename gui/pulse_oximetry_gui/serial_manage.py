@@ -1,11 +1,9 @@
 # This Python file uses the following encoding: utf-8
+
 from PySide6 import QtCore
-from PySide6 import QtWidgets
-from PySide6 import QtQuick
 import serial
 import threading
-from PySide6.QtCore import Signal, QObject
-
+from PySide6.QtCore import Signal
 
 class serial_manage(QtCore.QObject):
     data_received = Signal(bytes)
