@@ -35,11 +35,11 @@ enum bsp_flash_sector_num_t
   BSP_FLASH_SECTOR_0 = 0,
   BSP_FLASH_SECTOR_1,
   BSP_FLASH_SECTOR_2,
-  BSP_FLASH_SECOTR_3,
-  BSP_FLASH_SECOTR_4,
-  BSP_FLASH_SECOTR_5,
-  BSP_FLASH_SECOTR_6,
-  BSP_FLASH_SECOTR_7
+  BSP_FLASH_SECTOR_3,
+  BSP_FLASH_SECTOR_4,
+  BSP_FLASH_SECTOR_5,
+  BSP_FLASH_SECTOR_6,
+  BSP_FLASH_SECTOR_7
 };
 
 /* Public macros ------------------------------------------------------ */
@@ -47,6 +47,7 @@ enum bsp_flash_sector_num_t
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
+
 /**
  * @brief  Unlock the FLASH memory
  *
@@ -56,6 +57,16 @@ enum bsp_flash_sector_num_t
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_unlock(void);
+
+/**
+ * @brief  Lock the FLASH memory
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Fail
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t bsp_flash_lock(void);
 
 /**
  * @brief  Erase byte(s) from address
