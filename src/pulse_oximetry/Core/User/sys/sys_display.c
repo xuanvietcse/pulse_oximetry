@@ -114,6 +114,23 @@ uint32_t sys_display_show_noti(sys_display_t *display, char *noti)
   // Return
   return SYS_DISPLAY_OK;
 }
+
+uint32_t sys_display_clear_all(sys_display_t *display)
+{
+  // Check parameters
+  __ASSERT((display != NULL), SYS_DISPLAY_ERROR);
+  // Operation
+  display->heart_rate = 0;
+  display->threshold_buf = NULL;
+  // Terminate screen properties
+  display->screen.i2c = NULL;
+  display->screen.address = NULL;
+  display->screen.buffer = NULL;
+  display->screen.size.height = 0;
+  display->screen.size.width = 0;
+  // Return
+  return SYS_DISPLAY_OK;
+}
 /* Private definitions ----------------------------------------------- */
 
 /* End of file -------------------------------------------------------- */
