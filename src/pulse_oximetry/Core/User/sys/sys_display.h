@@ -33,6 +33,7 @@ enum sys_display_status_t
 
 typedef struct
 {
+  drv_ssd1306_t screen;
   uint8_t heart_rate;
   uint8_t *signal_buf;
   uint8_t *threshold_buf;
@@ -43,6 +44,7 @@ typedef struct
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
+
 /**
  * @brief  Initialize the display and start UI
  *
@@ -54,7 +56,7 @@ typedef struct
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c);
+uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c, uint8_t *dev_buffer);
 
 /**
  * @brief  Update the heart rate on the display

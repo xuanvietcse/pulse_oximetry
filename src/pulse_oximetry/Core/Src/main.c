@@ -53,8 +53,8 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
-// drv_ssd1306_t dev;
-// uint8_t dev_buffer[1024];
+drv_ssd1306_t dev;
+uint8_t display_buffer[1024];
 sys_display_t display;
 sys_measure_t ppg;
 double filtered_data[240];
@@ -113,9 +113,8 @@ int main(void)
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  sys_measure_init(&ppg, &hadc1, &htim2, 95, 9999, filtered_data);
-  sys_display_init(&display, &hi2c2);
-  // drv_ssd1306_init(&dev, &hi2c2, SSD1306_I2C_ADDRESS, dev_buffer, SSD1306_WIDTH, SSD1306_HEIGHT);
+  sys_display_init(&display, &hi2c2, display_buffer);
+  // drv_ssd1306_init(&dev, &hi2c2, SSD1306_I2C_ADDRESS, display_buffer, SSD1306_WIDTH, SSD1306_HEIGHT);
   // drv_ssd1306_write_string(&dev, "Con cac", Font_6x8, DRV_SSD1306_COLOR_WHITE);
   // drv_ssd1306_update_screen(&dev);
   /* USER CODE END 2 */
@@ -127,7 +126,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    sys_measure_process_data(&ppg);
   }
   /* USER CODE END 3 */
 }
