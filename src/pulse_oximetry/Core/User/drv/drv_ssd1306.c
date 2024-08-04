@@ -235,7 +235,7 @@ uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
 uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
                                  uint8_t pos_x,
                                  uint8_t pos_y,
-                                 uint8_t *bitmap,
+                                 const uint8_t *bitmap,
                                  uint8_t bitmap_width,
                                  uint8_t bitmap_height,
                                  drv_ssd1306_color_t color)
