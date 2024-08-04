@@ -123,14 +123,28 @@ uint32_t sys_display_update_threshold(sys_display_t *display, uint8_t *threshold
   // Operation
   char low[4];
   char high[4];
-  uint8_t low_bytes = sprintf(low, "%03d", (*(threshold) < *(threshold + 1) ? *(threshold) : *(threshold + 1)));
-  uint8_t high_bytes = sprintf(high, "%03d", (*(threshold) > *(threshold + 1) ? *(threshold) : *(threshold + 1)));
+  uint8_t low_bytes = sprintf(low,
+                              "%03d",
+                              (*(threshold) < *(threshold + 1) ? *(threshold) : *(threshold + 1)));
+  uint8_t high_bytes = sprintf(high,
+                               "%03d",
+                               (*(threshold) > *(threshold + 1) ? *(threshold) : *(threshold + 1)));
   memcpy(s_low_threshold + 2, low, low_bytes);
   memcpy(s_high_threshold + 2, high, high_bytes);
-  drv_ssd1306_set_cursor(&(display->screen), 123 - 6 * 5 * 2 - 2, 55);
-  drv_ssd1306_write_string(&(display->screen), s_high_threshold, Font_6x8, DRV_SSD1306_COLOR_WHITE);
-  drv_ssd1306_set_cursor(&(display->screen), 123 - 6 * 5, 55);
-  drv_ssd1306_write_string(&(display->screen), s_low_threshold, Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen),
+                         MAX_WIDTH - 6 * 5 * 2 - 2,
+                         MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           s_high_threshold,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen),
+                         MAX_WIDTH - 6 * 5,
+                         MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           s_low_threshold,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
