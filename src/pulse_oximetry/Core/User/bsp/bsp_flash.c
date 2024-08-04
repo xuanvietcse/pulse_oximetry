@@ -16,7 +16,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_flash.h"
-
+#include "common.h"
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -30,7 +30,14 @@
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
+uint32_t bsp_flash_unlock(void)
+{
+  uint32_t ret = HAL_OK;
+  ret = HAL_FLASH_Unlock();
+  __ASSERT(ret == HAL_OK, BSP_FLASH_FAIL);
 
+  return BSP_FLASH_OK;
+}
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
