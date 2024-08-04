@@ -47,6 +47,15 @@ uint32_t bsp_flash_lock(void)
 
   return BSP_FLASH_OK;
 }
+
+uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
+{
+  __ASSERT(nbytes > 0, BSP_FLASH_ERROR);
+  __ASSERT((address >= BSP_FLASH_SECTOR_0_ADDRESS) ||
+               (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
+           BSP_FLASH_ERROR);
+  __ASSERT(data_buf != NULL, BSP_FLASH_ERROR);
+}
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
