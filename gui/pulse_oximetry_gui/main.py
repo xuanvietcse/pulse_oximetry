@@ -113,6 +113,7 @@ class MainWindow(QMainWindow):
     def toggle_serial_connection(self):
         if self.serial_connection:
             self.disconnect_serial()
+
         else:
             self.connect_serial()
 
@@ -262,7 +263,7 @@ class MainWindow(QMainWindow):
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x1), hex value, threshold (0xFF) and end code (0x04)
-            read_record_hex_command = '11FFFFFFF1FF04'
+            read_record_hex_command = '11FFFFFFF0FF04'
             read_record_command_bytes = bytes.fromhex(read_record_hex_command)
 
             # Check if serial_connection has been established and is open
@@ -310,11 +311,9 @@ class MainWindow(QMainWindow):
                 if len(data) == 7:
                     packet = data.hex().upper()
                     if packet.startswith("1") and packet.endswith("04"):
-
                         cmd = packet[1:2]
                         data = packet[2:10]
                         threshold = packet[10:12]
-
                         if threshold in ["FF", "0F", "F0"]:
                             if threshold == "0F":
                                 self.ui_user.line_thre_noti.setText("Heart rate too high")
@@ -323,9 +322,9 @@ class MainWindow(QMainWindow):
                             elif threshold == "FF":
                                 self.ui_user.line_thre_noti.setText("Normal heart rate")
                         else:
-                            QMessageBox.warning(self, "Error", "Wrong threshold byte")
+                            QMessageBox.warning(self, "Error", "Invalid threshold byte")
 
-                        if cmd in ["1", "6"]:
+                        if cmd in ["1", "4", "6"]:
                             if cmd == "6":
                                 if data == "FFFFFFFF":
                                     self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
@@ -333,13 +332,7 @@ class MainWindow(QMainWindow):
                                     QMessageBox.warning(self, "Error", "Invalid data")
                             elif cmd == "1":
                                 data_type = data[7:8]
-
-                                if data_type in ["0", "1", "2", "3"]:
-                                #     # todo:
-                                #     # get interval in line_interval to set time in graph (x-axis)(x++)
-                                #     # read value and plot to graph (y-axis)
-                                #     # how to print logs?
-
+                                if data_type in ["0", "1", "2"]:
                                     if data_type == "0":
                                         #plot heart rate
                                         data_value = int(data[0:7], 16)
@@ -360,21 +353,25 @@ class MainWindow(QMainWindow):
 
                                         # Update the plot
                                         self.heart_rate_graph.plot(self.heart_rate_time, self.heart_rate_value, pen=self.pen_hr, clear=True)
-                                #     elif data_type == "1":
-                                #         #print log
-                                #     elif data_type == "2":
-                                #         #plot filtered ppg signal
-                                #     elif data_type == "3":
-                                #         #plot raw ppg signal
-                                    else:
-                                        QMessageBox.warning(self, "Error", "Invalid data type")
+
+                                    elif data_type == "1":
+                                        #plot filtered ppg signal
+
+                                    elif data_type == "2":
+                                        #plot raw ppg signal
+
                                 else:
-                                    QMessageBox.warning(self, "Error", "Invalid command")
+                                    QMessageBox.warning(self, "Error", "Invalid data type")
+
+                            elif cmd == "4":
 
                         else:
-                            QMessageBox.warning(self, "Error", "Wrong threshold byte")
+                            QMessageBox.warning(self, "Error", "Invalid command")
+                    else:
+                        QMessageBox.warning(self, "Error", "Invalid frame of data packet")
                 else:
                     QMessageBox.warning(self, "Error", "Invalid data length received from serial port")
+
             except Exception as e:
                 QMessageBox.warning(self, "Error", f"Failed to read serial data: {str(e)}")
 

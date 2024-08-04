@@ -6,27 +6,31 @@
 
 When users turn on device, they must be able to configure the time of RTC.
 
-2. **Set interval**
+2. **Get time from RTC**
+
+GUI can read time from RTC for displaying the record of the heart rate.
+
+3. **Set interval**
 
 Users can configure their preference interval for getting the PPG signal using for display on OLED.
 
-3. **Set threshold**
+4. **Set threshold**
 
 Users can configure specific threshold for detecting dangers, e.g. 30 for too low heart rate, 200 for too high heart rate.
 
-4. **Get data**
+5. **Get data**
 
 Users can get data from system (heart rate, logs, PPG signal before and after filtered).
 
-5. **Clear records**
+6. **Clear records**
 
 Users can clear all previous records which are unneeded to reduce memory.
 
-6. **Warning**
+7. **Warning**
 
 Whenever heart rate overcomes the threshold, system must signal to users.
 
-7. **Error notification**
+8. **Error notification**
 
 If there is any error, system must notify to users.
 
@@ -46,7 +50,7 @@ If there is any error, system must notify to users.
     - 0x1: Get data.
     - 0x2: Set Threshold.
     - 0x3: Set interval.
-    - 0x4: Set time.
+    - 0x4: Set/Get time.
     - 0x5: Clear records.
     - 0x6: Error notification.
 - Data (DATA):
@@ -56,7 +60,7 @@ If there is any error, system must notify to users.
     - Get data: 0xFFFFFFFX. The last nibble X depends on what users want to get. 0x0: record (including heart rate + time), 0x1: PPG signal after filtered, 0x2: PPG signal before filtered.
     - Set threshold: Based on Nes, *et al.* (2013)[[1]](https://sci-hub.se/https://doi.org/10.1111/j.1600-0838.2012.01445.x), Heart rate max = 211 - (0.64 * age). So maximum heart rate we can get is 211. Therefore, we will need 1 byte to store the heart rate we want to set. 0xFFFFFFXX, XX is the hex value of heart rate to be set.
     - Set interval: Default unit is second (s). 0xXXXXXXXX, we should read datasheet before to ensure the interval we set is supported by MCU.
-    - Set time: 0xXXXXXXXX. From the 24-hour format on GUI, converting to epoch time for setting time on RTC.
+    - Set/Get time: 0xXXXXXXXX is the epoch time.
     - Clear records: 0xFFFFFFFF.
     - Error notification: 0xFFFFFFFF.
 - Threshold:
