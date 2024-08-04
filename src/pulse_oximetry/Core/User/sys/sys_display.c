@@ -19,6 +19,8 @@
 #include "sys_display.h"
 #include "common.h"
 #include "heart_icon.h"
+#include <string.h>
+#include <stdlib.h>
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -50,6 +52,18 @@ uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c, uint8_t
   drv_ssd1306_set_cursor(&(display->screen), 25, 55);
   drv_ssd1306_write_string(&(display->screen), "Notifications", Font_6x8, DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
+  // Return
+  return SYS_DISPLAY_OK;
+}
+
+uint32_t sys_display_update_heart_rate(sys_display_t *display, uint8_t heart_rate)
+{
+  // Check parameters
+  __ASSERT((display != NULL), SYS_DISPLAY_OK);
+  // Operation
+  char heart_rate_update[4];
+  itoa(heart_rate, heart_rate_update, 10);
+  memccpy();
   // Return
   return SYS_DISPLAY_OK;
 }
