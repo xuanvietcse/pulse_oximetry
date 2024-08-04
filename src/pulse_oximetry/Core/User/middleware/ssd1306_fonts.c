@@ -17,7 +17,6 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "ssd1306_fonts.h"
-
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -2251,21 +2250,21 @@ static const uint8_t char_width[] = {
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_6x8
-const drv_ssd1306_font_t Font_6x8 = {6, 8, Font6x8, NULL};
+const ssd1306_font_t Font_6x8 = {6, 8, Font6x8, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_7x10
-const drv_ssd1306_font_t Font_7x10 = {7, 10, Font7x10, NULL};
+const ssd1306_font_t Font_7x10 = {7, 10, Font7x10, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_11x18
-const drv_ssd1306_font_t Font_11x18 = {11, 18, Font11x18, NULL};
+const ssd1306_font_t Font_11x18 = {11, 18, Font11x18, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_16x26
-const drv_ssd1306_font_t Font_16x26 = {16, 26, Font16x26, NULL};
+const ssd1306_font_t Font_16x26 = {16, 26, Font16x26, NULL};
 #endif
 
 /* see ./examples/custom-fonts/ */
 #ifdef SSD1306_INCLUDE_FONT_16x24
-const drv_ssd1306_font_t Font_16x24 = {16, 24, Font16x24, NULL};
+const ssd1306_font_t Font_16x24 = {16, 24, Font16x24, NULL};
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_16x15
@@ -2273,7 +2272,7 @@ const drv_ssd1306_font_t Font_16x24 = {16, 24, Font16x24, NULL};
  * @copyright Google https://github.com/googlefonts/roboto
  * @license This font is licensed under the Apache License, Version 2.0.
  */
-const drv_ssd1306_font_t Font_16x15 = {16, 15, Font16x15, char_width};
+const ssd1306_font_t Font_16x15 = {16, 15, Font16x15, char_width};
 #endif
 /* Private function prototypes ---------------------------------------- */
 
