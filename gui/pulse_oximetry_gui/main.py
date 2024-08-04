@@ -81,10 +81,10 @@ class MainWindow(QMainWindow):
         self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
         self.heart_rate_graph.setLabel("bottom", "Time (s)", **styles)
 
-        pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
-        heart_rate_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        heart_rate = [72, 75, 78, 76, 77, 79, 74, 73, 78, 80]
-        self.heart_rate_graph.plot(heart_rate_time, heart_rate, pen=pen_hr)
+        self.pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
+        # Data lists for plotting heart rate
+        self.heart_rate_time = []
+        self.heart_rate_value = []
 
         # Set default value for cbb_baudrate
         self.ui_user.cbb_baudrate.setCurrentText("115200")
@@ -333,26 +333,43 @@ class MainWindow(QMainWindow):
                                     QMessageBox.warning(self, "Error", "Invalid data")
                             elif cmd == "1":
                                 data_type = data[7:8]
-                                data_value = data[0:7]
 
-                                # if data_type in ["0", "1", "2", "3"]:
+                                if data_type in ["0", "1", "2", "3"]:
                                 #     # todo:
                                 #     # get interval in line_interval to set time in graph (x-axis)(x++)
                                 #     # read value and plot to graph (y-axis)
                                 #     # how to print logs?
 
-                                #     if data_type == "0":
-                                #         #plot heart rate
+                                    if data_type == "0":
+                                        #plot heart rate
+                                        data_value = int(data[0:7], 16)
+                                        interval_value = int(self.ui_user.line_set_interval.text())
+                                        # Update the data lists for plotting
+                                        if self.heart_rate_time:
+                                            new_time = self.heart_rate_time[-1] + interval_value
+                                        else:
+                                            new_time = 0
+
+                                        self.heart_rate_time.append(new_time)
+                                        self.heart_rate_value.append(data_value)
+
+                                        # Keep only the last 10 samples
+                                        if len(self.heart_rate_time) > 10:
+                                            self.heart_rate_time = self.heart_rate_time[-10:]
+                                            self.heart_rate_value = self.heart_rate_value[-10:]
+
+                                        # Update the plot
+                                        self.heart_rate_graph.plot(self.heart_rate_time, self.heart_rate_value, pen=self.pen_hr, clear=True)
                                 #     elif data_type == "1":
                                 #         #print log
                                 #     elif data_type == "2":
                                 #         #plot filtered ppg signal
                                 #     elif data_type == "3":
                                 #         #plot raw ppg signal
-                                #     else:
-                                #         QMessageBox.warning(self, "Error", "Invalid data type")
-                                # else:
-                                #     QMessageBox.warning(self, "Error", "Invalid command")
+                                    else:
+                                        QMessageBox.warning(self, "Error", "Invalid data type")
+                                else:
+                                    QMessageBox.warning(self, "Error", "Invalid command")
 
                         else:
                             QMessageBox.warning(self, "Error", "Wrong threshold byte")
