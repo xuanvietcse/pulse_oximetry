@@ -38,30 +38,32 @@
 
 1. **Measure the Heartbeat within an accuracy 10 percent of actual value.**
 
-- We apply the FFT to transform and analysis the PPG signal in frequency domain. After that, we create the histogram chart and determine the peak of signal each period. We count the peaks in a short time, for example, in 5 second. Then, we multiply that result by 12 to calculate the Heart Rate in bpm (beats per minute) unit.
+- First, we filter the signal by ADC conversion with band-pass Butterworth filter.
+- Second, we apply the TERMA framework and analysis the PPG signal. After that, we determine the peak of signal each period. 
+- Then, we count the peaks in a short time, for example, in 2 second. We calculate the average time between peaks (called by $t_{avg}$) and estimate the heart rate by formula: $HR=60/t_{avg}$.
 
-2. **Stream the real-time PPG Heart Rate signal in OLED screen.**
+1. **Stream the real-time PPG Heart Rate signal in OLED screen.**
 - The problem is real-time display. Heart Rate PPG signal have the frequency in range $0.5 - 5Hz$ (with Heart Rate from 30 to 300 bpm). So that, the refesh rate of display should be $5Hz$ minimum - 200ms per frame. We also consider the bandwidth of I2C interface (in this case is $400kHz$) and the frame data. We only refresh the area of display that have a real-time graph. 
 
-3. **Record the current Heart Rate by clicking the button.**
+1. **Record the current Heart Rate by clicking the button.**
 
 - By the time user click the button, device will get the current Heart Rate value and store it in EEPROM of RTC module with timestamp.
 
-4. **Record the Heart Rate per period that set in GUI application.**
+4. **Record the Heart Rate per interval that set in GUI application.**
 
 - In some case, we need to monitor Heart Rate for a long time. User can set the period to record the Heart Rate, and show the graph in GUI. How to store records can be mentioned below.
 
-5. **Store upto 1,000 Heart Rate records with format *hh:mm:ss - DD/MM/YY - heart rate result*.**
+1. **Store Heart Rate records with format *hh:mm:ss - DD/MM/YY - heart rate result*.**
 
-- The Module RTC have EEPROM 24C32 32Kb, when use above format, each record get max. 32bit of space. So that, we can use this memory to store upto 1,0000 records. When strorage is full, stop recording and notificate user.
+- Above format takes 32bit of space. The device has the embedded memory up to 512 KB but we just use 64 KB for records storage (equivalent to 4 Sector from sector 0 to sector 3). So that, device can store over 16,000 records.
 
-6. **Detect the Hypertension and alert through buzzer.**
+1. **Detect the Hypertension and alert through buzzer.**
 - Device can do that if user enter the upper threshold and lower threshold of the Heart Rate.
 
-7. **Set the alert threshold throught GUI application.**
+1. **Set the alert threshold throught GUI application.**
 - User set the upper and lower Heart Rate by this way. GUI will transmit that value to device and it will monitor and compare the Heart Rate.
 
-8. **Show the records on GUI.**
+1. **Show the records on GUI.**
 - We use Qt Designer for Python to design the GUI. After receive the records to device, GUI will copy those data to .txt or .csv file and display records on a graph.
 
 

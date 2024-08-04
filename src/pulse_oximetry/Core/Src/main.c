@@ -23,7 +23,9 @@
 /* USER CODE BEGIN Includes */
 #include "sys_measure.h"
 #include "sys_display.h"
-#include "drv_ssd1306.h"
+#include "drv_buzzer.h"
+#include "list_of_sound_effects.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +50,7 @@ I2C_HandleTypeDef hi2c2;
 DMA_HandleTypeDef hdma_i2c2_tx;
 
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim11;
 
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
@@ -59,6 +62,7 @@ sys_display_t display;
 sys_measure_t ppg;
 double filtered_data[240];
 uint32_t peak_nums;
+drv_buzzer_t buzzer;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,6 +73,7 @@ static void MX_ADC1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_TIM11_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -112,6 +117,7 @@ int main(void)
   MX_TIM2_Init();
   MX_I2C2_Init();
   MX_USART1_UART_Init();
+  MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
   sys_display_init(&display, &hi2c2, display_buffer);
   for (uint8_t i = 0; i < 256; ++i)
@@ -126,6 +132,10 @@ int main(void)
     sys_display_show_noti(&display, "Counting");
     HAL_Delay(50);
   }
+  sys_measure_init(&ppg, &hadc1, &htim2, 95, 9999, filtered_data);
+  drv_buzzer_init(&buzzer, &htim11, TIM_CHANNEL_1);
+  HAL_Delay(2000);
+  drv_buzzer_play(&buzzer, system_alert, 5);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -310,6 +320,51 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
+}
+
+/**
+ * @brief TIM11 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_TIM11_Init(void)
+{
+
+  /* USER CODE BEGIN TIM11_Init 0 */
+
+  /* USER CODE END TIM11_Init 0 */
+
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM11_Init 1 */
+
+  /* USER CODE END TIM11_Init 1 */
+  htim11.Instance = TIM11;
+  htim11.Init.Prescaler = 0;
+  htim11.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim11.Init.Period = 65535;
+  htim11.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim11.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim11) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim11) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim11, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM11_Init 2 */
+
+  /* USER CODE END TIM11_Init 2 */
+  HAL_TIM_MspPostInit(&htim11);
 }
 
 /**
