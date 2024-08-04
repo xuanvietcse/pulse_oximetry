@@ -38,6 +38,15 @@ uint32_t bsp_flash_unlock(void)
 
   return BSP_FLASH_OK;
 }
+
+uint32_t bsp_flash_lock(void)
+{
+  uint32_t ret = HAL_OK;
+  ret = HAL_FLASH_Lock();
+  __ASSERT(ret == HAL_OK, BSP_FLASH_FAIL);
+
+  return BSP_FLASH_OK;
+}
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
