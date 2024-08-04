@@ -30,6 +30,18 @@ enum bsp_flash_status_t
   BSP_FLASH_OK = 0x3FFFFFF
 };
 
+enum bsp_flash_sector_num_t
+{
+  BSP_FLASH_SECTOR_0 = 0,
+  BSP_FLASH_SECTOR_1,
+  BSP_FLASH_SECTOR_2,
+  BSP_FLASH_SECOTR_3,
+  BSP_FLASH_SECOTR_4,
+  BSP_FLASH_SECOTR_5,
+  BSP_FLASH_SECOTR_6,
+  BSP_FLASH_SECOTR_7
+};
+
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
@@ -57,6 +69,18 @@ uint32_t bsp_flash_unlock(void);
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_erase_address(uint32_t address, uint32_t nbytes);
+
+/**
+ * @brief  Erase whole data in selected sector
+ *
+ * @param[in]   sector_num   Sector want to be erased.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Fail
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t bsp_flash_erase_sector(uint32_t sector_num);
 
 #endif // __USER_BSP_FLASH_H
 
