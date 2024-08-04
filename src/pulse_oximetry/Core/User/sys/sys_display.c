@@ -183,7 +183,7 @@ uint32_t sys_display_clear_all(sys_display_t *display)
   display->threshold_buf = NULL;
   // Terminate screen properties
   display->screen.i2c = NULL;
-  display->screen.address = NULL;
+  display->screen.address = 0x00;
   display->screen.buffer = NULL;
   display->screen.size.height = 0;
   display->screen.size.width = 0;
