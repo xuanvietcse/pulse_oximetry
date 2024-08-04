@@ -96,6 +96,20 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num);
  */
 uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes);
 
+/**
+ * @brief  Read data from address in FLASH
+ *
+ * @param[in]   address      Address that start the read operation.
+ * @param[in]   data_buf     Pointer to data will be read.
+ * @param[in]   nbytes       Size of read data in byte.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Fail
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t bsp_flash_read(uint32_t address, void *data_buf, uint32_t nbytes);
+
 #endif // __USER_BSP_FLASH_H
 
 /* End of file -------------------------------------------------------- */
