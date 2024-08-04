@@ -65,7 +65,7 @@ uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c, uint8_t
                           DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_draw_rectangle(&(display->screen),
                              0,
-                             MAX_HEIGHT - GRAPH_HEIGHT,
+                             MAX_HEIGHT - GRAPH_HEIGHT - BITMAP_HEIGHT,
                              MAX_WIDTH,
                              MAX_HEIGHT - 9,
                              DRV_SSD1306_COLOR_WHITE);
