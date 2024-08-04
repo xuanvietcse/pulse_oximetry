@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "sys_measure.h"
+#include "sys_display.h"
+#include "drv_ssd1306.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +53,9 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
+// drv_ssd1306_t dev;
+// uint8_t dev_buffer[1024];
+sys_display_t display;
 sys_measure_t ppg;
 double filtered_data[240];
 uint32_t peak_nums;
@@ -109,6 +114,10 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   sys_measure_init(&ppg, &hadc1, &htim2, 95, 9999, filtered_data);
+  sys_display_init(&display, &hi2c2);
+  // drv_ssd1306_init(&dev, &hi2c2, SSD1306_I2C_ADDRESS, dev_buffer, SSD1306_WIDTH, SSD1306_HEIGHT);
+  // drv_ssd1306_write_string(&dev, "Con cac", Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  // drv_ssd1306_update_screen(&dev);
   /* USER CODE END 2 */
 
   /* Infinite loop */

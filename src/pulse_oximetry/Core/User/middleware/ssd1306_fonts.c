@@ -22,10 +22,6 @@
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
-
-/* Public variables --------------------------------------------------- */
-
-/* Private variables -------------------------------------------------- */
 #ifdef SSD1306_INCLUDE_FONT_7x10
 static const uint16_t Font7x10[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // sp
@@ -2274,6 +2270,10 @@ const ssd1306_font_t Font_16x24 = {16, 24, Font16x24, NULL};
  */
 const ssd1306_font_t Font_16x15 = {16, 15, Font16x15, char_width};
 #endif
+/* Public variables --------------------------------------------------- */
+
+/* Private variables -------------------------------------------------- */
+
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */

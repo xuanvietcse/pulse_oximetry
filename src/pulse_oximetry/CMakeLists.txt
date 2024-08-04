@@ -58,6 +58,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/drv/drv_buzzer.c
     Core/User/sys/sys_measure.c
     Core/User/sys/sys_display.c
+    Core/User/middleware/cbuffer.c
+    Core/User/middleware/ssd1306_fonts.c
+    Core/User/drv/drv_ssd1306.c
 )
 
 # Add include paths

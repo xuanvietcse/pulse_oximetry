@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include <stddef.h>
 /* Public defines ----------------------------------------------------- */
-
+#define SSD1306_INCLUDE_FONT_6x8 true
 /* Public enumerate/structure ----------------------------------------- */
 typedef struct
 {
