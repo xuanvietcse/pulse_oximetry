@@ -114,9 +114,18 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   sys_display_init(&display, &hi2c2, display_buffer);
-  // drv_ssd1306_init(&dev, &hi2c2, SSD1306_I2C_ADDRESS, display_buffer, SSD1306_WIDTH, SSD1306_HEIGHT);
-  // drv_ssd1306_write_string(&dev, "Con cac", Font_6x8, DRV_SSD1306_COLOR_WHITE);
-  // drv_ssd1306_update_screen(&dev);
+  for (uint8_t i = 0; i < 256; ++i)
+  {
+    if (i == 255)
+    {
+      sys_display_show_noti(&display, "Done");
+    }
+    uint8_t threshold[] = {i, i + 5};
+    sys_display_update_heart_rate(&display, i);
+    sys_display_update_threshold(&display, threshold);
+    sys_display_show_noti(&display, "Counting");
+    HAL_Delay(50);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
