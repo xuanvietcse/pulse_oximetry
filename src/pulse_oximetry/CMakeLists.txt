@@ -48,8 +48,8 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    Core/User/bsp/bsp_adc.c
-    Core/User/middleware/filter.c
+    Core/User/bsp/bsp_flash.c
+    Core/User/sys/sys_storage.c
 )
 
 # Add include paths
