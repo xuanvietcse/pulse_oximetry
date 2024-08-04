@@ -22,7 +22,10 @@
 #include <string.h>
 #include <stdlib.h>
 /* Private defines ---------------------------------------------------- */
-
+#define MAX_WIDTH (SSD1306_WIDTH - 1)
+#define MAX_HEIGHT (SSD1306_HEIGHT - 1)
+#define GRAPH_HEIGHT (45)
+#define GRAPH_WIDTH (MAX_WIDTH)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -49,15 +52,44 @@ uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c, uint8_t
                    dev_buffer,
                    SSD1306_WIDTH,
                    SSD1306_HEIGHT);
-  drv_ssd1306_write_string(&(display->screen), s_heart_rate, Font_6x8, DRV_SSD1306_COLOR_WHITE);
-  drv_ssd1306_draw_bitmap(&(display->screen), 121, 0, heart_icon, 9, 9, DRV_SSD1306_COLOR_WHITE);
-  drv_ssd1306_draw_rectangle(&(display->screen), 0, 9, 127, 54, DRV_SSD1306_COLOR_WHITE);
-  drv_ssd1306_set_cursor(&(display->screen), 0, 55);
-  drv_ssd1306_write_string(&(display->screen), s_notifications, Font_6x8, DRV_SSD1306_COLOR_WHITE);
-  drv_ssd1306_set_cursor(&(display->screen), 123 - 6 * 5 * 2 - 2, 55); // Set position for High threshold
-  drv_ssd1306_write_string(&(display->screen), s_high_threshold, Font_6x8, DRV_SSD1306_COLOR_WHITE);
-  drv_ssd1306_set_cursor(&(display->screen), 123 - 6 * 5, 55); // Set position for Low threshold
-  drv_ssd1306_write_string(&(display->screen), s_low_threshold, Font_6x8, DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_write_string(&(display->screen),
+                           s_heart_rate,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_draw_bitmap(&(display->screen),
+                          MAX_WIDTH - BITMAP_WIDTH,
+                          0,
+                          heart_icon,
+                          BITMAP_WIDTH,
+                          BITMAP_HEIGHT,
+                          DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_draw_rectangle(&(display->screen),
+                             0,
+                             MAX_HEIGHT - GRAPH_HEIGHT,
+                             MAX_WIDTH,
+                             MAX_HEIGHT - 9,
+                             DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen),
+                         0,
+                         MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           s_notifications,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen),
+                         MAX_WIDTH - 6 * 5 * 2 - 2, // Number of chars in s_high_threshold
+                         MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           s_high_threshold,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_set_cursor(&(display->screen),
+                         MAX_WIDTH - 6 * 5, // Number of chars in s_low_threshold
+                         MAX_HEIGHT - BITMAP_HEIGHT + 1);
+  drv_ssd1306_write_string(&(display->screen),
+                           s_low_threshold,
+                           Font_6x8,
+                           DRV_SSD1306_COLOR_WHITE);
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
