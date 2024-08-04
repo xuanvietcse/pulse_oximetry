@@ -21,11 +21,11 @@
 /* Includes ----------------------------------------------------------- */
 #include "bsp_i2c.h"
 #include <stdbool.h>
+#include "ssd1306_fonts.h"
 /* Public defines ----------------------------------------------------- */
 #define SSD1306_I2C_ADDRESS (0x3C << 1)
 #define SSD1306_WIDTH (128)
 #define SSD1306_HEIGHT (64)
-#define SSD1306_INCLUDE_FONT_7x10
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_ssd1306_status_t
 {
@@ -66,14 +66,6 @@ typedef enum
   DRV_SSD1306_COLOR_BLACK = 0x00, // Turn off all pixel
   DRV_SSD1306_COLOR_WHITE = 0x01  // Turn on all pixel, color depends on device
 } drv_ssd1306_color_t;
-
-typedef struct
-{
-  const uint8_t width;
-  const uint8_t height;
-  const uint16_t *const data_font;
-  const uint8_t *const char_width;
-} drv_ssd1306_font_t;
 
 /* Public macros ------------------------------------------------------ */
 
@@ -180,7 +172,7 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev, uint8_t pos_x, uint8_t pos_y
  *  - (-1): Fail
  *  - (0) : Success
  */
-uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev, char ch, drv_ssd1306_font_t font, drv_ssd1306_color_t color);
+uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev, char ch, ssd1306_font_t font, drv_ssd1306_color_t color);
 
 /**
  * @brief         Write the message on the SSD1306 OLED screen
@@ -195,7 +187,7 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev, char ch, drv_ssd1306_font_t 
  *  - (-1): Fail
  *  - (0) : Success
  */
-uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev, char *str, drv_ssd1306_font_t font, drv_ssd1306_color_t color);
+uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev, char *str, ssd1306_font_t font, drv_ssd1306_color_t color);
 
 /**
  * @brief         Update screen on the SSD1306 OLED

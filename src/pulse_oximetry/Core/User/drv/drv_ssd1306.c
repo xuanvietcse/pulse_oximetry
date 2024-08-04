@@ -161,7 +161,7 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
                                 char ch,
-                                drv_ssd1306_font_t font,
+                                ssd1306_font_t font,
                                 drv_ssd1306_color_t color)
 {
   // Check parameters
@@ -196,7 +196,7 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev,
                                   char *str,
-                                  drv_ssd1306_font_t font,
+                                  ssd1306_font_t font,
                                   drv_ssd1306_color_t color)
 {
   // Check parameters
