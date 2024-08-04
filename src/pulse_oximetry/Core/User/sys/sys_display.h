@@ -35,7 +35,6 @@ typedef struct
 {
   drv_ssd1306_t screen;
   uint8_t heart_rate;
-  uint8_t *signal_buf;
   uint8_t *threshold_buf;
 } sys_display_t;
 
@@ -74,15 +73,15 @@ uint32_t sys_display_update_heart_rate(sys_display_t *display, uint8_t heart_rat
 /**
  * @brief  Graph the PPG signal on the display
  *
- * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
- * @param[in]     ppg_sig_buf      amount of PPG data needed to graph
+ * @param[in]     display         pointer to sys_display_t structure for manage the display in the system
+ * @param[in]     signal_buf      amount of PPG data needed to graph
  *
  * @return
  *  - (-2): Error
  *  - (-1): Failed
  *  - (0) : Success
  */
-uint32_t sys_display_update_ppg_signal(sys_display_t *display, uint8_t *ppg_sig_buf);
+uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal_buf);
 
 /**
  * @brief  Update new threshold
