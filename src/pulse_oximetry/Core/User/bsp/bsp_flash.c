@@ -71,6 +71,22 @@ uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
 
   return BSP_FLASH_OK;
 }
+
+uint32_t bsp_flash_erase_sector(uint32_t sector_num)
+{
+  __ASSERT((sector_num >= FLASH_SECTOR_0) && (sector_num <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+
+  uint32_t ret = BSP_FLASH_OK;
+  ret = bsp_flash_unlock();
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
+
+  FLASH_Erase_Sector(sector_num, FLASH_VOLTAGE_RANGE_3);
+
+  ret = bsp_flash_lock();
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
+
+  return BSP_FLASH_OK;
+}
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
