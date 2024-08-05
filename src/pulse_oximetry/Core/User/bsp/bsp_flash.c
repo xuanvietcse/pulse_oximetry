@@ -34,7 +34,7 @@ uint32_t bsp_flash_unlock(void)
 {
   uint32_t ret = HAL_OK;
   ret = HAL_FLASH_Unlock();
-  __ASSERT(ret == HAL_OK, BSP_FLASH_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_FLASH_FAILED);
 
   return BSP_FLASH_OK;
 }
@@ -43,7 +43,7 @@ uint32_t bsp_flash_lock(void)
 {
   uint32_t ret = HAL_OK;
   ret = HAL_FLASH_Lock();
-  __ASSERT(ret == HAL_OK, BSP_FLASH_FAIL);
+  __ASSERT(ret == HAL_OK, BSP_FLASH_FAILED);
 
   return BSP_FLASH_OK;
 }
@@ -60,17 +60,17 @@ uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
   // Unlock the FLASH for next operations
   uint32_t ret = BSP_FLASH_OK;
   ret = bsp_flash_unlock();
-  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
   // Write data in byte to FLASH
   for (uint32_t i = 0; i < nbytes; i++)
   {
     ret = HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, address + i, *((uint8_t *)data_buf + i));
-    __ASSERT(ret == HAL_OK, BSP_FLASH_FAIL);
+    __ASSERT(ret == HAL_OK, BSP_FLASH_FAILED);
   }
   // Lock FLASH for safety
   ret = bsp_flash_lock();
-  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
   return BSP_FLASH_OK;
 }
@@ -100,14 +100,14 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num)
   uint32_t ret = BSP_FLASH_OK;
   // Unlock the Flash for erasing
   ret = bsp_flash_unlock();
-  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
   // Erase all data in sector, power supply is 3V
   FLASH_Erase_Sector(sector_num, FLASH_VOLTAGE_RANGE_3);
 
   // Lock FLASH for safety
   ret = bsp_flash_lock();
-  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
   return BSP_FLASH_OK;
 }

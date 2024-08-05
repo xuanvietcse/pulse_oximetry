@@ -44,7 +44,7 @@
 enum bsp_flash_status_t
 {
   BSP_FLASH_ERROR = 0xFFFFFFFF,
-  BSP_FLASH_FAIL = 0x7FFFFFF,
+  BSP_FLASH_FAILED = 0x7FFFFFF,
   BSP_FLASH_OK = 0x3FFFFFF
 };
 
@@ -59,7 +59,7 @@ enum bsp_flash_status_t
  *
  * @return
  *  - 0xFFFFFFFF: Error
- *  - 0x7FFFFFFF: Fail
+ *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_unlock(void);
@@ -69,7 +69,7 @@ uint32_t bsp_flash_unlock(void);
  *
  * @return
  *  - 0xFFFFFFFF: Error
- *  - 0x7FFFFFFF: Fail
+ *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_lock(void);
@@ -81,7 +81,7 @@ uint32_t bsp_flash_lock(void);
  *
  * @return
  *  - 0xFFFFFFFF: Error
- *  - 0x7FFFFFFF: Fail
+ *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_erase_sector(uint32_t sector_num);
@@ -95,7 +95,7 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num);
  *
  * @return
  *  - 0xFFFFFFFF: Error
- *  - 0x7FFFFFFF: Fail
+ *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes);
@@ -109,7 +109,7 @@ uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes);
  *
  * @return
  *  - 0xFFFFFFFF: Error
- *  - 0x7FFFFFFF: Fail
+ *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
 uint32_t bsp_flash_read(uint32_t address, void *data_buf, uint32_t nbytes);
