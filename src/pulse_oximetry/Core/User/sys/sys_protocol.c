@@ -99,13 +99,13 @@ uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
 /* Private definitions ----------------------------------------------- */
 static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes)
 {
-  drv_serial_receive(s_pkt_buf + received_bytes);
+  drv_serial_receive(s_pkt_buf);
   s_received_bytes += received_bytes;
   uint8_t *start_byte_pos = strchr(s_pkt_buf, 0x01);
-  uint8_t *stop_byte_pos = strchr(s_pkt_buf, 0x04);
+  uint8_t *stop_byte_pos = strchr(start_byte_pos + 5, 0x04);
   if ((start_byte_pos != NULL) && (stop_byte_pos != NULL))
   {
-    memmove(s_pkt, stop_byte_pos + 1, stop_byte_pos - start_byte_pos - 1);
+    memmove(s_pkt, start_byte_pos + 1, stop_byte_pos - start_byte_pos - 1);
     s_packet_cplt_flag = true;
   }
   if (s_packet_cplt_flag)
@@ -117,8 +117,8 @@ static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes)
     // DATA
     for (uint8_t i = 1; i < 5; i++)
     {
-      pkt.data = *(s_pkt + i) & DATA_FIELD;
-      pkt.data <<= 1;
+      pkt.data <<= 8;
+      pkt.data |= *(s_pkt + i) & DATA_FIELD;
     }
     // TH Level
     pkt.threshold_level = *(s_pkt + 5) & TH_LEVEL_FIELD;
