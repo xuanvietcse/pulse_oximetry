@@ -102,6 +102,20 @@ uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size);
  */
 uint32_t sys_storage_fully_clean(sys_storage_t *storage);
 
+/**
+ * @brief  Deinitialize the segment in flash to store data and free this segment.
+ *
+ * @param[in]     storage       pointer to structure mangage the data segment.
+ *
+ * @attention  Please read Flash module organization before use.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t sys_storage_deinit(sys_storage_t *storage);
+
 #endif // __USER_SYS_STORAGE_H
 
 /* End of file -------------------------------------------------------- */
