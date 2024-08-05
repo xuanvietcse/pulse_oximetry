@@ -37,7 +37,11 @@ typedef struct
   uint8_t threshold_level;
 } sys_protocol_pkt_t;
 /* Public macros ------------------------------------------------------ */
-
+#define SOF_FIELD ((0xF0) << 5)
+#define COMMAND_FIELD ((0x0F) << 5)
+#define DATA_FIELD ((0xFFFFFFFF) << 3)
+#define TH_LEVEL_FIELD ((0x0F) << 1)
+#define EOF_FIELD (0x0F)
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
