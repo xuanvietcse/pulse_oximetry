@@ -24,9 +24,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_serial_status_t
 {
-  DRV_SERIAL_ERROR = -2,
-  DRV_SERIAL_FAILED,
-  DRV_SERIAL_OK
+  DRV_SERIAL_ERROR = 0xFFFFFFFF,
+  DRV_SERIAL_FAILED = 0x7FFFFFFF,
+  DRV_SERIAL_OK = 0x3FFFFFFF
 };
 
 typedef struct __attribute((__packed__))

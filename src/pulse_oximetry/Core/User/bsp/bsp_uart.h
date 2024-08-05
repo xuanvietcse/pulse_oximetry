@@ -27,9 +27,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 enum bsp_uart_status_t
 {
-  BSP_UART_ERROR = -2,
-  BSP_UART_FAIL,
-  BSP_UART_OK
+  BSP_UART_ERROR = 0xFFFFFFFF,
+  BSP_UART_FAIL = 0x7FFFFFFF,
+  BSP_UART_OK = 0x3FFFFFFF
 };
 
 /* Public macros ------------------------------------------------------ */
