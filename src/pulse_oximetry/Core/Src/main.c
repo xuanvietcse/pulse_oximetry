@@ -25,7 +25,7 @@
 #include "sys_display.h"
 #include "drv_buzzer.h"
 #include "list_of_sound_effects.h"
-
+#include "sys_protocol.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,7 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MAX_SIZE (100)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -55,15 +55,18 @@ TIM_HandleTypeDef htim11;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
-drv_ssd1306_t dev;
 uint8_t display_buffer[1024];
 sys_display_t display;
 sys_measure_t ppg;
 double filtered_data[240];
 uint32_t peak_nums;
 drv_buzzer_t buzzer;
+cbuffer_t cbuffer;
+uint8_t data_buffer[MAX_SIZE] = {0};
+uint8_t data_received[MAX_SIZE] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -122,6 +125,9 @@ int main(void)
   MX_TIM11_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  sys_protocol_init(&huart2);
+  cb_init(&cbuffer, data_buffer, MAX_SIZE);
+  sys_protocol_register_node_to_send(SYS_PROTOCOL_SYS_MNG, &cbuffer);
   sys_display_init(&display, &hi2c2, display_buffer);
   for (uint8_t i = 0; i < 256; ++i)
   {
@@ -452,6 +458,9 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   /* DMA1_Stream7_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);

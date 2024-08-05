@@ -31,8 +31,8 @@
 static drv_serial_t d_serial;
 static drv_evt_cb_t d_new_rx_data_cb;
 
-const uint8_t start_byte[] = "@@";
-const uint8_t stop_bytes[] = "&&";
+const uint8_t start_byte = 0x01;
+const uint8_t stop_bytes = 0x04;
 
 static uint8_t dma_buffer[DMA_BUFFER_SIZE] = {0};
 static uint8_t swap_buffer_a[DMA_BUFFER_SIZE] = {0};
@@ -149,7 +149,7 @@ static void drv_serial_rx_evt_handler(UART_HandleTypeDef *uart, uint16_t size)
       d_serial.reception_buf = d_serial.handle_buf;
       d_serial.handle_buf = temp;
 
-      if (strchr((const char *)d_serial.handle_buf, '@') != NULL)
+      if (strchr((const char *)d_serial.handle_buf, 0x01) != NULL)
       {
         is_start_packet = true;
       }
@@ -159,7 +159,7 @@ static void drv_serial_rx_evt_handler(UART_HandleTypeDef *uart, uint16_t size)
         __CALLBACK(d_new_rx_data_cb, d_serial.received_bytes);
       }
 
-      if (strchr((const char *)d_serial.handle_buf, '&') != NULL)
+      if (strchr((const char *)d_serial.handle_buf, 0x04) != NULL)
       {
         is_start_packet = false;
       }
