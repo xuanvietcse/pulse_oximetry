@@ -40,19 +40,19 @@ If there is any error, system must notify to users.
 
 ### 5 Fields
 - Start of frame (SOF):
-  - Length: 4 bits.
-  - Value: 0x1.
+  - Length: 1 byte.
+  - Value: 0x01.
   - Inform starting point of packet.
 - Command Type (CMD):
-  - Length: 4 bits.
+  - Length: 1 byte.
   - Value:
-    - 0x0: Check UART.
-    - 0x1: Get data.
-    - 0x2: Set Threshold.
-    - 0x3: Set interval.
-    - 0x4: Set/Get time.
-    - 0x5: Clear records.
-    - 0x6: Error notification.
+    - 0x00: Check UART.
+    - 0x01: Get data.
+    - 0x02: Set Threshold.
+    - 0x03: Set interval.
+    - 0x04: Set/Get time.
+    - 0x05: Clear records.
+    - 0x06: Error notification.
 - Data (DATA):
   - Length: 4 bytes.
   - Value: Based on CMD.
@@ -76,7 +76,7 @@ If there is any error, system must notify to users.
 
 **Example packet:**
 
-![image](./img/example_packet.png)
+![image](./img/example_packet.jpg)
 
 ## Reference
 
