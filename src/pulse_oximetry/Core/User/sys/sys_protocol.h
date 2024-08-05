@@ -43,7 +43,7 @@ typedef enum
 } sys_protocol_node_t;
 /* Public macros ------------------------------------------------------ */
 #define COMMAND_FIELD (0xFF)
-#define DATA_FIELD (0xFFFFFFFF)
+#define DATA_FIELD (0xFF)
 #define TH_LEVEL_FIELD (0xFF)
 /* Public variables --------------------------------------------------- */
 
