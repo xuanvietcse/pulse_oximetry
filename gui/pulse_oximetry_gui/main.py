@@ -355,93 +355,98 @@ class MainWindow(QMainWindow):
     def process_serial_data(self, data):
         if self.serial_connection:
             try:
-                if len(data) == 8:
-                    packet = data.hex().upper()
-                    if packet.startswith("01") and packet.endswith("04"):
-                        cmd = packet[2:4]
-                        data = packet[4:12]
-                        threshold = packet[12:14]
-                        if threshold in ["FF", "0F", "F0"]:
-                            if threshold == "0F":
-                                self.ui_user.line_thre_noti.setText("Heart rate too high")
-                            elif threshold == "F0":
-                                self.ui_user.line_thre_noti.setText("Heart rate too low")
-                            elif threshold == "FF":
-                                self.ui_user.line_thre_noti.setText("Normal heart rate")
-                        else:
-                            QMessageBox.warning(self, "Error", "Invalid threshold byte")
-
-                        if cmd in ["01", "04", "06"]:
-                            if cmd == "06":
-                                if data == "FFFFFFFF":
-                                    self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
-                                else:
-                                    QMessageBox.warning(self, "Error", "Invalid data")
-                            elif cmd == "01":
-                                data_type = data[7:8]
-                                if data_type in ["0", "1", "2"]:
-                                    if data_type == "0":
-                                        #plot heart rate
-                                        data_value = int(data[0:7], 16)
-
-                                        time_in_hours = self.hour[-1] + self.minute[-1] / 60 + self.second[-1] / 3600
-                                        self.heart_rate_time.append(time_in_hours)
-                                        self.heart_rate_value.append(data_value)
-
-                                        # Update the PlotDataItem
-                                        # self.heart_rate_plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
-
-                                        # Update the ScatterPlotItem
-                                        self.heart_rate_scatter.setData(self.heart_rate_time, self.heart_rate_value)
-
-                                        # Print the records from the arrays
-
-                                        record = f"{self.day[-1]:02}/{self.month[-1]:02}/{self.year[-1]:04} {self.hour[-1]:02}:{self.minute[-1]:02}:{self.second[-1]:02} Heart rate: {self.heart_rate_value[-1]} bpm"
-                                        self.records.append(record)
-
-                                        # Join records with newline characters and print to txt_record
-                                        records_text = "\n".join(self.records)
-                                        self.ui_user.txt_record.setPlainText(records_text)
-
-                                    elif data_type == "1":
-                                        #plot filtered ppg signal
-                                        data_value = int(data[0:7], 16)
-
-                                        time_in_hours = self.hour[-1] + self.minute[-1] / 60 + self.second[-1] / 3600
-                                        self.dev_widget.filtered_ppg_time.append(time_in_hours)
-                                        self.dev_widget.filtered_ppg_value.append(data_value)
-                                        self.dev_widget.filtered_ppg_graph.plot(self.dev_widget.filtered_ppg_time, self.dev_widget.filtered_ppg_value, pen=self.dev_widget.filtered_ppg_pen, clear=True)
-
-
-                                    elif data_type == "2":
-                                        #plot raw ppg signal
-                                        data_value = int(data[0:7], 16)
-
-                                        time_in_hours = self.hour[-1] + self.minute[-1] / 60 + self.second[-1] / 3600
-                                        self.dev_widget.raw_ppg_time.append(time_in_hours)
-                                        self.dev_widget.raw_ppg_value.append(data_value)
-                                        self.dev_widget.raw_ppg_graph.plot(self.dev_widget.raw_ppg_time, self.dev_widget.raw_ppg_value, pen=self.dev_widget.raw_ppg_pen, clear=True)
-
-                                else:
-                                    QMessageBox.warning(self, "Error", "Invalid data type")
-
-                            elif cmd == "04":
-                                epoch_value = int(data, 16)
-                                dt = QDateTime.fromSecsSinceEpoch(epoch_value)
-
-                                self.dayofweek.append(dt.date().dayOfWeek() - 1)  # QDate.dayOfWeek(): 1 (Monday) to 7 (Sunday)
-                                self.day.append(dt.date().day())
-                                self.month.append(dt.date().month())
-                                self.year.append(dt.date().year())
-                                self.hour.append(dt.time().hour())
-                                self.minute.append(dt.time().minute())
-                                self.second.append(dt.time().second())
-                        else:
-                            QMessageBox.warning(self, "Error", "Invalid command")
-                    else:
-                        QMessageBox.warning(self, "Error", "Invalid frame of data packet")
-                else:
+                if not len(data) == 8:
                     QMessageBox.warning(self, "Error", "Invalid data length received from serial port")
+                    return
+
+                packet = data.hex().upper()
+
+                if not (packet.startswith("01") and packet.endswith("04")):
+                    QMessageBox.warning(self, "Error", "Invalid frame of data packet")
+                    return
+
+                cmd = packet[2:4]
+                data = packet[4:12]
+                threshold = packet[12:14]
+
+                if not (threshold in ["FF", "0F", "F0"]):
+                    QMessageBox.warning(self, "Error", "Invalid threshold byte")
+                    return
+
+                if not (cmd in ["01", "04", "06"]):
+                    QMessageBox.warning(self, "Error", "Invalid command")
+                    return
+
+                if threshold == "0F":
+                    self.ui_user.line_thre_noti.setText("Heart rate too high")
+                elif threshold == "F0":
+                    self.ui_user.line_thre_noti.setText("Heart rate too low")
+                elif threshold == "FF":
+                    self.ui_user.line_thre_noti.setText("Normal heart rate")
+
+
+                if cmd == "06":
+                    if data == "FFFFFFFF":
+                        self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
+                    else:
+                        QMessageBox.warning(self, "Error", "Invalid data")
+                        return
+                elif cmd == "01":
+                    data_type = data[7:8]
+
+                    if not (data_type in ["0", "1", "2"]):
+                        QMessageBox.warning(self, "Error", "Invalid data type")
+                        return
+
+                    if data_type == "0":
+                        #plot heart rate
+                        data_value = int(data[0:7], 16)
+
+                        time_in_hours = self.hour[-1] + self.minute[-1] / 60 + self.second[-1] / 3600
+                        self.heart_rate_time.append(time_in_hours)
+                        self.heart_rate_value.append(data_value)
+
+                        # Update the PlotDataItem
+                        # self.heart_rate_plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
+
+                        # Update the ScatterPlotItem
+                        self.heart_rate_scatter.setData(self.heart_rate_time, self.heart_rate_value)
+
+                        # Print the records from the arrays
+
+                        record = f"{self.day[-1]:02}/{self.month[-1]:02}/{self.year[-1]:04} {self.hour[-1]:02}:{self.minute[-1]:02}:{self.second[-1]:02} Heart rate: {self.heart_rate_value[-1]} bpm"
+                        self.records.append(record)
+
+                        # Join records with newline characters and print to txt_record
+                        records_text = "\n".join(self.records)
+                        self.ui_user.txt_record.setPlainText(records_text)
+                    elif data_type == "1":
+                        #plot filtered ppg signal
+                        data_value = int(data[0:7], 16)
+
+                        time_in_hours = self.hour[-1] + self.minute[-1] / 60 + self.second[-1] / 3600
+                        self.dev_widget.filtered_ppg_time.append(time_in_hours)
+                        self.dev_widget.filtered_ppg_value.append(data_value)
+                        self.dev_widget.filtered_ppg_graph.plot(self.dev_widget.filtered_ppg_time, self.dev_widget.filtered_ppg_value, pen=self.dev_widget.filtered_ppg_pen, clear=True)
+                    elif data_type == "2":
+                        #plot raw ppg signal
+                        data_value = int(data[0:7], 16)
+
+                        time_in_hours = self.hour[-1] + self.minute[-1] / 60 + self.second[-1] / 3600
+                        self.dev_widget.raw_ppg_time.append(time_in_hours)
+                        self.dev_widget.raw_ppg_value.append(data_value)
+                        self.dev_widget.raw_ppg_graph.plot(self.dev_widget.raw_ppg_time, self.dev_widget.raw_ppg_value, pen=self.dev_widget.raw_ppg_pen, clear=True)
+                elif cmd == "04":
+                    epoch_value = int(data, 16)
+                    dt = QDateTime.fromSecsSinceEpoch(epoch_value)
+
+                    self.dayofweek.append(dt.date().dayOfWeek() - 1)  # QDate.dayOfWeek(): 1 (Monday) to 7 (Sunday)
+                    self.day.append(dt.date().day())
+                    self.month.append(dt.date().month())
+                    self.year.append(dt.date().year())
+                    self.hour.append(dt.time().hour())
+                    self.minute.append(dt.time().minute())
+                    self.second.append(dt.time().second())
 
             except Exception as e:
                 QMessageBox.warning(self, "Error", f"Failed to read serial data: {str(e)}")
