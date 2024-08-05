@@ -21,6 +21,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -73,6 +74,18 @@ uint32_t sys_protocol_init(UART_HandleTypeDef *uart);
  * -  (0x3FFFFFFF)  : Success
  */
 uint32_t sys_protocol_register_node_to_send(sys_protocol_node_t rx_node, cbuffer_t *rx_cb);
+/**
+ * @brief                 Send packet to node registered
+ *
+ * @param[in]     rx_node Node to be sent
+ * @param[in]     pkt     Packet to be sent
+ *
+ * @return
+ * -  (0xFFFFFFFF)  : Error
+ * -  (0x7FFFFFFF)  : Failed
+ * -  (0x3FFFFFFF)  : Success
+ */
+uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol_pkt_t pkt);
 #endif // __SYS_PROTOCOL_H
 
 /* End of file -------------------------------------------------------- */
