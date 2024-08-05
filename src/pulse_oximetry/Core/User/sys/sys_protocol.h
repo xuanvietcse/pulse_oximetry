@@ -30,6 +30,12 @@ typedef enum
   SYS_PROTOCOL_FAILED,
   SYS_PROTOCOL_OK
 } sys_protocol_status_t;
+typedef struct
+{
+  uint8_t command;
+  uint32_t data;
+  uint8_t threshold_level;
+} sys_protocol_pkt_t;
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
