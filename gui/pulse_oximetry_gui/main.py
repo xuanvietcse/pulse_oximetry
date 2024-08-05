@@ -15,7 +15,7 @@ import serial.tools.list_ports
 import pyqtgraph as pg
 import numpy as np
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox, QVBoxLayout
-from PySide6.QtCore import Slot, QTimer
+from PySide6.QtCore import Slot, QTimer, QDateTime
 from dev_ui_manage import Widget
 from ui_form import Ui_User_UI
 from serial_manage import serial_manage
@@ -82,9 +82,18 @@ class MainWindow(QMainWindow):
         self.heart_rate_graph.setLabel("bottom", "Time (s)", **styles)
 
         self.pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
+        self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
         # Data lists for plotting heart rate
         self.heart_rate_time = []
         self.heart_rate_value = []
+
+        self.dayofweek = None
+        self.day = None
+        self.month = None
+        self.year = None
+        self.hour = None
+        self.minute = None
+        self.second = None
 
         # Set default value for cbb_baudrate
         self.ui_user.cbb_baudrate.setCurrentText("115200")
@@ -336,34 +345,34 @@ class MainWindow(QMainWindow):
                                     if data_type == "0":
                                         #plot heart rate
                                         data_value = int(data[0:7], 16)
-                                        interval_value = int(self.ui_user.line_set_interval.text())
-                                        # Update the data lists for plotting
-                                        if self.heart_rate_time:
-                                            new_time = self.heart_rate_time[-1] + interval_value
+
+                                        if self.hour is not None and self.minute is not None and self.second is not None:
+                                            time_in_hours = self.hour + self.minute / 60 + self.second / 3600
+                                            self.heart_rate_time.append(time_in_hours)
+                                            self.heart_rate_value.append(data_value)
+                                            self.heart_rate_graph.plot(self.heart_rate_time, self.heart_rate_value, pen=self.pen_hr, clear=True)
                                         else:
-                                            new_time = 0
+                                            QMessageBox.warning(self, "Error", "Invalid record time")
+                                    # elif data_type == "1":
+                                    #     #plot filtered ppg signal
 
-                                        self.heart_rate_time.append(new_time)
-                                        self.heart_rate_value.append(data_value)
-
-                                        # Keep only the last 10 samples
-                                        if len(self.heart_rate_time) > 10:
-                                            self.heart_rate_time = self.heart_rate_time[-10:]
-                                            self.heart_rate_value = self.heart_rate_value[-10:]
-
-                                        # Update the plot
-                                        self.heart_rate_graph.plot(self.heart_rate_time, self.heart_rate_value, pen=self.pen_hr, clear=True)
-
-                                    elif data_type == "1":
-                                        #plot filtered ppg signal
-
-                                    elif data_type == "2":
-                                        #plot raw ppg signal
+                                    # elif data_type == "2":
+                                    #     #plot raw ppg signal
 
                                 else:
                                     QMessageBox.warning(self, "Error", "Invalid data type")
 
                             elif cmd == "4":
+                                 epoch_value = int(data, 16)
+                                 dt = QDateTime.fromSecsSinceEpoch(epoch_value)
+
+                                 self.dayofweek = dt.date().dayOfWeek() - 1  # QDate.dayOfWeek(): 1 (Monday) to 7 (Sunday)
+                                 self.day = dt.date().day()
+                                 self.month = dt.date().month()
+                                 self.year = dt.date().year()
+                                 self.hour = dt.time().hour()
+                                 self.minute = dt.time().minute()
+                                 self.second = dt.time().second()
 
                         else:
                             QMessageBox.warning(self, "Error", "Invalid command")
