@@ -45,7 +45,17 @@ typedef struct
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
-
+/**
+ * @brief                 Start system protocol
+ *
+ * @param[in]     uart    Hardware UART handler
+ *
+ * @return
+ * -  (0xFFFFFFFF)  : Error
+ * -  (0x7FFFFFFF)  : Failed
+ * -  (0x3FFFFFFF)  : Success
+ */
+uint32_t sys_protocol_init(UART_HandleTypeDef *uart);
 #endif // __SYS_PROTOCOL_H
 
 /* End of file -------------------------------------------------------- */
