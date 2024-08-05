@@ -51,21 +51,24 @@ uint32_t bsp_flash_lock(void)
 uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
 {
   __ASSERT(nbytes > 0, BSP_FLASH_ERROR);
+  // Check valid address in range 0x08000000 - 0x0807FFFF
   __ASSERT((address >= BSP_FLASH_SECTOR_0_ADDRESS) &&
                (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
            BSP_FLASH_ERROR);
   __ASSERT(data_buf != NULL, BSP_FLASH_ERROR);
 
+  // Unlock the FLASH for next operations
   uint32_t ret = BSP_FLASH_OK;
   ret = bsp_flash_unlock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
 
+  // Write data in byte to FLASH
   for (uint32_t i = 0; i < nbytes; i++)
   {
     ret = HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, address + i, *((uint8_t *)data_buf + i));
     __ASSERT(ret == HAL_OK, BSP_FLASH_FAIL);
   }
-
+  // Lock FLASH for safety
   ret = bsp_flash_lock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
 
@@ -75,11 +78,13 @@ uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
 uint32_t bsp_flash_read(uint32_t address, void *data_buf, uint32_t nbytes)
 {
   __ASSERT(nbytes > 0, BSP_FLASH_ERROR);
+  // Check valid address in range 0x08000000 - 0x0807FFFF
   __ASSERT((address >= BSP_FLASH_SECTOR_0_ADDRESS) &&
                (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
            BSP_FLASH_ERROR);
   __ASSERT(data_buf != NULL, BSP_FLASH_ERROR);
 
+  // Don't need to unlock for reading operation
   for (uint32_t i = 0; i < nbytes; i++)
   {
     *((uint8_t *)data_buf + i) = *((__IO uint8_t *)address + i);
@@ -93,11 +98,14 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num)
   __ASSERT((sector_num >= FLASH_SECTOR_0) && (sector_num <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
 
   uint32_t ret = BSP_FLASH_OK;
+  // Unlock the Flash for erasing
   ret = bsp_flash_unlock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
 
+  // Erase all data in sector, power supply is 3V
   FLASH_Erase_Sector(sector_num, FLASH_VOLTAGE_RANGE_3);
 
+  // Lock FLASH for safety
   ret = bsp_flash_lock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAIL);
 
