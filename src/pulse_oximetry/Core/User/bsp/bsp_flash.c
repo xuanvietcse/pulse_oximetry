@@ -72,6 +72,22 @@ uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
   return BSP_FLASH_OK;
 }
 
+uint32_t bsp_flash_read(uint32_t address, void *data_buf, uint32_t nbytes)
+{
+  __ASSERT(nbytes > 0, BSP_FLASH_ERROR);
+  __ASSERT((address >= BSP_FLASH_SECTOR_0_ADDRESS) &&
+               (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
+           BSP_FLASH_ERROR);
+  __ASSERT(data_buf != NULL, BSP_FLASH_ERROR);
+
+  for (uint32_t i = 0; i < nbytes; i++)
+  {
+    *((uint8_t *)data_buf + i) = *((__IO uint8_t *)address + i);
+  }
+
+  return BSP_FLASH_OK;
+}
+
 uint32_t bsp_flash_erase_sector(uint32_t sector_num)
 {
   __ASSERT((sector_num >= FLASH_SECTOR_0) && (sector_num <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
