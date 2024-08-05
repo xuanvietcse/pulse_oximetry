@@ -45,6 +45,7 @@ typedef struct
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
+
 /**
  * @brief                 Start system protocol
  *
@@ -56,6 +57,18 @@ typedef struct
  * -  (0x3FFFFFFF)  : Success
  */
 uint32_t sys_protocol_init(UART_HandleTypeDef *uart);
+/**
+ * @brief                 Register node to send packet to
+ *
+ * @param[in]     rx_node Node to register
+ * @param[in]     rx_cb   List of node
+ *
+ * @return
+ * -  (0xFFFFFFFF)  : Error
+ * -  (0x7FFFFFFF)  : Failed
+ * -  (0x3FFFFFFF)  : Success
+ */
+uint32_t sys_protocol_register_node_to_send(sys_protocol_node_t rx_node, cbuffer_t *rx_cb);
 #endif // __SYS_PROTOCOL_H
 
 /* End of file -------------------------------------------------------- */
