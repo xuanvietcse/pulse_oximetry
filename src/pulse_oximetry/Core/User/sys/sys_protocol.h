@@ -36,6 +36,10 @@ typedef struct
   uint32_t data;
   uint8_t threshold_level;
 } sys_protocol_pkt_t;
+typedef enum
+{
+  SYS_PROTOCOL_SYS_MNG = 0
+} sys_protocol_node_t;
 /* Public macros ------------------------------------------------------ */
 #define SOF_FIELD ((0xF0) << 5)
 #define COMMAND_FIELD ((0x0F) << 5)
