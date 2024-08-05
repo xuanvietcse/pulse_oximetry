@@ -455,7 +455,7 @@
      <property name="geometry">
       <rect>
        <x>870</x>
-       <y>80</y>
+       <y>60</y>
        <width>111</width>
        <height>29</height>
       </rect>
@@ -468,13 +468,26 @@
      <property name="geometry">
       <rect>
        <x>870</x>
-       <y>150</y>
+       <y>120</y>
        <width>111</width>
        <height>29</height>
       </rect>
      </property>
      <property name="text">
       <string>Clear record</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_clear_graph">
+     <property name="geometry">
+      <rect>
+       <x>870</x>
+       <y>180</y>
+       <width>111</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Clear graph</string>
      </property>
     </widget>
    </widget>
