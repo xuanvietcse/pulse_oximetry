@@ -51,6 +51,16 @@ uint32_t sys_protocol_init(UART_HandleTypeDef *uart)
   // Return
   return SYS_PROTOCOL_OK;
 }
+uint32_t sys_protocol_register_node_to_send(sys_protocol_node_t rx_node, cbuffer_t *rx_cb)
+{
+  // Check parameters
+  __ASSERT((rx_node < SYS_PROTOCOL_MAX_NODE), SYS_PROTOCOL_ERROR);
+  __ASSERT((rx_cb != NULL), SYS_PROTOCOL_ERROR);
+  // Operation
+  s_protocol_node[rx_node] = rx_cb;
+  // Return
+  return SYS_PROTOCOL_OK;
+}
 /* Private definitions ----------------------------------------------- */
 
 /* End of file -------------------------------------------------------- */
