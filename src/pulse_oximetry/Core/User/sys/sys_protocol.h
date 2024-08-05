@@ -42,11 +42,9 @@ typedef enum
   SYS_PROTOCOL_SYS_MNG = 0
 } sys_protocol_node_t;
 /* Public macros ------------------------------------------------------ */
-#define SOF_FIELD ((0xF0) << 5)
-#define COMMAND_FIELD ((0x0F) << 5)
-#define DATA_FIELD ((0xFFFFFFFF) << 3)
-#define TH_LEVEL_FIELD ((0x0F) << 1)
-#define EOF_FIELD (0x0F)
+#define COMMAND_FIELD (0xFF)
+#define DATA_FIELD (0xFF)
+#define TH_LEVEL_FIELD (0xFF)
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
