@@ -10,10 +10,8 @@
 
 import sys
 import serial
-import time
 import serial.tools.list_ports
 import pyqtgraph as pg
-import numpy as np
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox, QVBoxLayout
 from PySide6.QtCore import Slot, QTimer, QDateTime
 from dev_ui_manage import Widget
@@ -79,9 +77,9 @@ class MainWindow(QMainWindow):
 
         styles = {"color": "black", "font-size": "13px"}
         self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
-        self.heart_rate_graph.setLabel("bottom", "Time (s)", **styles)
+        self.heart_rate_graph.setLabel("bottom", "Time (h)", **styles)
 
-        self.pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
+        self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))  # Blue
         self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
 
         # Data lists for plotting heart rate
@@ -89,12 +87,12 @@ class MainWindow(QMainWindow):
         self.heart_rate_value = []
 
         # PlotDataItem for lines
-        self.plot_lines = pg.PlotDataItem(pen=self.pen_hr)
-        self.heart_rate_graph.addItem(self.plot_lines)
+        self.heart_rate_plot_lines = pg.PlotDataItem(pen=self.heart_rate_pen)
+        self.heart_rate_graph.addItem(self.heart_rate_plot_lines)
 
         # ScatterPlotItem for scatter points
-        self.scatter = pg.ScatterPlotItem(size=10, pen=None, brush=(255, 0, 0))  # Red
-        self.heart_rate_graph.addItem(self.scatter)
+        self.heart_rate_scatter = pg.ScatterPlotItem(size=10, pen=None, brush=(0, 0, 255))
+        self.heart_rate_graph.addItem(self.heart_rate_scatter)
 
         self.dayofweek = None
         self.day = None
@@ -364,10 +362,10 @@ class MainWindow(QMainWindow):
                                             self.heart_rate_value.append(data_value)
 
                                             # Update the PlotDataItem
-                                            self.plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
+                                            self.heart_rate_plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
 
                                             # Update the ScatterPlotItem
-                                            self.scatter.setData(self.heart_rate_time, self.heart_rate_value)
+                                            self.heart_rate_scatter.setData(self.heart_rate_time, self.heart_rate_value)
                                         else:
                                             QMessageBox.warning(self, "Error", "Invalid record time")
 
