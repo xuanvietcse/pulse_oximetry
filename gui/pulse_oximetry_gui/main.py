@@ -83,9 +83,18 @@ class MainWindow(QMainWindow):
 
         self.pen_hr = pg.mkPen(color=(0, 0, 255))  # Blue
         self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
+
         # Data lists for plotting heart rate
         self.heart_rate_time = []
         self.heart_rate_value = []
+
+        # PlotDataItem for lines
+        self.plot_lines = pg.PlotDataItem(pen=self.pen_hr)
+        self.heart_rate_graph.addItem(self.plot_lines)
+
+        # ScatterPlotItem for scatter points
+        self.scatter = pg.ScatterPlotItem(size=10, pen=None, brush=(255, 0, 0))  # Red
+        self.heart_rate_graph.addItem(self.scatter)
 
         self.dayofweek = None
         self.day = None
@@ -353,7 +362,12 @@ class MainWindow(QMainWindow):
                                             time_in_hours = self.hour + self.minute / 60 + self.second / 3600
                                             self.heart_rate_time.append(time_in_hours)
                                             self.heart_rate_value.append(data_value)
-                                            self.heart_rate_graph.plot(self.heart_rate_time, self.heart_rate_value, pen=self.pen_hr, clear=True)
+
+                                            # Update the PlotDataItem
+                                            self.plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
+
+                                            # Update the ScatterPlotItem
+                                            self.scatter.setData(self.heart_rate_time, self.heart_rate_value)
                                         else:
                                             QMessageBox.warning(self, "Error", "Invalid record time")
 
@@ -384,16 +398,16 @@ class MainWindow(QMainWindow):
                                     QMessageBox.warning(self, "Error", "Invalid data type")
 
                             elif cmd == "4":
-                                 epoch_value = int(data, 16)
-                                 dt = QDateTime.fromSecsSinceEpoch(epoch_value)
+                                epoch_value = int(data, 16)
+                                dt = QDateTime.fromSecsSinceEpoch(epoch_value)
 
-                                 self.dayofweek = dt.date().dayOfWeek() - 1  # QDate.dayOfWeek(): 1 (Monday) to 7 (Sunday)
-                                 self.day = dt.date().day()
-                                 self.month = dt.date().month()
-                                 self.year = dt.date().year()
-                                 self.hour = dt.time().hour()
-                                 self.minute = dt.time().minute()
-                                 self.second = dt.time().second()
+                                self.dayofweek = dt.date().dayOfWeek() - 1  # QDate.dayOfWeek(): 1 (Monday) to 7 (Sunday)
+                                self.day = dt.date().day()
+                                self.month = dt.date().month()
+                                self.year = dt.date().year()
+                                self.hour = dt.time().hour()
+                                self.minute = dt.time().minute()
+                                self.second = dt.time().second()
                         else:
                             QMessageBox.warning(self, "Error", "Invalid command")
                     else:
