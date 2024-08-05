@@ -26,9 +26,9 @@
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
-  SYS_PROTOCOL_ERROR = -2,
-  SYS_PROTOCOL_FAILED,
-  SYS_PROTOCOL_OK
+  SYS_PROTOCOL_ERROR = 0xFFFFFFFF,
+  SYS_PROTOCOL_FAILED = 0x7FFFFFFF,
+  SYS_PROTOCOL_OK = 0x3FFFFFFF
 } sys_protocol_status_t;
 typedef struct
 {
