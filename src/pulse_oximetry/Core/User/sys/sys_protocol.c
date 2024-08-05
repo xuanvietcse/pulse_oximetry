@@ -61,6 +61,25 @@ uint32_t sys_protocol_register_node_to_send(sys_protocol_node_t rx_node, cbuffer
   // Return
   return SYS_PROTOCOL_OK;
 }
+uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol_pkt_t pkt)
+{
+  // Check parameters
+  __ASSERT((rx_node < SYS_PROTOCOL_MAX_NODE), SYS_PROTOCOL_ERROR);
+  // Operations
+  // Check if there is enough space
+  if (cb_space_count(s_protocol_node[rx_node]) < 6)
+  {
+    return SYS_PROTOCOL_FAILED;
+  }
+  // Send CMD
+  cb_write(s_protocol_node[rx_node], &(pkt.command), 1);
+  // Send DATA
+  cb_write(s_protocol_node[rx_node], &(pkt.data), 4);
+  // Send TH_LEVEL
+  cb_write(s_protocol_node[rx_node], &(pkt.threshold_level), 1);
+  // Return
+  return SYS_PROTOCOL_OK;
+}
 /* Private definitions ----------------------------------------------- */
 
 /* End of file -------------------------------------------------------- */
