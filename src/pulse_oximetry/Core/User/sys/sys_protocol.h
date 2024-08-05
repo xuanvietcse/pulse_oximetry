@@ -86,6 +86,17 @@ uint32_t sys_protocol_register_node_to_send(sys_protocol_node_t rx_node, cbuffer
  * -  (0x3FFFFFFF)  : Success
  */
 uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol_pkt_t pkt);
+/**
+ * @brief                 Send packet to COM port
+ *
+ * @param[in]     pkt     Packet to be sent
+ *
+ * @return
+ * -  (0xFFFFFFFF)  : Error
+ * -  (0x7FFFFFFF)  : Failed
+ * -  (0x3FFFFFFF)  : Success
+ */
+uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt);
 #endif // __SYS_PROTOCOL_H
 
 /* End of file -------------------------------------------------------- */
