@@ -46,7 +46,8 @@ DMA_HandleTypeDef hdma_adc1;
 TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
-
+char msg[] = "em chi mat di mot thang that bai, anh mat di mot nguoi yeu anh";
+char out_msg[64];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,7 +98,10 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  bsp_flash_unlock();
+  bsp_flash_write(BSP_FLASH_SECTOR_5_ADDRESS, msg, sizeof(msg));
+  HAL_Delay(1000);
+  bsp_flash_read(BSP_FLASH_SECTOR_5_ADDRESS, out_msg, sizeof(out_msg));
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
