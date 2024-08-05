@@ -1,0 +1,104 @@
+/**
+ * @file       sys_storage.h
+ * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
+ * @license    This project is released under the Fiot License.
+ * @version    v1.0.0
+ * @date       2024-08-05
+ * @author     Giang Phan Truong
+ *             Khanh Nguyen Ngoc
+ *             Viet Hoang Xuan
+ *
+ * @brief      System sevice take responsibility for storing and managing data in FLASH memory
+ *
+ * @note
+ * @example    None
+ */
+
+/* Define to prevent recursive inclusion ------------------------------ */
+#ifndef __USER_SYS_STORAGE_H
+#define __USER_SYS_STORAGE_H
+
+/* Includes ----------------------------------------------------------- */
+#include "bsp_flash.h"
+/* Public defines ----------------------------------------------------- */
+
+/* Public enumerate/structure ----------------------------------------- */
+
+enum sys_storage_status_t
+{
+  SYS_STORAGE_ERROR = 0xFFFFFFFF,
+  SYS_STOAGE_FAILED = 0x7FFFFFFF,
+  SYS_STORAGE_OK = 0x3FFFFFFF
+};
+
+typedef struct __attribute__((__packed__))
+{
+  uint32_t address;
+  uint32_t size;
+  uint32_t space_left
+} sys_storage_t;
+/* Public macros ------------------------------------------------------ */
+
+/* Public variables --------------------------------------------------- */
+
+/* Public function prototypes ----------------------------------------- */
+
+/**
+ * @brief  Initialize the segment in flash to store data.
+ *
+ * @param[in]     storage       pointer to structure mangage the data segment.
+ * @param[in]     start_address the start address of segment in Flash
+ * @param[in]     size          Size of the segment
+ *
+ * @attention  Please read Flash module organization before use.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+void sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size);
+
+/**
+ * @brief  Write data in "storage" segment if possible.
+ *
+ * @param[in]     storage       pointer to structure mangage the data segment.
+ * @param[in]     data          data that want to stored.
+ * @param[in]     size          Number of bytes of data.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+void sys_storage_import(sys_storage_t *storage, void *data, uint32_t size);
+
+/**
+ * @brief  Read data in "storage" segment if available.
+ *
+ * @param[in]     storage       pointer to structure mangage the data segment.
+ * @param[in]     data          buffer stored the read data.
+ * @param[in]     size          Number of bytes of data.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+void sys_storage_export(sys_storage_t *storage, void *data, uint32_t size);
+
+/**
+ * @brief  Fully clean data in "storage" segment.
+ *
+ * @param[in]     storage       pointer to structure mangage the data segment.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+void sys_storage_fully_clean(sys_storage_t *storage);
+
+#endif // __USER_SYS_STORAGE_H
+
+/* End of file -------------------------------------------------------- */
