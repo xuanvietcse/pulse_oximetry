@@ -187,7 +187,7 @@ class MainWindow(QMainWindow):
             interval_hex = f'{interval_value:08X}'
 
             # Create the command string by concatenating the start code (0x1), cmd (0x3), hex value, threshold (0xFF) and end code (0x04)
-            interval_command = f'13{interval_hex}FF04'
+            interval_command = f'0103{interval_hex}FF04'
 
             # Convert the command string to bytes for sending over serial
             interval_command_bytes = bytes.fromhex(interval_command)
@@ -231,7 +231,7 @@ class MainWindow(QMainWindow):
             threshold_low_hex = f'{threshold_low_value:02X}'
 
             # Create the command string by concatenating the start code (0x1), cmd (0x2), hex value, threshold (0xFF) and end code (0x04)
-            threshold_command = f'12FFFF{threshold_high_hex}{threshold_low_hex}FF04'
+            threshold_command = f'0102FFFF{threshold_high_hex}{threshold_low_hex}FF04'
 
             # Convert the command string to bytes for sending over serial
             threshold_command_bytes = bytes.fromhex(threshold_command)
@@ -260,7 +260,7 @@ class MainWindow(QMainWindow):
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x0), hex value, threshold (0xFF) and end code (0x04)
-            check_com_hex_command = '10FFFFFFFFFF04'
+            check_com_hex_command = '0100FFFFFFFFFF04'
             check_com_command_bytes = bytes.fromhex(check_com_hex_command)
 
             # Check if serial_connection has been established and is open
@@ -283,7 +283,7 @@ class MainWindow(QMainWindow):
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x1), hex value, threshold (0xFF) and end code (0x04)
-            read_record_hex_command = '11FFFFFFF0FF04'
+            read_record_hex_command = '0101FFFFFFF0FF04'
             read_record_command_bytes = bytes.fromhex(read_record_hex_command)
 
             # Check if serial_connection has been established and is open
@@ -306,7 +306,7 @@ class MainWindow(QMainWindow):
                 raise Exception("Serial port not connected.")
 
             # Create the command string by concatenating the start code (0x1), cmd (0x5), hex value, threshold (0xFF) and end code (0x04)
-            clear_record_hex_command = '15FFFFFFFFFF04'
+            clear_record_hex_command = '0105FFFFFFFFFF04'
             clear_record_command_bytes = bytes.fromhex(clear_record_hex_command)
 
             # Check if serial_connection has been established and is open
@@ -328,12 +328,12 @@ class MainWindow(QMainWindow):
     def process_serial_data(self, data):
         if self.serial_connection:
             try:
-                if len(data) == 7:
+                if len(data) == 8:
                     packet = data.hex().upper()
-                    if packet.startswith("1") and packet.endswith("04"):
-                        cmd = packet[1:2]
-                        data = packet[2:10]
-                        threshold = packet[10:12]
+                    if packet.startswith("01") and packet.endswith("04"):
+                        cmd = packet[2:4]
+                        data = packet[4:12]
+                        threshold = packet[12:14]
                         if threshold in ["FF", "0F", "F0"]:
                             if threshold == "0F":
                                 self.ui_user.line_thre_noti.setText("Heart rate too high")
@@ -344,13 +344,13 @@ class MainWindow(QMainWindow):
                         else:
                             QMessageBox.warning(self, "Error", "Invalid threshold byte")
 
-                        if cmd in ["1", "4", "6"]:
-                            if cmd == "6":
+                        if cmd in ["01", "04", "06"]:
+                            if cmd == "06":
                                 if data == "FFFFFFFF":
                                     self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
                                 else:
                                     QMessageBox.warning(self, "Error", "Invalid data")
-                            elif cmd == "1":
+                            elif cmd == "01":
                                 data_type = data[7:8]
                                 if data_type in ["0", "1", "2"]:
                                     if data_type == "0":
@@ -390,7 +390,7 @@ class MainWindow(QMainWindow):
                                 else:
                                     QMessageBox.warning(self, "Error", "Invalid data type")
 
-                            elif cmd == "4":
+                            elif cmd == "04":
                                 epoch_value = int(data, 16)
                                 dt = QDateTime.fromSecsSinceEpoch(epoch_value)
 

@@ -30,7 +30,7 @@ class serial_manage(QtCore.QObject):
         self.serial_connection = serial.Serial(self.port, self.baudrate, timeout=1)
         while self.running:
             if self.serial_connection.in_waiting > 0:
-                data = self.serial_connection.read(7)
+                data = self.serial_connection.read(8)
                 self.data_received.emit(data)
 
     def send(self, command_bytes):

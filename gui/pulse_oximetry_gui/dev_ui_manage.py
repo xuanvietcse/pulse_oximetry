@@ -137,7 +137,7 @@ class Widget(QtWidgets.QWidget):
             epoch_time = dt.toSecsSinceEpoch() if mode != "Epoch time" else epoch_time
             epoch_hex = f'{epoch_time:08X}'
 
-            rtc_command = f'14{epoch_hex}FF04'
+            rtc_command = f'0104{epoch_hex}FF04'
             rtc_command_bytes = bytes.fromhex(rtc_command)
 
             if self.main_window.serial_connection:
