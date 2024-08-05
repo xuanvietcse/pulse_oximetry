@@ -57,7 +57,7 @@ typedef struct __attribute__((__packed__))
  *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
-void sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size);
+uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size);
 
 /**
  * @brief  Write data in "storage" segment if possible.
@@ -71,7 +71,7 @@ void sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t s
  *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
-void sys_storage_import(sys_storage_t *storage, void *data, uint32_t size);
+uint32_t sys_storage_import(sys_storage_t *storage, void *data, uint32_t size);
 
 /**
  * @brief  Read data in "storage" segment if available.
@@ -85,7 +85,7 @@ void sys_storage_import(sys_storage_t *storage, void *data, uint32_t size);
  *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
-void sys_storage_export(sys_storage_t *storage, void *data, uint32_t size);
+uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size);
 
 /**
  * @brief  Fully clean data in "storage" segment.
@@ -97,7 +97,7 @@ void sys_storage_export(sys_storage_t *storage, void *data, uint32_t size);
  *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
-void sys_storage_fully_clean(sys_storage_t *storage);
+uint32_t sys_storage_fully_clean(sys_storage_t *storage);
 
 #endif // __USER_SYS_STORAGE_H
 
