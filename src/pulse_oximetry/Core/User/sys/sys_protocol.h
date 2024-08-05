@@ -23,7 +23,7 @@
 #include "main.h"
 #include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
-
+#define SYS_PROTOCOL_MAX_NODE (1)
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
