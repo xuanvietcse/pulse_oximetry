@@ -60,6 +60,9 @@ class MainWindow(QMainWindow):
         # Connect btn_clear_record to send_clear_record_code method
         self.ui_user.btn_clear_record.clicked.connect(self.send_clear_record_code)
 
+        # Connect btn_clear_graph to clear_graph method
+        self.ui_user.btn_clear_graph.clicked.connect(self.clear_graph)
+
         # Connect btn_check_com to send_check_com_code method
         self.ui_user.btn_check_com.clicked.connect(self.send_check_com_code)
 
@@ -82,17 +85,17 @@ class MainWindow(QMainWindow):
         self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))  # Blue
         self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
 
+        # ScatterPlotItem for scatter points
+        self.heart_rate_scatter = pg.ScatterPlotItem(size=10, pen=None, brush=(255, 0, 0))
+        self.heart_rate_graph.addItem(self.heart_rate_scatter)
+
         # Data lists for plotting heart rate
         self.heart_rate_time = []
         self.heart_rate_value = []
 
         # PlotDataItem for lines
-        self.heart_rate_plot_lines = pg.PlotDataItem(pen=self.heart_rate_pen)
-        self.heart_rate_graph.addItem(self.heart_rate_plot_lines)
-
-        # ScatterPlotItem for scatter points
-        self.heart_rate_scatter = pg.ScatterPlotItem(size=10, pen=None, brush=(0, 0, 255))
-        self.heart_rate_graph.addItem(self.heart_rate_scatter)
+        # self.heart_rate_plot_lines = pg.PlotDataItem(pen=self.heart_rate_pen)
+        # self.heart_rate_graph.addItem(self.heart_rate_plot_lines)
 
         # Time data lists for plotting heart rate and displaying record
         self.dayofweek = []
@@ -102,6 +105,7 @@ class MainWindow(QMainWindow):
         self.hour = []
         self.minute = []
         self.second = []
+        self.records = []
 
         # Set default value for cbb_baudrate
         self.ui_user.cbb_baudrate.setCurrentText("115200")
@@ -315,6 +319,8 @@ class MainWindow(QMainWindow):
                 self.serial_connection.send(clear_record_command_bytes)
                 # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {clear_record_hex_command}")
+                # Reset the self.records array
+                self.records = []
                 # Clear the content of txt_record
                 self.ui_user.txt_record.clear()
             else:
@@ -323,6 +329,27 @@ class MainWindow(QMainWindow):
 
         except Exception:
             QMessageBox.warning(self, "Error", "Serial port not connected.")
+
+    @Slot()
+    def clear_graph(self):
+        self.heart_rate_time.clear()
+        self.heart_rate_value.clear()
+        self.heart_rate_scatter.clear()
+        self.heart_rate_graph.clear()
+
+        self.heart_rate_graph.setBackground("w")
+        self.heart_rate_graph.setTitle("Heart Rate Graph", color="black", size="10pt")
+
+        styles = {"color": "black", "font-size": "13px"}
+        self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
+        self.heart_rate_graph.setLabel("bottom", "Time (h)", **styles)
+
+        self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))  # Blue
+        self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
+
+        # ScatterPlotItem for scatter points
+        self.heart_rate_scatter = pg.ScatterPlotItem(size=10, pen=None, brush=(255, 0, 0))
+        self.heart_rate_graph.addItem(self.heart_rate_scatter)
 
     @Slot(bytes)
     def process_serial_data(self, data):
@@ -362,11 +389,19 @@ class MainWindow(QMainWindow):
                                         self.heart_rate_value.append(data_value)
 
                                         # Update the PlotDataItem
-                                        self.heart_rate_plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
+                                        # self.heart_rate_plot_lines.setData(self.heart_rate_time, self.heart_rate_value)
 
                                         # Update the ScatterPlotItem
                                         self.heart_rate_scatter.setData(self.heart_rate_time, self.heart_rate_value)
 
+                                        # Print the records from the arrays
+
+                                        record = f"{self.day[-1]:02}/{self.month[-1]:02}/{self.year[-1]:04} {self.hour[-1]:02}:{self.minute[-1]:02}:{self.second[-1]:02} Heart rate: {self.heart_rate_value[-1]} bpm"
+                                        self.records.append(record)
+
+                                        # Join records with newline characters and print to txt_record
+                                        records_text = "\n".join(self.records)
+                                        self.ui_user.txt_record.setPlainText(records_text)
 
                                     elif data_type == "1":
                                         #plot filtered ppg signal
@@ -395,7 +430,7 @@ class MainWindow(QMainWindow):
                                 dt = QDateTime.fromSecsSinceEpoch(epoch_value)
 
                                 self.dayofweek.append(dt.date().dayOfWeek() - 1)  # QDate.dayOfWeek(): 1 (Monday) to 7 (Sunday)
-                                self.day.append( dt.date().day())
+                                self.day.append(dt.date().day())
                                 self.month.append(dt.date().month())
                                 self.year.append(dt.date().year())
                                 self.hour.append(dt.time().hour())
