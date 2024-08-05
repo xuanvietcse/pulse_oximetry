@@ -21,7 +21,9 @@
 /* Includes ----------------------------------------------------------- */
 #include "bsp_flash.h"
 /* Public defines ----------------------------------------------------- */
-
+#ifndef SYS_STORAGE_FLASH_SECTOR
+#define SYS_STORAGE_FLASH_SECTOR (FLASH_SECTOR_7)
+#endif
 /* Public enumerate/structure ----------------------------------------- */
 
 enum sys_storage_status_t
@@ -33,9 +35,10 @@ enum sys_storage_status_t
 
 typedef struct __attribute__((__packed__))
 {
+  uint32_t id;
   uint32_t address;
   uint32_t size;
-  uint32_t space_left
+  uint32_t space_left;
 } sys_storage_t;
 /* Public macros ------------------------------------------------------ */
 
