@@ -80,6 +80,19 @@ uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol
   // Return
   return SYS_PROTOCOL_OK;
 }
+uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
+{
+  // Operation
+  uint32_t ret = SYS_PROTOCOL_OK;
+  ret = drv_serial_transmit(&(pkt.command), 1);
+  __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
+  ret = drv_serial_transmit(&(pkt.data), 4);
+  __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
+  ret = drv_serial_transmit(&(pkt.threshold_level), 1);
+  __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
+  // Return
+  return SYS_PROTOCOL_OK;
+}
 /* Private definitions ----------------------------------------------- */
 
 /* End of file -------------------------------------------------------- */
