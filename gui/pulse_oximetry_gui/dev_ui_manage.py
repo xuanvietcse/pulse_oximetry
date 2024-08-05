@@ -44,10 +44,9 @@ class Widget(QtWidgets.QWidget):
         self.raw_ppg_graph.setLabel("left", "PPG", **styles)
         self.raw_ppg_graph.setLabel("bottom", "Time (s)", **styles)
 
-        pen = pg.mkPen(color=(255, 0, 0))  # Red
-        ppg = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        tim = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
-        self.raw_ppg_graph.plot(ppg, tim, pen=pen)
+        self.raw_ppg_pen = pg.mkPen(color=(255, 0, 0))  # Red
+        self.raw_ppg_value = []
+        self.raw_ppg_time = []
 
         # Add the plot widget filtered_ppg to the layout in dev.ui
         self.filtered_ppg_graph = pg.PlotWidget()
@@ -60,10 +59,9 @@ class Widget(QtWidgets.QWidget):
         self.filtered_ppg_graph.setLabel("left", "PPG", **styles)
         self.filtered_ppg_graph.setLabel("bottom", "Time (s)", **styles)
 
-        pen1 = pg.mkPen(color=(0, 255, 0))  # Green
-        ppg1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        time1 = [30, 32, 34, 32, 33, 31, 29, 32, 35, 45]
-        self.filtered_ppg_graph.plot(ppg1, time1, pen=pen1)
+        self.filtered_ppg_pen = pg.mkPen(color=(0, 255, 0))  # Green
+        self.filtered_ppg_value = []
+        self.filtered_ppg_time = []
 
     @Slot()
     def show_user_ui(self):

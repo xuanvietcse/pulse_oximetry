@@ -130,15 +130,18 @@ class MainWindow(QMainWindow):
     def connect_serial(self):
         port = self.ui_user.cbb_com.currentText()
         baudrate = self.ui_user.cbb_baudrate.currentText()
-        try:
-            self.serial_connection = serial_manage(port, baudrate)
-            self.serial_connection.data_received.connect(self.process_serial_data)
-            self.serial_connection.start()
-            self.ui_user.btn_connect_com.setText("Disconnect")
-            QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
+        if not port == "":
+            try:
+                self.serial_connection = serial_manage(port, baudrate)
+                self.serial_connection.data_received.connect(self.process_serial_data)
+                self.serial_connection.start()
+                self.ui_user.btn_connect_com.setText("Disconnect")
+                QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
 
-        except Exception:
-            self.update_available_ports()
+            except Exception:
+                self.update_available_ports()
+                QMessageBox.warning(self, "Error", "Serial port not found.")
+        else:
             QMessageBox.warning(self, "Error", "Serial port not found.")
 
     @Slot()
@@ -353,12 +356,30 @@ class MainWindow(QMainWindow):
                                             self.heart_rate_graph.plot(self.heart_rate_time, self.heart_rate_value, pen=self.pen_hr, clear=True)
                                         else:
                                             QMessageBox.warning(self, "Error", "Invalid record time")
-                                    # elif data_type == "1":
-                                    #     #plot filtered ppg signal
 
-                                    # elif data_type == "2":
-                                    #     #plot raw ppg signal
+                                    elif data_type == "1":
+                                        #plot filtered ppg signal
+                                        data_value = int(data[0:7], 16)
 
+                                        if self.hour is not None and self.minute is not None and self.second is not None:
+                                            time_in_hours = self.hour + self.minute / 60 + self.second / 3600
+                                            self.dev_widget.filtered_ppg_time.append(time_in_hours)
+                                            self.dev_widget.filtered_ppg_value.append(data_value)
+                                            self.dev_widget.filtered_ppg_graph.plot(self.dev_widget.filtered_ppg_time, self.dev_widget.filtered_ppg_value, pen=self.dev_widget.filtered_ppg_pen, clear=True)
+                                        else:
+                                            QMessageBox.warning(self, "Error", "Invalid record time")
+
+                                    elif data_type == "2":
+                                        #plot raw ppg signal
+                                        data_value = int(data[0:7], 16)
+
+                                        if self.hour is not None and self.minute is not None and self.second is not None:
+                                            time_in_hours = self.hour + self.minute / 60 + self.second / 3600
+                                            self.dev_widget.raw_ppg_time.append(time_in_hours)
+                                            self.dev_widget.raw_ppg_value.append(data_value)
+                                            self.dev_widget.raw_ppg_graph.plot(self.dev_widget.raw_ppg_time, self.dev_widget.raw_ppg_value, pen=self.dev_widget.raw_ppg_pen, clear=True)
+                                        else:
+                                            QMessageBox.warning(self, "Error", "Invalid record time")
                                 else:
                                     QMessageBox.warning(self, "Error", "Invalid data type")
 
@@ -373,7 +394,6 @@ class MainWindow(QMainWindow):
                                  self.hour = dt.time().hour()
                                  self.minute = dt.time().minute()
                                  self.second = dt.time().second()
-
                         else:
                             QMessageBox.warning(self, "Error", "Invalid command")
                     else:
