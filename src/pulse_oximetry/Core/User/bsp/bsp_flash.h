@@ -75,19 +75,6 @@ uint32_t bsp_flash_unlock(void);
 uint32_t bsp_flash_lock(void);
 
 /**
- * @brief  Erase byte(s) from address
- *
- * @param[in]   address   Address that start the erase operation.
- * @param[in]   nbytes   Number of bytes want to be erased.
- *
- * @return
- *  - 0xFFFFFFFF: Error
- *  - 0x7FFFFFFF: Fail
- *  - 0x3FFFFFFF: Success
- */
-uint32_t bsp_flash_erase_address(uint32_t address, uint32_t nbytes);
-
-/**
  * @brief  Erase whole data in selected sector
  *
  * @param[in]   sector_num   Sector want to be erased.
