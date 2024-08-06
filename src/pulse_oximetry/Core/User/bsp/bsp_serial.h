@@ -15,8 +15,8 @@
  */
 
 /* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __USER_bsp_serial_H
-#define __USER_bsp_serial_H
+#ifndef __USER_BSP_SERIAL_H
+#define __USER_BSP_SERIAL_H
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_uart.h"
@@ -54,9 +54,9 @@ typedef void (*bsp_evt_cb_t)(uint16_t);
  * @param[in]     uart      Hardware UART handler
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_serial_init(UART_HandleTypeDef *uart);
 
@@ -66,9 +66,9 @@ uint32_t bsp_serial_init(UART_HandleTypeDef *uart);
  * @param[in]     tx_buf    Buffer store data that will be transmitted
  * @param[in]     tx_size   Size of transmitter buffer
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_serial_transmit(uint8_t *tx_buf, uint16_t tx_size);
 
@@ -78,9 +78,9 @@ uint32_t bsp_serial_transmit(uint8_t *tx_buf, uint16_t tx_size);
  * @param[in]     rx_buf    Buffer store data that will be received
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_serial_receive(uint8_t *rx_buf);
 
@@ -90,12 +90,12 @@ uint32_t bsp_serial_receive(uint8_t *rx_buf);
  * @param[in]     rx_buf    Buffer store data that will be received
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t bsp_serial_register_cb_function(drv_evt_cb_t new_rx_data_cb);
+uint32_t bsp_serial_register_cb_function(bsp_evt_cb_t new_rx_data_cb);
 
-#endif // __USER_bsp_serial_H
+#endif // __USER_BSP_SERIAL_H
 
 /* End of file -------------------------------------------------------- */
