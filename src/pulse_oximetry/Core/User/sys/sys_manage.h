@@ -92,6 +92,20 @@ uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
                                   uint32_t autoreload,
                                   double *data_buf);
 
+/**
+ * @brief       Start the serivce handle the user button
+ *
+ * @param[in]   gpio  Pointer point to GPIO port
+ * @param[in]   pin   pin of that port
+ * @param[in]   button_active_level Determine the active high or active low button
+ *
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t button_active_level);
 #endif // __USER_SYS_MANAGE_H
 
 /* End of file -------------------------------------------------------- */

@@ -33,10 +33,6 @@ static sys_display_t oled_screen;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
-uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart)
-{
-}
-
 uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer)
 {
   uint32_t ret = SYS_DISPLAY_OK;
@@ -55,6 +51,15 @@ uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
   uint32_t ret = SYS_MEASURE_OK;
   ret = sys_measure_init(&ppg_signal, adc, tim, prescaler, autoreload, data_buf);
   __ASSERT(ret == SYS_MEASURE_OK, SYS_MANAGE_FAILED);
+
+  return SYS_MANAGE_OK;
+}
+
+uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t button_active_level)
+{
+  uint32_t ret = SYS_BUTTON_OK;
+  ret = sys_button_init(gpio, pin, button_active_level);
+  __ASSERT(ret == SYS_BUTTON_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
 }
