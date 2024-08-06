@@ -32,6 +32,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define MAX_SIZE (100)
+// Set sampling rate at 100Hz
+#define PRESCALER_SAMPLING_RATE (959U)
+#define AUTORELOAD_SAMPLING_RATE (999U)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -119,7 +122,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   sys_manage_start_button(GPIOA, GPIO_PIN_0, 1);
   sys_manage_start_display(&hi2c2, display_buffer);
-  sys_manage_start_measure(&hadc1, &htim2, 959, 999, filtered_data);
+  sys_manage_start_measure(&hadc1, &htim2, PRESCALER_SAMPLING_RATE, AUTORELOAD_SAMPLING_RATE, filtered_data);
   sys_manage_start_protocol(&huart2);
   sys_manage_start_rtc(&hi2c2);
   sys_manage_start_buzzer(&htim11, TIM_CHANNEL_1);
