@@ -56,19 +56,23 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
   
   storage->id = sys_storage_get_id();
 
-  s_storage_mng[SYS_STORAGE_ID_MAX].id = storage->id;
-  s_storage_mng[SYS_STORAGE_ID_MAX].address = start_address;
-  s_storage_mng[SYS_STORAGE_ID_MAX].size = size;
+  s_storage_mng[SYS_STORAGE_ID_MIN].id = storage->id;
+  s_storage_mng[SYS_STORAGE_ID_MIN].address = start_address;
+  s_storage_mng[SYS_STORAGE_ID_MIN].size = size;
 
   if (storage->id == 0)
   {
-    if ((start_address >= SYS_STORAGE_FLASH_SECTOR_ADDRESS) ||
-       ((start_address + size) < (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
+    if ((start_address < SYS_STORAGE_FLASH_SECTOR_ADDRESS) ||
+       ((start_address + size) >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
     {
       s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
-      s_storage_mng[SYS_STORAGE_ID_MAX] = 0;
+      s_storage_mng[SYS_STORAGE_ID_MIN] = 0;
       return SYS_STORAGE_ERROR;
-    } 
+    }
+    else
+    {
+      sys_storage_quick_sort(s_storage_mng, SYS_STORAGE_ID_MIN, SYS_STORAGE_ID_MAX); 
+    }
   }
   else
   {
@@ -76,9 +80,9 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
     uint8_t id_curr_pos = sys_storage_get_id_curr_pos_in_arr(storage->id);
 
     if ((s_storage_mng[id_curr_pos].address 
-        >= (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) ||
+        < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) ||
        ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size)
-         < s_storage_mng[id_curr_pos + 1].storage_mng.address))
+         >= s_storage_mng[id_curr_pos + 1].storage_mng.address))
     {
       s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
       s_storage_mng[id_curr_pos] = 0;
@@ -196,6 +200,7 @@ static void sys_storage_partition(uint8_t low, uint8_t high)
     return (i + 1);
 }
 
+// Sort array from smallest to largest
 static uint8_t sys_storage_quick_sort(uint8_t low, uint8_t high) 
 {
   if (low < high) 
@@ -209,7 +214,7 @@ static uint8_t sys_storage_quick_sort(uint8_t low, uint8_t high)
 
 static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id)
 {
-  for (uint8_t i = 0; i <= high, i++)
+  for (uint8_t i = SYS_STORAGE_ID_MIN; i <= SYS_STORAGE_ID_MAX, i++)
   {
     if (s_storage_mng[i].storage_mng.id == id)
     {
