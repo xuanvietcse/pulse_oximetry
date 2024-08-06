@@ -55,7 +55,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 uint8_t display_buffer[1024];
 sys_display_t display;
 sys_measure_t ppg;
-double filtered_data[240];
+double filtered_data[200];
 uint32_t peak_nums;
 drv_buzzer_t buzzer;
 cbuffer_t cbuffer;
@@ -119,7 +119,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   sys_manage_start_button(GPIOA, GPIO_PIN_0, 1);
   sys_manage_start_display(&hi2c2, display_buffer);
-  sys_manage_start_measure(&hadc1, &htim2, 959, 9999, filtered_data);
+  sys_manage_start_measure(&hadc1, &htim2, 959, 999, filtered_data);
   sys_manage_start_protocol(&huart2);
   sys_manage_start_rtc(&hi2c2);
   sys_manage_start_buzzer(&htim11, TIM_CHANNEL_1);
@@ -132,6 +132,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    sys_manage_loop();
   }
   /* USER CODE END 3 */
 }

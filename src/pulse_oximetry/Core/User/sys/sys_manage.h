@@ -153,6 +153,17 @@ uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel);
  */
 uint32_t sys_manage_start_rtc(bsp_i2c_handle_t *i2c);
 
+/**
+ * @brief       Manage all services in system.
+ *
+ * @attention   Services need to be started before use this function.
+ *
+ * @return
+ * -  0xFFFFFFFF: Error
+ * -  0x7FFFFFFF: Failed
+ * -  0x3FFFFFFF: Success
+ */
+uint32_t sys_manage_loop();
 #endif // __USER_SYS_MANAGE_H
 
 /* End of file -------------------------------------------------------- */
