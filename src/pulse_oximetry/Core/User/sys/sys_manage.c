@@ -26,10 +26,10 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
-static sys_measure_t ppg_signal;
-static sys_display_t oled_screen;
-static drv_buzzer_t passive_buzzer;
-static drv_ds1307_t ds1307;
+static sys_measure_t s_ppg_signal;
+static sys_display_t s_oled_screen;
+static drv_buzzer_t s_passive_buzzer;
+static drv_ds1307_t s_rtc;
 /* Private function prototypes ---------------------------------------- */
 
 /**
@@ -59,7 +59,7 @@ static void sys_manage_record_heart_rate();
 uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer)
 {
   uint32_t ret = SYS_DISPLAY_OK;
-  ret = sys_display_init(&oled_screen, i2c, dev_buffer);
+  ret = sys_display_init(&s_oled_screen, i2c, dev_buffer);
   __ASSERT(ret == SYS_DISPLAY_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
@@ -72,7 +72,7 @@ uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
                                   double *data_buf)
 {
   uint32_t ret = SYS_MEASURE_OK;
-  ret = sys_measure_init(&ppg_signal, adc, tim, prescaler, autoreload, data_buf);
+  ret = sys_measure_init(&s_ppg_signal, adc, tim, prescaler, autoreload, data_buf);
   __ASSERT(ret == SYS_MEASURE_OK, SYS_MANAGE_FAILED);
 
   return SYS_MANAGE_OK;
@@ -102,7 +102,7 @@ uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart)
 uint32_t sys_manage_start_rtc(bsp_i2c_handle_t *i2c)
 {
   uint32_t ret = SYS_TIME_OK;
-  ret = sys_time_init(i2c, &ds1307);
+  ret = sys_time_init(i2c, &s_rtc);
   __ASSERT(ret == SYS_TIME_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
@@ -111,7 +111,7 @@ uint32_t sys_manage_start_rtc(bsp_i2c_handle_t *i2c)
 uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel)
 {
   uint32_t ret = DRV_BUZZER_OK;
-  ret = drv_buzzer_init(&passive_buzzer, tim, pwm_channel);
+  ret = drv_buzzer_init(&s_passive_buzzer, tim, pwm_channel);
   __ASSERT(ret == DRV_BUTTON_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
@@ -120,21 +120,21 @@ uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel)
 uint32_t sys_manage_loop()
 {
   sys_button_manage();
-  sys_measure_process_data(&ppg_signal);
-  sys_display_update_heart_rate(&oled_screen, ppg_signal.heart_rate);
-  sys_display_update_ppg_signal(&oled_screen, &(ppg_signal.filtered_data));
+  sys_measure_process_data(&s_ppg_signal);
+  sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
+  sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
 }
 /* Private definitions ------------------------------------------------ */
 static void sys_manage_sleep()
 {
   // Do something stuffs
-  drv_hr_sleep(&(ppg_signal.dev));
+  drv_hr_sleep(&(s_ppg_signal.dev));
 }
 
 static void sys_manage_wakeup()
 {
   // Do something stuffs
-  drv_hr_wakeup(&(ppg_signal.dev));
+  drv_hr_wakeup(&(s_ppg_signal.dev));
 }
 
 static void sys_manage_record_heart_rate()
