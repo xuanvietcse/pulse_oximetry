@@ -16,6 +16,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "sys_storage.h"
+#include <stdlib.h>
 #include "common.h"
 
 /* Private defines ---------------------------------------------------- */
@@ -46,13 +47,21 @@ static uint8_t s_id_mng[SYS_STORAGE_ID_MAX + 1] = {0};
  *  - the available ID
  */
 static uint8_t sys_storage_get_id(void);
+static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id);
+
+int comparator(const void* p, const void* q)
+{
+   int l = ((sys_storage_t*)p)->address;
+   int r = ((sys_storage_t*)q)->address;
+   return (l - r);
+}
 
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size)
 {
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(size < SYS_STORAGE_FLASH_SECTOR_SIZE, SYS_STORAGE_ERROR);
-  __ASSERT(size == 0, SYS_STORAGE_ERROR);
+  __ASSERT(size != 0, SYS_STORAGE_ERROR);
   
   storage->id = sys_storage_get_id();
 
@@ -66,28 +75,44 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
        ((start_address + size) >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
     {
       s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
-      s_storage_mng[SYS_STORAGE_ID_MIN] = 0;
+      s_storage_mng[SYS_STORAGE_ID_MIN] = (sys_storage_t){0, 0, 0, 0};
       return SYS_STORAGE_ERROR;
     }
     else
     {
-      sys_storage_quick_sort(s_storage_mng, SYS_STORAGE_ID_MIN, SYS_STORAGE_ID_MAX); 
+      qsort(s_storage_mng, SYS_STORAGE_ID_MAX + 1, sizeof(sys_storage_t), comparator);
     }
   }
   else
   {
-    sys_storage_quick_sort(s_storage_mng, SYS_STORAGE_ID_MIN, SYS_STORAGE_ID_MAX);
+    qsort(s_storage_mng, SYS_STORAGE_ID_MAX + 1, sizeof(sys_storage_t), comparator);
     uint8_t id_curr_pos = sys_storage_get_id_curr_pos_in_arr(storage->id);
-
-    if ((s_storage_mng[id_curr_pos].address 
+    
+    if (id_curr_pos == 255)
+    {
+      if ((s_storage_mng[id_curr_pos].address 
+           < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) || 
+         ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size)
+           >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
+      {
+        s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
+        s_storage_mng[id_curr_pos] = (sys_storage_t){0, 0, 0, 0};
+        qsort(s_storage_mng, SYS_STORAGE_ID_MAX + 1, sizeof(sys_storage_t), comparator);
+        return SYS_STORAGE_ERROR;
+      }
+    }
+    else 
+    {
+      if ((s_storage_mng[id_curr_pos].address 
         < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) ||
        ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size)
-         >= s_storage_mng[id_curr_pos + 1].storage_mng.address))
-    {
-      s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
-      s_storage_mng[id_curr_pos] = 0;
-      sys_storage_quick_sort(s_storage_mng, SYS_STORAGE_ID_MIN, SYS_STORAGE_ID_MAX);
-      return SYS_STORAGE_ERROR;
+         >= s_storage_mng[id_curr_pos + 1].address))
+      {
+        s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
+        s_storage_mng[id_curr_pos] = (sys_storage_t){0, 0, 0, 0};
+        qsort(s_storage_mng, SYS_STORAGE_ID_MAX + 1, sizeof(sys_storage_t), comparator);
+        return SYS_STORAGE_ERROR;
+      }
     }
   }
 
@@ -99,7 +124,7 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
   __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
 
   storage->size = size;
-  storage->space_left = size - 1;
+  storage->space_left = size - SYS_STORAGE_ID_SIZE;
 
   return SYS_STORAGE_OK;
 }
@@ -109,11 +134,11 @@ uint32_t sys_storage_import(sys_storage_t *storage, void *data, uint32_t size)
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(data != NULL, SYS_STORAGE_ERROR);
   __ASSERT(size <= storage->space_left, SYS_STORAGE_ERROR);
-  __ASSERT(size == 0, SYS_STORAGE_ERROR);
+  __ASSERT(size != 0, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
   uint32_t ret = SYS_STORAGE_OK;
-  ret = bsp_flash_write(storage->address, data, size);
+  ret = bsp_flash_write(storage->address + (storage->size - storage->space_left), data, size);
   __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK;
@@ -124,7 +149,7 @@ uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size)
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(data != NULL, SYS_STORAGE_ERROR);
   __ASSERT(size <= (storage->size - storage->space_left), SYS_STORAGE_ERROR);
-  __ASSERT(size == 0, SYS_STORAGE_ERROR);
+  __ASSERT(size != 0, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
   uint32_t ret = SYS_STORAGE_OK;
@@ -139,9 +164,9 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
-  uint32_t ret = SYS_STORAGE_OK;
-  ret = 
-  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  // uint32_t ret = SYS_STORAGE_OK;
+  // ret = 
+  // __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 
 }
@@ -176,51 +201,14 @@ static uint8_t sys_storage_get_id(void)
   }
 }
 
-static void sys_storage_swap(sys_storage_t* a, sys_storage_t* b) 
-{
-  sys_storage_t t = *a;
-  *a = *b;
-  *b = t;
-}
-
-static void sys_storage_partition(uint8_t low, uint8_t high) 
-{
-    sys_storage_t pivot.storage_mng.address = s_storage_mng[high].storage_mng.address; 
-    uint8_t i = (low - 1);
-
-    for (uint8_t j = low; j <= high - 1; j++) 
-    {
-      if (s_storage_mng[j].storage_mng.address < pivot.storage_mng.address) 
-      {
-        i++; 
-        swap((s_storage_mng + i), (s_storage_mng + j)); 
-      }
-    }
-    swap((s_storage_mng + i + 1), (s_storage_mng + high));
-    return (i + 1);
-}
-
-// Sort array from smallest to largest
-static uint8_t sys_storage_quick_sort(uint8_t low, uint8_t high) 
-{
-  if (low < high) 
-  {
-    uint8_t pi = sys_storage_partition(low, high);
-
-    sys_storage_quick_sort(low, pi - 1);
-    sys_storage_quick_sort(pi + 1, high);
-  }
-}
-
 static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id)
 {
-  for (uint8_t i = SYS_STORAGE_ID_MIN; i <= SYS_STORAGE_ID_MAX, i++)
+  for (uint8_t i = SYS_STORAGE_ID_MIN; i <= SYS_STORAGE_ID_MAX; i++)
   {
-    if (s_storage_mng[i].storage_mng.id == id)
+    if (s_storage_mng[i].id == id)
     {
       return i;
     }
   }
 }
-
 /* End of file -------------------------------------------------------- */

@@ -44,8 +44,8 @@
 enum bsp_flash_status_t
 {
   BSP_FLASH_ERROR = 0xFFFFFFFF,
-  BSP_FLASH_FAILED = 0x7FFFFFF,
-  BSP_FLASH_OK = 0x3FFFFFF
+  BSP_FLASH_FAILED = 0x7FFFFFFF,
+  BSP_FLASH_OK = 0x3FFFFFFF
 };
 
 /* Public macros ------------------------------------------------------ */

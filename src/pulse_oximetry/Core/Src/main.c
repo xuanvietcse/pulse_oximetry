@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_flash.h"
+#include "sys_storage.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +48,12 @@ TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 char msg[] = "em chi mat di mot thang that bai, anh mat di mot nguoi yeu anh";
-char out_msg[64];
+char out_msg1[64];
+char out_msg2[64];
+sys_storage_t storage_segment_0;
+sys_storage_t storage_segment_1;
+sys_storage_t storage_segment_2;
+sys_storage_t storage_segment_3;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -79,7 +85,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+   HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -98,9 +104,18 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  bsp_flash_write(BSP_FLASH_SECTOR_5_ADDRESS, msg, sizeof(msg));
+  sys_storage_init(&storage_segment_0, 0x08060000U, 300);
+  sys_storage_init(&storage_segment_1, 0x08061000U, 300);
+  sys_storage_init(&storage_segment_2, 0x08061001U, 300);
+  sys_storage_init(&storage_segment_3, 0x08060002U, 300);
+
+  sys_storage_import(&storage_segment_0, msg, sizeof(msg));
   HAL_Delay(1000);
-  bsp_flash_read(BSP_FLASH_SECTOR_5_ADDRESS, out_msg, sizeof(out_msg));
+  sys_storage_export(&storage_segment_0, out_msg1, sizeof(out_msg1));
+
+  sys_storage_import(&storage_segment_1, msg, sizeof(msg));
+  HAL_Delay(1000);
+  sys_storage_export(&storage_segment_1, out_msg2, sizeof(out_msg2));
 
   /* USER CODE END 2 */
 
