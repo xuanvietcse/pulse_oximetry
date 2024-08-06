@@ -345,6 +345,37 @@ uint32_t drv_ssd1306_draw_rectangle(drv_ssd1306_t *dev,
   // Return
   return DRV_SSD1306_OK;
 }
+
+uint32_t drv_ssd1306_fill_rectangle(drv_ssd1306_t *dev,
+                                    uint8_t pos_x1,
+                                    uint8_t pos_y1,
+                                    uint8_t pos_x2,
+                                    uint8_t pos_y2,
+                                    drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x1 < dev->size.width) && (pos_x2 < dev->size.width),
+           DRV_SSD1306_ERROR);
+  __ASSERT((pos_y1 < dev->size.height) && (pos_y2 < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  uint8_t starting_x = ((pos_x1 <= pos_x2) ? pos_x1 : pos_x2);
+  uint8_t ending_x = ((pos_x1 <= pos_x2) ? pos_x2 : pos_x1);
+  uint8_t starting_y = ((pos_y1 <= pos_y2) ? pos_y1 : pos_y2);
+  uint8_t ending_y = ((pos_y1 <= pos_y2) ? pos_y2 : pos_y1);
+  for (uint8_t y = starting_y; (y <= ending_y) && (y < SSD1306_HEIGHT); y++)
+  {
+    for (uint8_t x = starting_x; (x <= ending_x) && (x < SSD1306_WIDTH); x++)
+    {
+      drv_ssd1306_draw_pixel(dev, x, y, DRV_SSD1306_COLOR_BLACK);
+    }
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
