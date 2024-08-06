@@ -233,7 +233,7 @@ static void sys_button_detect_edge(uint16_t exti_line)
       (sbutton.transient_state == SYS_BUTTON_STATE_STABLE))
   {
     sbutton.transient_state = SYS_BUTTON_STATE_DEBOUNCE;
-    sbutton.dbutton.time_debounce = bsp_get_systick();
+    sbutton.dbutton.time_debounce = bsp_utils_get_tick();
   }
 }
 /* End of file -------------------------------------------------------- */
