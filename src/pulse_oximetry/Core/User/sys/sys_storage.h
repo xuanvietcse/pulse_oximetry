@@ -38,10 +38,13 @@
 enum sys_storage_status_t
 {
   SYS_STORAGE_ERROR = 0xFFFFFFFF,
-  SYS_STOAGE_FAILED = 0x7FFFFFFF,
+  SYS_STORAGE_FAILED = 0x7FFFFFFF,
   SYS_STORAGE_OK = 0x3FFFFFFF
 };
 
+/**
+ * @brief Struct type of each segment
+ */
 typedef struct __attribute__((__packed__))
 {
   uint8_t id;
