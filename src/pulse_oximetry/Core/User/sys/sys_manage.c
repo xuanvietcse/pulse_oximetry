@@ -63,6 +63,16 @@ uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t butt
 
   return SYS_MANAGE_OK;
 }
+
+uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart)
+{
+  uint32_t ret = SYS_PROTOCOL_OK;
+  ret = sys_protocol_init(uart);
+  __ASSERT(ret == SYS_PROTOCOL_OK, SYS_MANAGE_ERROR);
+
+  return SYS_MANAGE_OK;
+}
+
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */

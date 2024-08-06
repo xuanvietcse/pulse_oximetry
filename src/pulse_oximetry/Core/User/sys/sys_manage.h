@@ -106,6 +106,18 @@ uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
  *  - 0x3FFFFFFF: Success
  */
 uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t button_active_level);
+
+/**
+ * @brief                 Start service to manage the UART protocol
+ *
+ * @param[in]     uart    Hardware UART handler
+ *
+ * @return
+ * -  (0xFFFFFFFF)  : Error
+ * -  (0x7FFFFFFF)  : Failed
+ * -  (0x3FFFFFFF)  : Success
+ */
+uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart);
 #endif // __USER_SYS_MANAGE_H
 
 /* End of file -------------------------------------------------------- */
