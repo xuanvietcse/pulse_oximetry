@@ -34,7 +34,7 @@ static uint8_t s_pkt_buf[MAX_PKT_LEN] = {0};
 static uint8_t s_pkt[MAX_PKT_LEN] = {0};
 static cbuffer_t *s_protocol_node[SYS_PROTOCOL_MAX_NODE] = {NULL};
 /* Private function prototypes ---------------------------------------- */
-static void sys_protocol_receive_packet_cplt_handler();
+static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes);
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_protocol_init(UART_HandleTypeDef *uart)
 {
@@ -96,7 +96,7 @@ uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
   return SYS_PROTOCOL_OK;
 }
 /* Private definitions ----------------------------------------------- */
-static void sys_protocol_receive_packet_cplt_handler()
+static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes)
 {
   bsp_serial_receive(s_pkt_buf);
   uint8_t *start_byte_pos = strchr(s_pkt_buf, START_BYTE);
