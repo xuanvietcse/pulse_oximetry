@@ -17,8 +17,8 @@
 /* Includes ----------------------------------------------------------- */
 #include "drv_ds1307.h"
 #include "common.h"
-#include "stdbool.h"
-#include "stdint.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 /* Private defines ---------------------------------------------------- */
 
