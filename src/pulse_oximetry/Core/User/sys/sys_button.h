@@ -76,6 +76,7 @@ typedef struct __attribute__((__packed__))
 /* Public variables --------------------------------------------------- */
 typedef void (*sys_button_evt_on_power)();
 typedef void (*sys_button_evt_off_power)();
+typedef void (*sys_button_evt_record)();
 
 /* Public function prototypes ----------------------------------------- */
 /**
@@ -106,8 +107,9 @@ sys_button_status_t sys_button_manage();
  *              -1 if fail,
  *              0 if success.
  */
-sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb, 
-                                                    sys_button_evt_off_power off_power_cb);
+sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb,
+                                                    sys_button_evt_off_power off_power_cb,
+                                                    sys_button_evt_record record_cb);
 
 #endif // __USER_SYS_SYS_BUTTON_H
 
