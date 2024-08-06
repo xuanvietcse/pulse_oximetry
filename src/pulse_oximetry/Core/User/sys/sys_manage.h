@@ -60,6 +60,19 @@ typedef struct
 /* Public function prototypes ----------------------------------------- */
 
 /**
+ * @brief  Start the service control display
+ *
+ * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
+ * @param[in]     i2c      pointer to I2C handler
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0X7FFFFFFF: Failed
+ *  - 0X3FFFFFFF: Success
+ */
+uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer);
+
+/**
  * @brief  Start the service to collect and process signal
  *
  * @param[in]     adc           Channel attaches to sensor

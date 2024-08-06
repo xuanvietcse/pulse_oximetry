@@ -29,9 +29,23 @@
 
 /* Private variables -------------------------------------------------- */
 static sys_measure_t ppg_signal;
+static sys_display_t oled_screen;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
+uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart)
+{
+}
+
+uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer)
+{
+  uint32_t ret = SYS_DISPLAY_OK;
+  ret = sys_display_init(&oled_screen, i2c, dev_buffer);
+  __ASSERT(ret == SYS_DISPLAY_OK, SYS_MANAGE_ERROR);
+
+  return SYS_MANAGE_OK;
+}
+
 uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
                                   bsp_tim_typedef_t *tim,
                                   uint32_t prescaler,
@@ -41,6 +55,8 @@ uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
   uint32_t ret = SYS_MEASURE_OK;
   ret = sys_measure_init(&ppg_signal, adc, tim, prescaler, autoreload, data_buf);
   __ASSERT(ret == SYS_MEASURE_OK, SYS_MANAGE_FAILED);
+
+  return SYS_MANAGE_OK;
 }
 /* Private definitions ------------------------------------------------ */
 
