@@ -118,6 +118,23 @@ uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t butt
  * -  (0x3FFFFFFF)  : Success
  */
 uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart);
+
+/**
+ * @brief       Initialize the buzzer.
+ *
+ * @param[in]   buzzer         Pointer to buzzer handler.
+ * @param[in]   tim            Pointer of timer buzzer handler.
+ * @param[in]   pwm_channel    Channel PWM connect to buzzer.
+ *
+ * @attention   the valid buzzer period and duty cycle.
+ * @note        Module buzzer low level trigger.
+ *
+ * @return
+ * -  0xFFFFFFFF: Error
+ * -  0x7FFFFFFF: Failed
+ * -  0x3FFFFFFF: Success
+ */
+uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel);
 #endif // __USER_SYS_MANAGE_H
 
 /* End of file -------------------------------------------------------- */

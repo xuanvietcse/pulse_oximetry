@@ -30,6 +30,7 @@
 /* Private variables -------------------------------------------------- */
 static sys_measure_t ppg_signal;
 static sys_display_t oled_screen;
+static drv_buzzer_t passive_buzzer;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -69,6 +70,15 @@ uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart)
   uint32_t ret = SYS_PROTOCOL_OK;
   ret = sys_protocol_init(uart);
   __ASSERT(ret == SYS_PROTOCOL_OK, SYS_MANAGE_ERROR);
+
+  return SYS_MANAGE_OK;
+}
+
+uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel)
+{
+  uint32_t ret = DRV_BUZZER_OK;
+  ret = drv_buzzer_init(&passive_buzzer, tim, pwm_channel);
+  __ASSERT(ret == DRV_BUTTON_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
 }
