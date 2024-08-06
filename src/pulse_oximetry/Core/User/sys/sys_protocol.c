@@ -18,7 +18,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "sys_protocol.h"
 #include "common.h"
-#include "drv_serial.h"
+#include "bsp_serial.h"
 /* Private defines ---------------------------------------------------- */
 #define MAX_PKT_LEN (100)
 /* Private enumerate/structure ---------------------------------------- */
@@ -43,13 +43,13 @@ uint32_t sys_protocol_init(UART_HandleTypeDef *uart)
   __ASSERT((uart != NULL), SYS_PROTOCOL_ERROR);
   // Operation
   // Initialize UART
-  uint32_t ret = drv_serial_init(uart);
+  uint32_t ret = bsp_serial_init(uart);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Register callback function
-  ret = drv_serial_register_cb_function(sys_protocol_receive_packet_cplt_handler);
+  ret = bsp_serial_register_cb_function(sys_protocol_receive_packet_cplt_handler);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Send sample message to UART to inform status
-  ret = drv_serial_transmit(s_protocol_msg, __SIZE_OF(s_protocol_msg));
+  ret = bsp_serial_transmit(s_protocol_msg, __SIZE_OF(s_protocol_msg));
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Return
   return SYS_PROTOCOL_OK;
@@ -70,7 +70,7 @@ uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol
   __ASSERT((rx_node < SYS_PROTOCOL_MAX_NODE), SYS_PROTOCOL_ERROR);
   // Operations
   // Check if there is enough space
-  if (cb_space_count(s_protocol_node[rx_node]) < 6)
+  if (cb_space_count(s_protocol_node[rx_node]) < PKT_SIZE)
   {
     return SYS_PROTOCOL_FAILED;
   }
@@ -87,11 +87,11 @@ uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
 {
   // Operation
   uint32_t ret = SYS_PROTOCOL_OK;
-  ret = drv_serial_transmit(&(pkt.command), 1);
+  ret = bsp_serial_transmit(&(pkt.command), 1);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
-  ret = drv_serial_transmit(&(pkt.data), 4);
+  ret = bsp_serial_transmit(&(pkt.data), 4);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
-  ret = drv_serial_transmit(&(pkt.threshold_level), 1);
+  ret = bsp_serial_transmit(&(pkt.threshold_level), 1);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Return
   return SYS_PROTOCOL_OK;
@@ -99,7 +99,7 @@ uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
 /* Private definitions ----------------------------------------------- */
 static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes)
 {
-  drv_serial_receive(s_pkt_buf);
+  bsp_serial_receive(s_pkt_buf);
   s_received_bytes += received_bytes;
   uint8_t *start_byte_pos = strchr(s_pkt_buf, 0x01);
   uint8_t *stop_byte_pos = strchr(start_byte_pos + 5, 0x04);
