@@ -121,7 +121,8 @@ int main(void)
   sys_manage_start_display(&hi2c2, display_buffer);
   sys_manage_start_measure(&hadc1, &htim2, 959, 9999, filtered_data);
   sys_manage_start_protocol(&huart2);
-  drv_buzzer_init(&buzzer, &htim11, TIM_CHANNEL_1);
+  sys_manage_start_rtc(&hi2c2);
+  sys_manage_start_buzzer(&htim11, TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
