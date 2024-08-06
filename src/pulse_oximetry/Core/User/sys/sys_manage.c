@@ -34,6 +34,29 @@ static drv_buzzer_t passive_buzzer;
 static drv_ds1307_t ds1307;
 /* Private function prototypes ---------------------------------------- */
 
+/**
+ * @brief       Sleep down the system service.
+ *
+ * @return
+ * -  None
+ */
+static void sys_manage_sleep();
+
+/**
+ * @brief       Wake up the system service.
+ *
+ * @return
+ * -  None
+ */
+static void sys_manage_wakeup();
+
+/**
+ * @brief       Record the current heart rate.
+ *
+ * @return
+ * -  None
+ */
+static void sys_manage_record_heart_rate();
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer)
 {
@@ -62,7 +85,10 @@ uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t butt
   uint32_t ret = SYS_BUTTON_OK;
   ret = sys_button_init(gpio, pin, button_active_level);
   __ASSERT(ret == SYS_BUTTON_OK, SYS_MANAGE_ERROR);
-
+  ret = sys_button_register_cb_function(sys_manage_wakeup,
+                                        sys_manage_sleep,
+                                        sys_manage_record_heart_rate);
+  __ASSERT(ret == SYS_BUTTON_OK, SYS_MANAGE_ERROR);
   return SYS_MANAGE_OK;
 }
 
@@ -95,10 +121,26 @@ uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel)
 
 uint32_t sys_manage_loop()
 {
+  sys_button_manage();
   sys_measure_process_data(&ppg_signal);
   sys_display_update_heart_rate(&oled_screen, ppg_signal.heart_rate);
   sys_display_update_ppg_signal(&oled_screen, &(ppg_signal.filtered_data));
 }
 /* Private definitions ------------------------------------------------ */
+static void sys_manage_sleep()
+{
+  // Do something stuffs
+  drv_hr_sleep(&(ppg_signal.dev));
+}
 
+static void sys_manage_wakeup()
+{
+  // Do something stuffs
+  drv_hr_wakeup(&(ppg_signal.dev));
+}
+
+static void sys_manage_record_heart_rate()
+{
+  // Waiting for Khanh
+}
 /* End of file -------------------------------------------------------- */
