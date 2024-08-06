@@ -21,8 +21,8 @@
 /* Includes ----------------------------------------------------------- */
 #include "bsp_uart.h"
 /* Public defines ----------------------------------------------------- */
-#define START_BYTE (0x01)
-#define STOP_BYTE (0X04)
+#define START_BYTE ((uint8_t)0x01)
+#define STOP_BYTE ((uint8_t)0X04)
 /* Public enumerate/structure ----------------------------------------- */
 enum drv_serial_status_t
 {
