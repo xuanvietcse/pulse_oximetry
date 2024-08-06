@@ -31,7 +31,8 @@
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
-
+static uint8_t s_graph_pos_x = 0;
+static uint8_t s_graph_pos_y = 0;
 /* Private variables -------------------------------------------------- */
 static char s_heart_rate[18] = "HeartRate: --- bpm";
 static char s_notifications[11] = "Noti";
@@ -120,10 +121,33 @@ uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal
   // Check parameters
   __ASSERT((display != NULL), SYS_DISPLAY_ERROR);
   __ASSERT((signal_buf != NULL), SYS_DISPLAY_ERROR);
-  __ASSERT((signal_buf->data >= 700) && (signal_buf->data <= 3000), SYS_DISPLAY_ERROR);
   // Operation
-  uint8_t temp_buf[200] = {0};
-  cb_read(signal_buf, temp_buf, 200);
+  // Read data
+  double temp_buf[3] = {0};
+  cb_read(signal_buf, temp_buf, 3 * sizeof(double));
+  // 3 samples create 1 pixel so we calculate the avg.
+  double avg_value = 0;
+  for (uint8_t i = 0; i < 3; i++)
+  {
+    avg_value += *(temp_buf + i);
+  }
+  avg_value = (avg_value / 3) - 800;
+  // Check if we have reached the width or not
+  s_graph_pos_x = (s_graph_pos_x > (GRAPH_WIDTH - 2) ? 0 : s_graph_pos_x);
+  if (s_graph_pos_x == 0)
+  {
+    drv_ssd1306_fill_rectangle(&(display->screen),
+                               0 + 1,
+                               MAX_HEIGHT - GRAPH_HEIGHT - BITMAP_HEIGHT + 1,
+                               GRAPH_WIDTH - 1,
+                               MAX_HEIGHT - 9 - 1,
+                               DRV_SSD1306_COLOR_BLACK);
+  }
+  drv_ssd1306_draw_pixel(&(display->screen),
+                         s_graph_pos_x++,
+                         (MAX_HEIGHT - 9 - 1) - (uint8_t)(avg_value / GRAPH_HEIGHT),
+                         DRV_SSD1306_COLOR_WHITE);
+  drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
 }
