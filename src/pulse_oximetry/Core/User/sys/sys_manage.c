@@ -31,6 +31,7 @@
 static sys_measure_t ppg_signal;
 static sys_display_t oled_screen;
 static drv_buzzer_t passive_buzzer;
+static drv_ds1307_t ds1307;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -70,6 +71,15 @@ uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart)
   uint32_t ret = SYS_PROTOCOL_OK;
   ret = sys_protocol_init(uart);
   __ASSERT(ret == SYS_PROTOCOL_OK, SYS_MANAGE_ERROR);
+
+  return SYS_MANAGE_OK;
+}
+
+uint32_t sys_manage_start_rtc(bsp_i2c_handle_t *i2c)
+{
+  uint32_t ret = SYS_TIME_OK;
+  ret = sys_time_init(i2c, &ds1307);
+  __ASSERT(ret == SYS_TIME_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
 }

@@ -21,6 +21,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "sys_button.h"
 #include "sys_display.h"
+#include "sys_time.h"
 #include "sys_measure.h"
 #include "sys_protocol.h"
 #include "drv_buzzer.h"
@@ -135,6 +136,23 @@ uint32_t sys_manage_start_protocol(UART_HandleTypeDef *uart);
  * -  0x3FFFFFFF: Success
  */
 uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel);
+
+/**
+ * @brief       Initialize service for managing RTC DS1307.
+ *
+ * @param[in]   i2c       Pointer to the I2C handle structure in sys_time.
+ *
+ * @attention   Only one RTC DS1307 is allowed to run at a time.
+ *              If you initialize another DS1307,
+ *              it means you have deinitialized the previous DS1307.
+ *
+ * @return
+ * -  0xFFFFFFFF: Error
+ * -  0x7FFFFFFF: Failed
+ * -  0x3FFFFFFF: Success
+ */
+uint32_t sys_manage_start_rtc(bsp_i2c_handle_t *i2c);
+
 #endif // __USER_SYS_MANAGE_H
 
 /* End of file -------------------------------------------------------- */
