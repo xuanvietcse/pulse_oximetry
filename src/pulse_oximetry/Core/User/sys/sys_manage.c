@@ -93,6 +93,12 @@ uint32_t sys_manage_start_buzzer(bsp_tim_typedef_t *tim, uint32_t pwm_channel)
   return SYS_MANAGE_OK;
 }
 
+uint32_t sys_manage_loop()
+{
+  sys_measure_process_data(&ppg_signal);
+  sys_display_update_heart_rate(&oled_screen, ppg_signal.heart_rate);
+  sys_display_update_ppg_signal(&oled_screen, &(ppg_signal.filtered_data));
+}
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
