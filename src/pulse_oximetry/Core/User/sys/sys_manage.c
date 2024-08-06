@@ -1,19 +1,17 @@
 /**
- * @file       <file_name>.c
+ * @file       sys_manage.c
  * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
  * @license    This project is released under the Fiot License.
- * @version    major.minor.patch
- * @date       yyyy-mm-dd
- * @author     <first_name_1> <last_name_1>
- * @author     <first_name_2> <last_name_2>
+ * @version    v1.0.0
+ * @date       2024-08-06
+ * @author     Giang Phan Truong
+ *             Khanh Nguyen Ngoc
+ *             Viet Hoang Xuan
  *
- * @brief      <A brief description of the content of the file>
+ * @brief      Service manage all tasks of system
  *
  * @note
- * @example    example_file_1.c
- *             Example_1 description
- * @example    example_file_2.c
- *             Example_2 description
+ * @example    None
  */
 
 /* Includes ----------------------------------------------------------- */

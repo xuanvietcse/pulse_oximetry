@@ -1,5 +1,5 @@
 /**
- * @file       sys_managw.h
+ * @file       sys_manage.h
  * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
  * @license    This project is released under the Fiot License.
  * @version    v1.0.0
