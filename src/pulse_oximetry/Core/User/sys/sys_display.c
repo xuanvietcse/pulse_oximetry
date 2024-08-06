@@ -115,6 +115,19 @@ uint32_t sys_display_update_heart_rate(sys_display_t *display, uint8_t heart_rat
   return SYS_DISPLAY_OK;
 }
 
+uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal_buf)
+{
+  // Check parameters
+  __ASSERT((display != NULL), SYS_DISPLAY_ERROR);
+  __ASSERT((signal_buf != NULL), SYS_DISPLAY_ERROR);
+  __ASSERT((signal_buf->data >= 700) && (signal_buf->data <= 3000), SYS_DISPLAY_ERROR);
+  // Operation
+  uint8_t temp_buf[200] = {0};
+  cb_read(signal_buf, temp_buf, 200);
+  // Return
+  return SYS_DISPLAY_OK;
+}
+
 uint32_t sys_display_update_threshold(sys_display_t *display, uint8_t *threshold)
 {
   // Check parameters
