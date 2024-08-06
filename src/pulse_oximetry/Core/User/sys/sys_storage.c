@@ -130,6 +130,18 @@ uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size)
   return SYS_STORAGE_OK; 
 }
 
+uint32_t sys_storage_fully_clean(sys_storage_t *storage)
+{
+  __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
+  __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
+
+  uint32_t ret = SYS_STORAGE_OK;
+  ret = 
+  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+
+  return SYS_STORAGE_OK; 
+}
+
 uint32_t sys_storage_deinit(sys_storage_t *storage)
 {
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
