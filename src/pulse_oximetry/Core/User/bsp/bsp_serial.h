@@ -1,5 +1,5 @@
 /**
- * @file       drv_serial.h
+ * @file       bsp_serial.h
  * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
  * @license    This project is released under the Fiot License.
  * @version    v1.0.0
@@ -15,18 +15,20 @@
  */
 
 /* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __USER_DRV_SERIAL_H
-#define __USER_DRV_SERIAL_H
+#ifndef __USER_BSP_SERIAL_H
+#define __USER_BSP_SERIAL_H
 
 /* Includes ----------------------------------------------------------- */
-/* Public defines ----------------------------------------------------- */
 #include "bsp_uart.h"
+/* Public defines ----------------------------------------------------- */
+#define START_BYTE ((uint8_t)0x01)
+#define STOP_BYTE ((uint8_t)0X04)
 /* Public enumerate/structure ----------------------------------------- */
-enum drv_serial_status_t
+enum bsp_serial_status_t
 {
-  DRV_SERIAL_ERROR = 0xFFFFFFFF,
-  DRV_SERIAL_FAILED = 0x7FFFFFFF,
-  DRV_SERIAL_OK = 0x3FFFFFFF
+  BSP_SERIAL_ERROR = 0xFFFFFFFF,
+  BSP_SERIAL_FAILED = 0x7FFFFFFF,
+  BSP_SERIAL_OK = 0x3FFFFFFF
 };
 
 typedef struct __attribute((__packed__))
@@ -38,12 +40,12 @@ typedef struct __attribute((__packed__))
   uint8_t size;
   uint8_t reader;
   uint8_t received_bytes;
-} drv_serial_t;
+} bsp_serial_t;
 
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-typedef void (*drv_evt_cb_t)(uint16_t);
+typedef void (*bsp_evt_cb_t)(uint16_t);
 
 /* Public function prototypes ----------------------------------------- */
 /**
@@ -52,11 +54,11 @@ typedef void (*drv_evt_cb_t)(uint16_t);
  * @param[in]     uart      Hardware UART handler
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t drv_serial_init(UART_HandleTypeDef *uart);
+uint32_t bsp_serial_init(UART_HandleTypeDef *uart);
 
 /**
  * @brief         Transmit data viaserial comunication
@@ -64,11 +66,11 @@ uint32_t drv_serial_init(UART_HandleTypeDef *uart);
  * @param[in]     tx_buf    Buffer store data that will be transmitted
  * @param[in]     tx_size   Size of transmitter buffer
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t drv_serial_transmit(uint8_t *tx_buf, uint16_t tx_size);
+uint32_t bsp_serial_transmit(uint8_t *tx_buf, uint16_t tx_size);
 
 /**
  * @brief         Transmit data viaserial comunication
@@ -76,11 +78,11 @@ uint32_t drv_serial_transmit(uint8_t *tx_buf, uint16_t tx_size);
  * @param[in]     rx_buf    Buffer store data that will be received
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t drv_serial_receive(uint8_t *rx_buf);
+uint32_t bsp_serial_receive(uint8_t *rx_buf);
 
 /**
  * @brief         Transmit data viaserial comunication
@@ -88,12 +90,12 @@ uint32_t drv_serial_receive(uint8_t *rx_buf);
  * @param[in]     rx_buf    Buffer store data that will be received
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Fail
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t drv_serial_register_cb_function(drv_evt_cb_t new_rx_data_cb);
+uint32_t bsp_serial_register_cb_function(bsp_evt_cb_t new_rx_data_cb);
 
-#endif // __USER_DRV_SERIAL_H
+#endif // __USER_BSP_SERIAL_H
 
 /* End of file -------------------------------------------------------- */

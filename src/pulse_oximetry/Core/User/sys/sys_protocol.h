@@ -45,6 +45,10 @@ typedef enum
 #define COMMAND_FIELD (0xFF)
 #define DATA_FIELD (0xFF)
 #define TH_LEVEL_FIELD (0xFF)
+#define PKT_SIZE (6)
+#define CMD_PKT_SIZE (1)
+#define DATA_PKT_SIZE (4)
+#define TH_PKT_SIZE (1)
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */

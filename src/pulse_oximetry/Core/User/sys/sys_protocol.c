@@ -18,7 +18,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "sys_protocol.h"
 #include "common.h"
-#include "drv_serial.h"
+#include "bsp_serial.h"
 /* Private defines ---------------------------------------------------- */
 #define MAX_PKT_LEN (100)
 /* Private enumerate/structure ---------------------------------------- */
@@ -33,7 +33,6 @@ static bool s_packet_cplt_flag = false;
 static uint8_t s_pkt_buf[MAX_PKT_LEN] = {0};
 static uint8_t s_pkt[MAX_PKT_LEN] = {0};
 static cbuffer_t *s_protocol_node[SYS_PROTOCOL_MAX_NODE] = {NULL};
-static uint16_t s_received_bytes = 0;
 /* Private function prototypes ---------------------------------------- */
 static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes);
 /* Function definitions ----------------------------------------------- */
@@ -43,13 +42,13 @@ uint32_t sys_protocol_init(UART_HandleTypeDef *uart)
   __ASSERT((uart != NULL), SYS_PROTOCOL_ERROR);
   // Operation
   // Initialize UART
-  uint32_t ret = drv_serial_init(uart);
+  uint32_t ret = bsp_serial_init(uart);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Register callback function
-  ret = drv_serial_register_cb_function(sys_protocol_receive_packet_cplt_handler);
+  ret = bsp_serial_register_cb_function(sys_protocol_receive_packet_cplt_handler);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Send sample message to UART to inform status
-  ret = drv_serial_transmit(s_protocol_msg, __SIZE_OF(s_protocol_msg));
+  ret = bsp_serial_transmit(s_protocol_msg, __SIZE_OF(s_protocol_msg));
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Return
   return SYS_PROTOCOL_OK;
@@ -70,16 +69,16 @@ uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol
   __ASSERT((rx_node < SYS_PROTOCOL_MAX_NODE), SYS_PROTOCOL_ERROR);
   // Operations
   // Check if there is enough space
-  if (cb_space_count(s_protocol_node[rx_node]) < 6)
+  if (cb_space_count(s_protocol_node[rx_node]) < PKT_SIZE)
   {
     return SYS_PROTOCOL_FAILED;
   }
   // Send CMD
-  cb_write(s_protocol_node[rx_node], &(pkt.command), 1);
+  cb_write(s_protocol_node[rx_node], &(pkt.command), CMD_PKT_SIZE);
   // Send DATA
-  cb_write(s_protocol_node[rx_node], &(pkt.data), 4);
+  cb_write(s_protocol_node[rx_node], &(pkt.data), DATA_PKT_SIZE);
   // Send TH_LEVEL
-  cb_write(s_protocol_node[rx_node], &(pkt.threshold_level), 1);
+  cb_write(s_protocol_node[rx_node], &(pkt.threshold_level), TH_PKT_SIZE);
   // Return
   return SYS_PROTOCOL_OK;
 }
@@ -87,11 +86,11 @@ uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
 {
   // Operation
   uint32_t ret = SYS_PROTOCOL_OK;
-  ret = drv_serial_transmit(&(pkt.command), 1);
+  ret = bsp_serial_transmit(&(pkt.command), CMD_PKT_SIZE);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
-  ret = drv_serial_transmit(&(pkt.data), 4);
+  ret = bsp_serial_transmit(&(pkt.data), DATA_PKT_SIZE);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
-  ret = drv_serial_transmit(&(pkt.threshold_level), 1);
+  ret = bsp_serial_transmit(&(pkt.threshold_level), TH_LEVEL_FIELD);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   // Return
   return SYS_PROTOCOL_OK;
@@ -99,13 +98,12 @@ uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
 /* Private definitions ----------------------------------------------- */
 static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes)
 {
-  drv_serial_receive(s_pkt_buf);
-  s_received_bytes += received_bytes;
-  uint8_t *start_byte_pos = strchr(s_pkt_buf, 0x01);
-  uint8_t *stop_byte_pos = strchr(start_byte_pos + 5, 0x04);
+  bsp_serial_receive(s_pkt_buf);
+  uint8_t *start_byte_pos = strchr(s_pkt_buf, START_BYTE);
+  uint8_t *stop_byte_pos = strchr(start_byte_pos + CMD_PKT_SIZE + DATA_PKT_SIZE, STOP_BYTE);
   if ((start_byte_pos != NULL) && (stop_byte_pos != NULL))
   {
-    memmove(s_pkt, start_byte_pos + 1, stop_byte_pos - start_byte_pos - 1);
+    memmove(s_pkt, start_byte_pos + CMD_PKT_SIZE, stop_byte_pos - start_byte_pos - 1);
     s_packet_cplt_flag = true;
   }
   if (s_packet_cplt_flag)
@@ -121,12 +119,11 @@ static void sys_protocol_receive_packet_cplt_handler(uint16_t received_bytes)
       pkt.data |= *(s_pkt + i) & DATA_FIELD;
     }
     // TH Level
-    pkt.threshold_level = *(s_pkt + 5) & TH_LEVEL_FIELD;
+    pkt.threshold_level = *(s_pkt + CMD_PKT_SIZE + DATA_PKT_SIZE) & TH_LEVEL_FIELD;
     // Send pkt to node
     sys_protocol_send_pkt_to_node(SYS_PROTOCOL_SYS_MNG, pkt);
     // Reset value
     memset(s_pkt_buf, 0, MAX_PKT_LEN);
-    s_received_bytes = 0;
     s_packet_cplt_flag = false;
   }
   // Return

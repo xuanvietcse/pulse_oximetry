@@ -64,7 +64,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/drv/drv_ssd1306.c
     Core/User/sys/sys_protocol.c
     Core/User/bsp/bsp_uart.c
-    Core/User/drv/drv_serial.c
+    Core/User/bsp/bsp_serial.c
 )
 
 # Add include paths
