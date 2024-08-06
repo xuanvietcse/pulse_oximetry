@@ -28,9 +28,9 @@
 bsp_gpio_status_t bsp_gpio_write_pin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState state)
 {
   __ASSERT((gpio == GPIOA) ||
-           (gpio == GPIOB) ||
-           (gpio == GPIOC) ||
-           (gpio == GPIOE),
+               (gpio == GPIOB) ||
+               (gpio == GPIOC) ||
+               (gpio == GPIOE),
            BSP_GPIO_ERROR);
   __ASSERT((pin >= 0) && (pin < 16), BSP_GPIO_ERROR);
   __ASSERT((state == 0) | (state == 1), BSP_GPIO_ERROR);
@@ -42,9 +42,9 @@ bsp_gpio_status_t bsp_gpio_write_pin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinS
 GPIO_PinState bsp_gpio_read_pin(GPIO_TypeDef *gpio, uint16_t pin)
 {
   __ASSERT((gpio == GPIOA) ||
-           (gpio == GPIOB) ||
-           (gpio == GPIOC) ||
-           (gpio == GPIOE),
+               (gpio == GPIOB) ||
+               (gpio == GPIOC) ||
+               (gpio == GPIOE),
            BSP_GPIO_ERROR);
   __ASSERT((pin >= 0) && (pin < 16), BSP_GPIO_ERROR);
 
@@ -54,9 +54,9 @@ GPIO_PinState bsp_gpio_read_pin(GPIO_TypeDef *gpio, uint16_t pin)
 bsp_gpio_status_t bsp_gpio_toggle_pin(GPIO_TypeDef *gpio, uint16_t pin)
 {
   __ASSERT((gpio == GPIOA) ||
-           (gpio == GPIOB) ||
-           (gpio == GPIOC) ||
-           (gpio == GPIOE),
+               (gpio == GPIOB) ||
+               (gpio == GPIOC) ||
+               (gpio == GPIOE),
            BSP_GPIO_ERROR);
   __ASSERT((pin >= 0) && (pin < 16), BSP_GPIO_ERROR);
   HAL_GPIO_TogglePin(gpio, pin);
@@ -173,6 +173,10 @@ bsp_gpio_status_t bsp_gpio_exti_disable(uint16_t pin)
 
 bsp_gpio_status_t bsp_gpio_exti_handler(uint16_t pin)
 {
+  drv_button_status_t ret = DRV_BUTTON_OK;
+
+  ret = drv_button_exti_handler(pin);
+  __ASSERT(ret == DRV_BUTTON_OK, BSP_GPIO_ERROR);
 
   return BSP_GPIO_OK;
 }
