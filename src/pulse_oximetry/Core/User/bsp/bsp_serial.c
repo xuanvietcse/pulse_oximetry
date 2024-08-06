@@ -20,7 +20,7 @@
 #include <string.h>
 #include <stdbool.h>
 /* Private defines ---------------------------------------------------- */
-#define DMA_BUFFER_SIZE (20)
+#define DMA_BUFFER_SIZE (16)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
