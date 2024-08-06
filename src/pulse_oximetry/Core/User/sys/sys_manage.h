@@ -24,7 +24,6 @@
 #include "sys_measure.h"
 #include "sys_protocol.h"
 #include "drv_buzzer.h"
-#include "list_of_sound_effects.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -59,6 +58,26 @@ typedef struct
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
+
+/**
+ * @brief  Start the service to collect and process signal
+ *
+ * @param[in]     adc           Channel attaches to sensor
+ * @param[in]     tim           Timer to trigger ADC Conversion
+ * @param[in]     prescaler     Prescale the clock timer source
+ * @param[in]     autoreload    Set the top of counter
+ * @param[in]     data_buf      Pointer to buffer that store processed data.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t sys_manage_start_measure(bsp_adc_typedef_t *adc,
+                                  bsp_tim_typedef_t *tim,
+                                  uint32_t prescaler,
+                                  uint32_t autoreload,
+                                  double *data_buf);
 
 #endif // __USER_SYS_MANAGE_H
 
