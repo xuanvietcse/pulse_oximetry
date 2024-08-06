@@ -258,6 +258,26 @@ uint32_t drv_ssd1306_draw_rectangle(drv_ssd1306_t *dev,
                                     uint8_t pos_x2,
                                     uint8_t pos_y2,
                                     drv_ssd1306_color_t color);
+
+/**
+ * @brief         Fill a rectangle with selected color
+ * 
+ * @param[in]     dev             Pointer to drv_ssd1306_t to manage device
+ * @param[in]     pos_x1, pox_y1  Starting point
+ * @param[in]     pos_x2, pos_y2  Ending point
+ * @param[in]     color           Color to fill the rectangle
+ * 
+ * @return 
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t drv_ssd1306_fill_rectangle(drv_ssd1306_t *dev,
+                                    uint8_t pos_x1,
+                                    uint8_t pos_y1,
+                                    uint8_t pos_x2,
+                                    uint8_t pos_y2,
+                                    drv_ssd1306_color_t color);
 #endif // __USER_DRV_SSD1306_H
 
 /* End of file -------------------------------------------------------- */
