@@ -130,6 +130,23 @@ uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size)
   return SYS_STORAGE_OK; 
 }
 
+uint32_t sys_storage_deinit(sys_storage_t *storage)
+{
+  __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
+  __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
+
+  uint32_t ret = SYS_STORAGE_OK;
+  ret = sys_storage_fully_clean(storage);
+  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+
+  s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
+  
+  storage->address = 0;
+  storage->size = 0;
+  storage->space_left = 0;
+
+  return SYS_STORAGE_OK; 
+}
 
 /* Private definitions ------------------------------------------------ */
 static uint8_t sys_storage_get_id(void)
