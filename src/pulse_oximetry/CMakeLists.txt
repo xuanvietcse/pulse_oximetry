@@ -58,7 +58,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/drv/drv_hr.c
     Core/User/drv/drv_button.c
     Core/User/drv/drv_buzzer.c
-    Core/User/drv/drv_serial.c
+    Core/User/bsp/bsp_serial.c
     Core/User/drv/drv_ssd1306.c
     Core/User/middleware/cbuffer.c
     Core/User/middleware/ssd1306_fonts.c
