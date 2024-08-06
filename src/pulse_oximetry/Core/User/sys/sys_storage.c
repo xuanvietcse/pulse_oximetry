@@ -43,18 +43,45 @@ static uint8_t sys_storage_get_id(void);
 uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size)
 {
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
-  __ASSERT(size < SYS_STORAGE_FLASH_SECTOR, SYS_STORAGE_ERROR);
+  __ASSERT(size < SYS_STORAGE_FLASH_SECTOR_SIZE, SYS_STORAGE_ERROR);
+  __ASSERT(size == 0, SYS_STORAGE_ERROR);
   __ASSERT(start_address > BSP_FLASH_SECTOR_7_ADDRESS, SYS_STORAGE_ERROR);
   __ASSERT(start_address < (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - size), SYS_STORAGE_ERROR);
 
   storage->address = start_address;
+  bsp_flash_write(storage->address, void *data_buf, uint32_t nbytes);
   storage->size = size;
-  storage->space_left = size;
+  storage->space_left = size - 1;
 
   return SYS_STORAGE_OK;
+}
+
+uint32_t sys_storage_import(sys_storage_t *storage, void *data, uint32_t size)
+{
+  __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
+  __ASSERT(data != NULL, SYS_STORAGE_ERROR);
+  __ASSERT(size <= storage->space_left, SYS_STORAGE_ERROR);
+  __ASSERT(size == 0, SYS_STORAGE_ERROR);
+  
+}
+
+uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size)
+{
+  
+}
+
+uint32_t sys_storage_fully_clean(sys_storage_t *storage)
+{
+  
+}
+
+uint32_t sys_storage_deinit(sys_storage_t *storage)
+{
+  
 }
 /* Private definitions ------------------------------------------------ */
 static uint8_t sys_storage_get_id(void)
 {
+  static uint8_t s_segment_id = 0;
 }
 /* End of file -------------------------------------------------------- */

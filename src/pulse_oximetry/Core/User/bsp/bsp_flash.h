@@ -31,14 +31,14 @@
 #define BSP_FLASH_SECTOR_6_ADDRESS (0x08040000U) /*!< Flash sector 6 start address */
 #define BSP_FLASH_SECTOR_7_ADDRESS (0x08060000U) /*!< Flash sector 7 start address */
 
-#define BSP_FLASH_SECTOR_0_SIZE (0x4000U)  /*!< Flash sector 0 size 16 KB */
-#define BSP_FLASH_SECTOR_1_SIZE (0x4000U)  /*!< Flash sector 1 size 16 KB */
-#define BSP_FLASH_SECTOR_2_SIZE (0x4000U)  /*!< Flash sector 2 size 16 KB */
-#define BSP_FLASH_SECTOR_3_SIZE (0x4000U)  /*!< Flash sector 3 size 16 KB */
-#define BSP_FLASH_SECTOR_4_SIZE (0x10000U) /*!< Flash sector 4 size 64 KB */
-#define BSP_FLASH_SECTOR_5_SIZE (0x20000U) /*!< Flash sector 5 size 128 KB */
-#define BSP_FLASH_SECTOR_6_SIZE (0x20000U) /*!< Flash sector 6 size 128 KB */
-#define BSP_FLASH_SECTOR_7_SIZE (0x20000U) /*!< Flash sector 7 size 128 KB */
+#define BSP_FLASH_SECTOR_0_SIZE    (0x4000U)  /*!< Flash sector 0 size 16 KB */
+#define BSP_FLASH_SECTOR_1_SIZE    (0x4000U)  /*!< Flash sector 1 size 16 KB */
+#define BSP_FLASH_SECTOR_2_SIZE    (0x4000U)  /*!< Flash sector 2 size 16 KB */
+#define BSP_FLASH_SECTOR_3_SIZE    (0x4000U)  /*!< Flash sector 3 size 16 KB */
+#define BSP_FLASH_SECTOR_4_SIZE    (0x10000U) /*!< Flash sector 4 size 64 KB */
+#define BSP_FLASH_SECTOR_5_SIZE    (0x20000U) /*!< Flash sector 5 size 128 KB */
+#define BSP_FLASH_SECTOR_6_SIZE    (0x20000U) /*!< Flash sector 6 size 128 KB */
+#define BSP_FLASH_SECTOR_7_SIZE    (0x20000U) /*!< Flash sector 7 size 128 KB */
 /* Public enumerate/structure ----------------------------------------- */
 
 enum bsp_flash_status_t

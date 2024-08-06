@@ -20,12 +20,21 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_flash.h"
+
 /* Public defines ----------------------------------------------------- */
 #ifndef SYS_STORAGE_FLASH_SECTOR
-#define SYS_STORAGE_FLASH_SECTOR (FLASH_SECTOR_7)
+#define SYS_STORAGE_FLASH_SECTOR         (FLASH_SECTOR_7)
 #endif
-/* Public enumerate/structure ----------------------------------------- */
 
+#ifndef SYS_STORAGE_FLASH_SECTOR_SIZE
+#define SYS_STORAGE_FLASH_SECTOR_SIZE    (BSP_FLASH_SECTOR_7_SIZE)
+#endif
+
+#ifndef SYS_STORAGE_FLASH_SECTOR_ADDRESS
+#define SYS_STORAGE_FLASH_SECTOR_ADDRESS (BSP_FLASH_SECTOR_7_ADDRESS)
+#endif
+
+/* Public enumerate/structure ----------------------------------------- */
 enum sys_storage_status_t
 {
   SYS_STORAGE_ERROR = 0xFFFFFFFF,
@@ -35,11 +44,12 @@ enum sys_storage_status_t
 
 typedef struct __attribute__((__packed__))
 {
-  uint32_t id;
+  uint8_t id;
   uint32_t address;
   uint32_t size;
   uint32_t space_left;
 } sys_storage_t;
+
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */

@@ -53,7 +53,7 @@ uint32_t bsp_flash_write(uint32_t address, void *data_buf, uint32_t nbytes)
   __ASSERT(nbytes > 0, BSP_FLASH_ERROR);
   // Check valid address in range 0x08000000 - 0x0807FFFF
   __ASSERT((address >= BSP_FLASH_SECTOR_0_ADDRESS) &&
-               (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
+           (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
            BSP_FLASH_ERROR);
   __ASSERT(data_buf != NULL, BSP_FLASH_ERROR);
 
@@ -80,7 +80,7 @@ uint32_t bsp_flash_read(uint32_t address, void *data_buf, uint32_t nbytes)
   __ASSERT(nbytes > 0, BSP_FLASH_ERROR);
   // Check valid address in range 0x08000000 - 0x0807FFFF
   __ASSERT((address >= BSP_FLASH_SECTOR_0_ADDRESS) &&
-               (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
+           (address <= (BSP_FLASH_SECTOR_7_ADDRESS + BSP_FLASH_SECTOR_7_SIZE - nbytes)),
            BSP_FLASH_ERROR);
   __ASSERT(data_buf != NULL, BSP_FLASH_ERROR);
 
