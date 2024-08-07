@@ -116,6 +116,8 @@ uint32_t sys_time_get_epoch_time(drv_ds1307_t *ds1307)
   // Check parameters
   __ASSERT((ds1307 != NULL), SYS_TIME_ERROR);
   // Operation
+  sys_time_get_date_time(ds1307);
+
   struct tm t;
   time_t t_of_day;
   t.tm_year = (ds1307->year + 2000) - 1900;
