@@ -21,7 +21,6 @@
 #include <time.h>
 
 /* Private defines ---------------------------------------------------- */
-#define GMT0_TO_GMT7_SECOND (25200)
 #define MAX_NUMBER_OF_ALARM (5)
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -208,9 +207,6 @@ static sys_time_status_t sys_time_convert_epoch_time(uint32_t epoch_time,
 
   // Declare a tm structure to hold the result of localtime
   struct tm *current_date_time;
-
-  // change epoch time from GMT0 to GMT7
-  epoch_time += GMT0_TO_GMT7_SECOND;
 
   time_t epoch_time_temp = (time_t)epoch_time;
 
