@@ -36,38 +36,27 @@ class MainWindow(QMainWindow):
         # Set the window title for the User UI window
         self.set_window_title("User UI")
 
-        # Set default value for line_thre_noti
-        self.ui_user.line_thre_noti.setText("Normal heart rate")
-
-        # Add the dev_widget (dev.ui) to the stacked widget
+        # Add the dev_widget (dev.ui) and user_ui (form.ui) to the stacked widget
         self.stacked_widget.addWidget(self.dev_widget)
-
-        # Add the user_ui (form.ui) to the stacked widget
         self.stacked_widget.addWidget(self.user_ui)
-
-        # Connect the button to switch UI
-        self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
-
-        # Connect btn_set_interval to send_interval_code method
-        self.ui_user.btn_set_interval.clicked.connect(self.send_interval_code)
-
-        # Connect btn_set_threshold to send_threshold_code method
-        self.ui_user.btn_set_threshold.clicked.connect(self.send_threshold_code)
-
-        # Connect btn_read_record to send_read_record_code method
-        self.ui_user.btn_read_record.clicked.connect(self.send_read_record_code)
-
-        # Connect btn_clear_record to send_clear_record_code method
-        self.ui_user.btn_clear_record.clicked.connect(self.send_clear_record_code)
-
-        # Connect btn_clear_graph to clear_graph method
-        self.ui_user.btn_clear_graph.clicked.connect(self.clear_graph)
-
-        # Connect btn_check_com to send_check_com_code method
-        self.ui_user.btn_check_com.clicked.connect(self.send_check_com_code)
 
         # Set the initial widget to user_ui
         self.stacked_widget.setCurrentWidget(self.user_ui)
+
+        # Initialize serial communication
+        self.ui_user.cbb_baudrate.setCurrentText("115200")
+        self.serial_connection = None
+        self.update_available_ports()
+
+        # Connect the buttons to the methods
+        self.ui_user.btn_connect_com.clicked.connect(self.toggle_serial_connection)
+        self.ui_user.btn_switch_to_dev_ui.clicked.connect(self.show_dev_ui)
+        self.ui_user.btn_set_interval.clicked.connect(self.send_interval_code)
+        self.ui_user.btn_set_threshold.clicked.connect(self.send_threshold_code)
+        self.ui_user.btn_read_record.clicked.connect(self.send_read_record_code)
+        self.ui_user.btn_clear_record.clicked.connect(self.send_clear_record_code)
+        self.ui_user.btn_clear_graph.clicked.connect(self.clear_graph)
+        self.ui_user.btn_check_com.clicked.connect(self.send_check_com_code)
 
         # Add the heart rate plot to the layout in user.ui
         self.heart_rate_graph = pg.PlotWidget()
@@ -81,8 +70,6 @@ class MainWindow(QMainWindow):
         styles = {"color": "black", "font-size": "13px"}
         self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
         self.heart_rate_graph.setLabel("bottom", "Time (h)", **styles)
-
-        self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))  # Blue
         self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
 
         # ScatterPlotItem for scatter points
@@ -92,10 +79,6 @@ class MainWindow(QMainWindow):
         # Data lists for plotting heart rate
         self.heart_rate_time = []
         self.heart_rate_value = []
-
-        # PlotDataItem for lines
-        # self.heart_rate_plot_lines = pg.PlotDataItem(pen=self.heart_rate_pen)
-        # self.heart_rate_graph.addItem(self.heart_rate_plot_lines)
 
         # Time data lists for plotting heart rate and displaying record
         self.dayofweek = []
@@ -107,13 +90,10 @@ class MainWindow(QMainWindow):
         self.second = []
         self.records = []
 
-        # Set default value for cbb_baudrate
-        self.ui_user.cbb_baudrate.setCurrentText("115200")
-
-        # Initialize serial communication
-        self.serial_connection = None
-        self.update_available_ports()
-        self.ui_user.btn_connect_com.clicked.connect(self.toggle_serial_connection)
+        # PlotDataItem for lines
+        # self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))
+        # self.heart_rate_plot_lines = pg.PlotDataItem(pen=self.heart_rate_pen)
+        # self.heart_rate_graph.addItem(self.heart_rate_plot_lines)
 
         # Initialize and start the timer to check for COM port updates
         self.port_check_timer = QTimer(self)
@@ -134,7 +114,6 @@ class MainWindow(QMainWindow):
     def toggle_serial_connection(self):
         if self.serial_connection:
             self.disconnect_serial()
-
         else:
             self.connect_serial()
 
@@ -149,7 +128,6 @@ class MainWindow(QMainWindow):
                 self.serial_connection.start()
                 self.ui_user.btn_connect_com.setText("Disconnect")
                 QMessageBox.information(self, "Connection", f"Connected to {port} at {baudrate} baudrate.")
-
             except Exception:
                 self.update_available_ports()
                 QMessageBox.warning(self, "Error", "Serial port not found.")
@@ -164,13 +142,13 @@ class MainWindow(QMainWindow):
             self.ui_user.btn_connect_com.setText("Connect")
             QMessageBox.information(self, "Disconnection", "Serial port disconnected.")
 
+    @Slot()
     def set_window_title(self, title):
         self.setWindowTitle(title)
 
     @Slot()
     def show_dev_ui(self):
         self.stacked_widget.setCurrentWidget(self.dev_widget)
-        # Set the title to "Dev UI"
         self.set_window_title("Dev UI")
 
     @Slot()
@@ -180,10 +158,8 @@ class MainWindow(QMainWindow):
             if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
-            # Read the value from line_set_interval and convert it to an integer
             interval_value = int(self.ui_user.line_set_interval.text())
 
-            # Check if the interval value is positive
             if interval_value <= 0:
                 raise ValueError("Interval value must be a positive integer.")
 
@@ -196,18 +172,13 @@ class MainWindow(QMainWindow):
             # Convert the command string to bytes for sending over serial
             interval_command_bytes = bytes.fromhex(interval_command)
 
-            # Check if serial_connection has been established and is open
             if self.serial_connection:
-                # Send the byte command over serial
                 self.serial_connection.send(interval_command_bytes)
-                # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {interval_command}")
             else:
-                # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
 
         except ValueError:
-            # Show warning if the input value is not a valid positive integer
             QMessageBox.warning(self, "Error", "Invalid interval value. Please enter a valid positive integer.")
 
         except Exception:
@@ -220,13 +191,9 @@ class MainWindow(QMainWindow):
             if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
-            # Read the value from line_high_level and convert it to an integer
             threshold_high_value = int(self.ui_user.line_high_level.text())
-
-            # Read the value from line_high_level and convert it to an integer
             threshold_low_value = int(self.ui_user.line_low_level.text())
 
-            # Check if the threshold value is positive
             if (threshold_high_value <= 0) or (threshold_low_value <= 0):
                 raise ValueError("Threshold value must be a positive integer.")
 
@@ -240,18 +207,13 @@ class MainWindow(QMainWindow):
             # Convert the command string to bytes for sending over serial
             threshold_command_bytes = bytes.fromhex(threshold_command)
 
-            # Check if serial_connection has been established and is open
             if self.serial_connection:
-                # Send the byte command over serial
                 self.serial_connection.send(threshold_command_bytes)
-                # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {threshold_command}")
             else:
-                # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
 
         except ValueError:
-            # Show warning if the input value is not a valid positive integer
             QMessageBox.warning(self, "Error", "Invalid threshold value. Please enter a valid positive integer.")
 
         except Exception:
@@ -267,14 +229,10 @@ class MainWindow(QMainWindow):
             check_com_hex_command = '0100FFFFFFFFFF04'
             check_com_command_bytes = bytes.fromhex(check_com_hex_command)
 
-            # Check if serial_connection has been established and is open
             if self.serial_connection:
-                # Send the byte command over serial
                 self.serial_connection.send(check_com_command_bytes)
-                # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {check_com_hex_command}")
             else:
-                # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
 
         except Exception:
@@ -290,14 +248,10 @@ class MainWindow(QMainWindow):
             read_record_hex_command = '0101FFFFFFF0FF04'
             read_record_command_bytes = bytes.fromhex(read_record_hex_command)
 
-            # Check if serial_connection has been established and is open
             if self.serial_connection:
-                # Send the byte command over serial
                 self.serial_connection.send(read_record_command_bytes)
-                # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {read_record_hex_command}")
             else:
-                # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
 
         except Exception:
@@ -313,18 +267,14 @@ class MainWindow(QMainWindow):
             clear_record_hex_command = '0105FFFFFFFFFF04'
             clear_record_command_bytes = bytes.fromhex(clear_record_hex_command)
 
-            # Check if serial_connection has been established and is open
             if self.serial_connection:
-                # Send the byte command over serial
                 self.serial_connection.send(clear_record_command_bytes)
-                # Show success message
                 QMessageBox.information(self, "Success", f"Sent: {clear_record_hex_command}")
+
                 # Reset the self.records array
                 self.records = []
-                # Clear the content of txt_record
                 self.ui_user.txt_record.clear()
             else:
-                # Show warning if serial port is not connected
                 QMessageBox.warning(self, "Error", "Serial port is not connected.")
 
         except Exception:
@@ -344,7 +294,7 @@ class MainWindow(QMainWindow):
         self.heart_rate_graph.setLabel("left", "Heart Rate (bpm)", **styles)
         self.heart_rate_graph.setLabel("bottom", "Time (h)", **styles)
 
-        self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))  # Blue
+        # self.heart_rate_pen = pg.mkPen(color=(0, 0, 255))  # Blue
         self.heart_rate_graph.setXRange(0, 24) # X-Axis from 0h to 24h
 
         # ScatterPlotItem for scatter points
