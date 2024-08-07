@@ -30,9 +30,9 @@
  */
 typedef enum
 {
-  SYS_TIME_ERROR = -2,
-  SYS_TIME_FAILED,
-  SYS_TIME_OK
+  SYS_TIME_ERROR = 0xFFFFFFFF,
+  SYS_TIME_FAILED = 0x7FFFFFFF,
+  SYS_TIME_OK = 0x3FFFFFFF
 } sys_time_status_t;
 
 /**
