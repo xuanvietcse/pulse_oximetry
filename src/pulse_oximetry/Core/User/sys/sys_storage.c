@@ -67,7 +67,7 @@ static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id);
  * @return
  *  - the minus result
  */
-static uint32_t comparator(const void *p, const void *q);
+static uint32_t sys_storage_address_comparator(const void *p, const void *q);
 
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size)
@@ -93,12 +93,12 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
     }
     else
     {
-      qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), comparator);
+      qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), sys_storage_address_comparator);
     }
   }
   else
   {
-    qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), comparator);
+    qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), sys_storage_address_comparator);
     uint8_t id_curr_pos = sys_storage_get_id_curr_pos_in_arr(storage->id);
 
     if (id_curr_pos == 255)
@@ -108,7 +108,7 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
       {
         s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
         s_storage_mng[id_curr_pos] = (sys_storage_t){0, 0, 0, 0};
-        qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), comparator);
+        qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), sys_storage_address_comparator);
         return SYS_STORAGE_ERROR;
       }
     }
@@ -119,7 +119,7 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
       {
         s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
         s_storage_mng[id_curr_pos] = (sys_storage_t){0, 0, 0, 0};
-        qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), comparator);
+        qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), sys_storage_address_comparator);
         return SYS_STORAGE_ERROR;
       }
     }
@@ -207,6 +207,10 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   ret = bsp_flash_erase_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
+  // Mark ID again
+  ret = bsp_flash_write(storage->address, &storage->id, SYS_STORAGE_ID_SIZE);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+
   return SYS_STORAGE_OK;
 }
 
@@ -251,7 +255,7 @@ static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id)
   }
 }
 
-static uint32_t comparator(const void *p, const void *q)
+static uint32_t sys_storage_address_comparator(const void *p, const void *q)
 {
   uint32_t l = ((sys_storage_t *)p)->address;
   uint32_t r = ((sys_storage_t *)q)->address;
