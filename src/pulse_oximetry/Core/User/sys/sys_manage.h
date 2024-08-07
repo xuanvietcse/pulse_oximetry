@@ -53,6 +53,7 @@ typedef enum
   SYS_MANAGE_WAIT_WAKEUP,
   SYS_MANAGE_STATE_IDLE,
   SYS_MANAGE_STATE_NORMAL,
+  SYS_MANAGE_STATE_HEART_RATE_WARNING,
   SYS_MANAGE_STATE_CHECK_UART,
   SYS_MANAGE_STATE_SET_THRESHOLD,
   SYS_MANAGE_STATE_SET_INTERVAL,
@@ -69,7 +70,7 @@ typedef struct
   sys_manage_state_t current_state;
   uint8_t cmd;
   uint32_t interval;
-  uint8_t lower_thresshold;
+  uint8_t lower_threshold;
   uint8_t upper_threshold;
 } sys_manage_t;
 

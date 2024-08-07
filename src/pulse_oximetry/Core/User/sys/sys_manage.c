@@ -16,6 +16,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "sys_manage.h"
+#include "list_of_sound_effects.h"
 #include "common.h"
 /* Private defines ---------------------------------------------------- */
 #define SYS_MANAGE_TIMESTAMP (96000000U)
@@ -156,8 +157,8 @@ uint32_t sys_manage_start(bsp_tim_typedef_t *tim)
   s_mng.current_state = SYS_MANAGE_STATE_IDLE;
   s_mng.cmd = 0xFF;
   s_mng.interval = 0;
-  s_mng.lower_thresshold = 0xFF;
-  s_mng.upper_threshold = 0;
+  s_mng.lower_threshold = 60;
+  s_mng.upper_threshold = 0xFF;
 
   s_check_pkt.command = 0x00;
   s_check_pkt.data = 0xFFFFFFFF;
@@ -174,6 +175,9 @@ uint32_t sys_manage_start(bsp_tim_typedef_t *tim)
 uint32_t sys_manage_loop()
 {
   sys_button_manage();
+  sys_measure_process_data(&s_ppg_signal);
+  sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
+  sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
   if (cb_data_count(&s_rx_pkt_cbuf) > 0)
   {
     cb_read(&s_rx_pkt_cbuf, &s_mng.cmd, CMD_PKT_SIZE);
@@ -250,9 +254,25 @@ uint32_t sys_manage_loop()
 
   case SYS_MANAGE_STATE_NORMAL:
   {
-    sys_measure_process_data(&s_ppg_signal);
-    sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
-    sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
+    if ((s_ppg_signal.heart_rate < s_mng.lower_threshold) || (s_ppg_signal.heart_rate > s_mng.upper_threshold))
+    {
+      s_mng.current_state = SYS_MANAGE_STATE_HEART_RATE_WARNING;
+    }
+    uint8_t msg[] = "          ";
+    sys_display_show_noti(&s_oled_screen, msg);
+    break;
+  }
+
+  case SYS_MANAGE_STATE_HEART_RATE_WARNING:
+  {
+    uint8_t msg[] = "Warning";
+    sys_display_show_noti(&s_oled_screen, msg);
+    // drv_buzzer_play(&s_passive_buzzer, system_alert, 5);
+    if ((s_ppg_signal.heart_rate > s_mng.lower_threshold) && (s_ppg_signal.heart_rate < s_mng.upper_threshold))
+    {
+      s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+      drv_buzzer_play(&s_passive_buzzer, system_alert, 0);
+    }
     break;
   }
 
@@ -269,12 +289,11 @@ uint32_t sys_manage_loop()
     uint32_t temp_data = 0;
     cb_read(&s_rx_pkt_cbuf, &temp_data, DATA_PKT_SIZE);
     // Set threshold
-    s_mng.lower_thresshold = temp_data & (0x000000FF);
+    s_mng.lower_threshold = temp_data & (0x000000FF);
     s_mng.upper_threshold = (temp_data >> 8) & (0x000000FF);
-    uint8_t threshold[] = {s_mng.lower_thresshold, s_mng.upper_threshold};
+    uint8_t threshold[] = {s_mng.lower_threshold, s_mng.upper_threshold};
     sys_display_update_threshold(&s_oled_screen, threshold);
     // Notification
-    sys_display_show_noti(&s_oled_screen, s_success_noti);
     cb_clear(&s_rx_pkt_cbuf);
     s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
     break;
@@ -293,6 +312,8 @@ uint32_t sys_manage_loop()
 
   case SYS_MAMAGE_STATE_SET_TIME:
   {
+    uint8_t msg[] = "Setting";
+    sys_display_show_noti(&s_oled_screen, msg);
     // Get epoch time from packet
     uint32_t temp_ept = 0;
     uint32_t ret = SYS_TIME_OK;
@@ -301,7 +322,6 @@ uint32_t sys_manage_loop()
     ret = sys_time_set_epoch_time(temp_ept, &s_rtc);
     __ASSERT(ret = SYS_TIME_OK, SYS_MANAGE_ERROR);
     // Notification
-    sys_display_show_noti(&s_oled_screen, s_success_noti);
     cb_clear(&s_rx_pkt_cbuf);
     s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
     break;
