@@ -55,6 +55,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/bsp/bsp_utils.c
     Core/User/bsp/bsp_i2c.c
     Core/User/bsp/bsp_uart.c
+    Core/User/bsp/bsp_flash.c
     Core/User/bsp/bsp_serial.c
     Core/User/drv/drv_hr.c
     Core/User/drv/drv_button.c
@@ -68,6 +69,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/sys/sys_measure.c
     Core/User/sys/sys_time.c
     Core/User/sys/sys_button.c
+    Core/User/sys/sys_storage.c
     Core/User/sys/sys_manage.c
 )
 
