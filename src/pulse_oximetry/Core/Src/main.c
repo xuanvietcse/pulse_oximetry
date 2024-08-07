@@ -113,11 +113,11 @@ int main(void)
   HAL_Delay(1000);
   sys_storage_export(&storage_segment_0, out_msg1, sizeof(out_msg1));
 
-  sys_storage_fully_clean(&storage_segment_0);
-
   sys_storage_import(&storage_segment_1, msg, sizeof(msg));
   HAL_Delay(1000);
   sys_storage_export(&storage_segment_1, out_msg2, sizeof(out_msg2));
+
+  sys_storage_fully_clean(&storage_segment_0);
 
   /* USER CODE END 2 */
 

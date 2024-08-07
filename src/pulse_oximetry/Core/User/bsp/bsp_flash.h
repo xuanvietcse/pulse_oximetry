@@ -89,10 +89,10 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num);
 /**
  * @brief  Copy whole data from src_sector to dest_sector
  *
- * @param[in]    src_sector_addr    Source sector address.
- * @param[in]    src_sector_size    Source sector size.
- * @param[out]   dest_sector_addr   Destination sector address.
- * @param[in]    dest_sector_size   Destination sector size.
+ * @param[in]    src_sector_addr    Source sector start address.
+ * @param[in]    src_sector_size    Source sector full size.
+ * @param[out]   dest_sector_addr   Destination sector start address.
+ * @param[in]    dest_sector_size   Destination sector full size.
  *
  * @return
  *  - 0xFFFFFFFF: Error
@@ -105,10 +105,10 @@ uint32_t bsp_flash_copy_sector(uint32_t src_sector_addr, uint32_t src_sector_siz
 /**
  * @brief  Copy a part of data from src_sector to dest_sector
  *
- * @param[in]    src_sector_addr      Source sector address.
- * @param[in]    src_sector_size      Source sector size.
- * @param[out]   dest_sector_addr     Destination sector address.
- * @param[in]    dest_sector_size     Destination sector size.
+ * @param[in]    src_sector_addr      Source sector start address.
+ * @param[in]    src_sector_size      Source sector full size.
+ * @param[out]   dest_sector_addr     Destination sector start address.
+ * @param[in]    dest_sector_size     Destination sector full size.
  * @param[in]    src_start_address    Start of address you want to copy.
  * @param[in]    size                 Size of memory you want to copy.
  * @return
