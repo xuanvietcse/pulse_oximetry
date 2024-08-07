@@ -89,15 +89,36 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num);
 /**
  * @brief  Copy whole data from src_sector to dest_sector
  *
- * @param[in]   src_sector    Source sector.
- * @param[in]   dest_sector   Destination sector.
+ * @param[in]    src_sector_addr    Source sector address.
+ * @param[in]    src_sector_size    Source sector size.
+ * @param[out]   dest_sector_addr   Destination sector address.
+ * @param[in]    dest_sector_size   Destination sector size.
  *
  * @return
  *  - 0xFFFFFFFF: Error
  *  - 0x7FFFFFFF: Failed
  *  - 0x3FFFFFFF: Success
  */
-uint32_t bsp_flash_copy_sector(uint32_t src_sector, uint32_t dest_sector);
+uint32_t bsp_flash_copy_sector(uint32_t src_sector_addr, uint32_t src_sector_size,
+                               uint32_t dest_sector_addr, uint32_t dest_sector_size);
+
+/**
+ * @brief  Copy a part of data from src_sector to dest_sector
+ *
+ * @param[in]    src_sector_addr      Source sector address.
+ * @param[in]    src_sector_size      Source sector size.
+ * @param[out]   dest_sector_addr     Destination sector address.
+ * @param[in]    dest_sector_size     Destination sector size.
+ * @param[in]    src_start_address    Start of address you want to copy.
+ * @param[in]    size                 Size of memory you want to copy.
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t bsp_flash_copy_address(uint32_t src_sector_addr, uint32_t src_sector_size,
+                                uint32_t dest_sector_addr, uint32_t dest_sector_size,
+                                uint32_t src_start_address, uint32_t size);
 
 /**
  * @brief  Write data from address in FLASH

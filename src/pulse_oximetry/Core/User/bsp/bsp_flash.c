@@ -112,23 +112,54 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num)
   return BSP_FLASH_OK;
 }
 
-uint32_t bsp_flash_copy_sector(uint32_t src_sector, uint32_t src_sector_size,
-                               uint32_t dest_sector, uint32_t dest_sector_size)
+uint32_t bsp_flash_copy_sector(uint32_t src_sector_addr, uint32_t src_sector_size,
+                               uint32_t dest_sector_addr, uint32_t dest_sector_size)
 {
-  __ASSERT((src_sector >= FLASH_SECTOR_0) && (src_sector <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
-  __ASSERT((dest_sector >= FLASH_SECTOR_0) && (dest_sector <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+  __ASSERT((src_sector_addr >= FLASH_SECTOR_0) && (src_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+  __ASSERT((dest_sector_addr >= FLASH_SECTOR_0) && (dest_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
   __ASSERT((dest_sector_size >= src_sector_size), BSP_FLASH_ERROR);
 
   uint32_t ret = BSP_FLASH_OK;
-  // Unlock the Flash for erasing
+  // Unlock the Flash
   ret = bsp_flash_unlock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
   for (int i = 0; i < src_sector_size / 4; i++) 
   {
-    HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector, *src_sector);
-    src_sector++;
-    dest_sector++;
+    HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector_addr, *src_sector_addr);
+    src_sector_addr++;
+    dest_sector_addr++;
+  }
+
+  // Lock FLASH for safety
+  ret = bsp_flash_lock();
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
+
+  return BSP_FLASH_OK;
+}
+
+uint32_t bsp_flash_copy_address(uint32_t src_sector_addr, uint32_t src_sector_size,
+                                uint32_t dest_sector_addr, uint32_t dest_sector_size,
+                                uint32_t src_start_address, uint32_t size)
+{
+  __ASSERT((src_sector_addr >= FLASH_SECTOR_0) && (src_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+  __ASSERT((dest_sector_addr >= FLASH_SECTOR_0) && (dest_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+  __ASSERT((dest_sector_size >= src_sector_size), BSP_FLASH_ERROR);
+
+  uint32_t ret = BSP_FLASH_OK;
+  // Unlock the Flash
+  ret = bsp_flash_unlock();
+  __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
+
+  for (int i = 0; i < src_sector_size / 4; i++) 
+  {
+    if ((src_sector_addr >= src_start_address) && (src_sector_addr < (src_start_address + size)))
+    {
+      HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector_addr, *src_sector_addr);
+    }
+
+    src_sector_addr++;
+    dest_sector_addr++;
   }
 
   // Lock FLASH for safety
