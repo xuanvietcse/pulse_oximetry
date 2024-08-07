@@ -119,9 +119,9 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
   s_id_mng[storage->id] = SYS_STORAGE_ID_ACTIVE;
   storage->address = start_address;
 
-  uint32_t ret = SYS_STORAGE_OK;
+  uint32_t ret = BSP_FLASH_OK;
   ret = bsp_flash_write(storage->address, &storage->id, SYS_STORAGE_ID_SIZE);
-  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   storage->size = size;
   storage->space_left = size - SYS_STORAGE_ID_SIZE;
@@ -137,9 +137,9 @@ uint32_t sys_storage_import(sys_storage_t *storage, void *data, uint32_t size)
   __ASSERT(size != 0, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
-  uint32_t ret = SYS_STORAGE_OK;
+  uint32_t ret = BSP_FLASH_OK;
   ret = bsp_flash_write(storage->address + (storage->size - storage->space_left), data, size);
-  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
   storage->space_left -= size;
 
   return SYS_STORAGE_OK;
@@ -153,9 +153,9 @@ uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size)
   __ASSERT(size != 0, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
-  uint32_t ret = SYS_STORAGE_OK;
+  uint32_t ret = BSP_FLASH_OK;
   ret = bsp_flash_read(storage->address + SYS_STORAGE_ID_SIZE, data, size);
-  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 
 }
@@ -165,9 +165,11 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
-  // uint32_t ret = SYS_STORAGE_OK;
-  // ret = 
-  // __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  // Store backup data to sector 6
+  
+  uint32_t ret = SYS_STORAGE_OK;
+  ret = 
+  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 
 }
@@ -177,9 +179,9 @@ uint32_t sys_storage_deinit(sys_storage_t *storage)
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
-  uint32_t ret = SYS_STORAGE_OK;
+  uint32_t ret = BSP_FLASH_OK;
   ret = sys_storage_fully_clean(storage);
-  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
   

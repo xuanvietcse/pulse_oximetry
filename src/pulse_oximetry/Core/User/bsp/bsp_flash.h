@@ -87,6 +87,19 @@ uint32_t bsp_flash_lock(void);
 uint32_t bsp_flash_erase_sector(uint32_t sector_num);
 
 /**
+ * @brief  Copy whole data from src_sector to dest_sector
+ *
+ * @param[in]   src_sector    Source sector.
+ * @param[in]   dest_sector   Destination sector.
+ *
+ * @return
+ *  - 0xFFFFFFFF: Error
+ *  - 0x7FFFFFFF: Failed
+ *  - 0x3FFFFFFF: Success
+ */
+uint32_t bsp_flash_copy_sector(uint32_t src_sector, uint32_t dest_sector);
+
+/**
  * @brief  Write data from address in FLASH
  *
  * @param[in]   address      Address that start the write operation.
