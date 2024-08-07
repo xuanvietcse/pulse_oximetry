@@ -129,12 +129,14 @@ static void sys_manage_sleep()
 {
   // Do something stuffs
   drv_hr_sleep(&(s_ppg_signal.dev));
+  sys_display_sleep(&s_oled_screen);
 }
 
 static void sys_manage_wakeup()
 {
   // Do something stuffs
   drv_hr_wakeup(&(s_ppg_signal.dev));
+  sys_display_wakeup(&s_oled_screen);
 }
 
 static void sys_manage_record_heart_rate()
