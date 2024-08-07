@@ -166,10 +166,10 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
   // Store backup data to sector 6
-  
-  uint32_t ret = SYS_STORAGE_OK;
-  ret = 
-  __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+
+  // uint32_t ret = SYS_STORAGE_OK;
+  // ret = 
+  // __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 
 }
