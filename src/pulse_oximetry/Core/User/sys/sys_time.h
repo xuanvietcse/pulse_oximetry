@@ -106,6 +106,11 @@ sys_time_status_t sys_time_set_date_time(drv_ds1307_t *ds1307);
 sys_time_status_t sys_time_get_date_time(drv_ds1307_t *ds1307);
 
 /**
+ *
+ */
+uint32_t sys_time_get_epoch_time(drv_ds1307_t *ds1307);
+
+/**
  * @brief       Set alarm.
  *
  * @param[in]   alarm       Pointer to the sys_time_alarm_t variable in sys_time.

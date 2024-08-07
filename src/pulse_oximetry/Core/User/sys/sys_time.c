@@ -21,7 +21,6 @@
 #include <time.h>
 
 /* Private defines ---------------------------------------------------- */
-#define GMT0_TO_GMT7_SECOND (25200)
 #define MAX_NUMBER_OF_ALARM (5)
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -109,6 +108,27 @@ sys_time_status_t sys_time_get_date_time(drv_ds1307_t *ds1307)
   __ASSERT((ret == SYS_TIME_OK), SYS_TIME_FAILED);
 
   return SYS_TIME_OK;
+}
+
+uint32_t sys_time_get_epoch_time(drv_ds1307_t *ds1307)
+{
+  // Check parameters
+  __ASSERT((ds1307 != NULL), SYS_TIME_ERROR);
+  // Operation
+  sys_time_get_date_time(ds1307);
+
+  struct tm t;
+  time_t t_of_day;
+  t.tm_year = (ds1307->year + 2000) - 1900;
+  t.tm_mon = (ds1307->month);
+  t.tm_mday = (ds1307->date);
+  t.tm_hour = (ds1307->hour);
+  t.tm_min = (ds1307->minute);
+  t.tm_sec = (ds1307->second);
+  t.tm_isdst = (-1);
+  t_of_day = mktime(&t);
+  // Return
+  return (uint32_t)t_of_day;
 }
 
 sys_time_status_t sys_time_set_alarm(sys_time_alarm_t *alarm_time,
@@ -208,9 +228,6 @@ static sys_time_status_t sys_time_convert_epoch_time(uint32_t epoch_time,
 
   // Declare a tm structure to hold the result of localtime
   struct tm *current_date_time;
-
-  // change epoch time from GMT0 to GMT7
-  epoch_time += GMT0_TO_GMT7_SECOND;
 
   time_t epoch_time_temp = (time_t)epoch_time;
 

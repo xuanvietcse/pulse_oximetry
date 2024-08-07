@@ -33,6 +33,7 @@ sys_button_t sbutton;
 /* Private variables -------------------------------------------------- */
 sys_button_evt_on_power s_on_power_cb;
 sys_button_evt_off_power s_off_power_cb;
+sys_button_evt_record s_record_cb;
 
 bool s_button_is_power_off_flag = false;
 
@@ -207,6 +208,12 @@ sys_button_status_t sys_button_manage()
     break;
   }
 
+  case SYS_BUTTON_FSM_STATE_SINGLE_CLICK:
+  {
+    __CALLBACK(s_record_cb);
+    break;
+  }
+
   default:
   {
     break;
@@ -216,13 +223,15 @@ sys_button_status_t sys_button_manage()
 }
 
 sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb,
-                                                    sys_button_evt_off_power off_power_cb)
+                                                    sys_button_evt_off_power off_power_cb,
+                                                    sys_button_evt_record record_cb)
 {
   __ASSERT(on_power_cb != NULL, SYS_BUTTON_ERROR);
   __ASSERT(off_power_cb != NULL, SYS_BUTTON_ERROR);
 
   s_on_power_cb = on_power_cb;
   s_off_power_cb = off_power_cb;
+  s_record_cb = record_cb;
 
   return SYS_BUTTON_OK;
 }
