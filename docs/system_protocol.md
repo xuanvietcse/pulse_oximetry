@@ -58,7 +58,7 @@ If there is any error, system must notify to users.
   - Value: Based on CMD.
     - Check UART: 0xFFFFFFFF.
     - Get data: 0xFFFFFFFX. The last nibble X depends on what users want to get. 0x0: record (including heart rate + time), 0x1: PPG signal after filtered, 0x2: PPG signal before filtered.
-    - Set threshold: Based on Nes, *et al.* (2013)[[1]](https://sci-hub.se/https://doi.org/10.1111/j.1600-0838.2012.01445.x), Heart rate max = 211 - (0.64 * age). So maximum heart rate we can get is 211. Therefore, we will need 1 byte to store the heart rate we want to set. 0xFFFFFFXX, XX is the hex value of heart rate to be set.
+    - Set threshold: Based on Nes, *et al.* (2013)[[1]](https://sci-hub.se/https://doi.org/10.1111/j.1600-0838.2012.01445.x), Heart rate max = 211 - (0.64 * age). So maximum heart rate we can get is 211. Therefore, we will need 1 byte to store the heart rate we want to set. 0xFFFFXXYY, XX is the hex value of upper heart rate and YY is the hex value of lower heart rate to be set.
     - Set interval: Default unit is second (s). 0xXXXXXXXX, we should read datasheet before to ensure the interval we set is supported by MCU.
     - Set/Get time: 0xXXXXXXXX is the epoch time.
     - Clear records: 0xFFFFFFFF.
