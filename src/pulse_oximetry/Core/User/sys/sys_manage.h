@@ -38,6 +38,16 @@ enum sys_manage_status_t
 
 typedef enum
 {
+  SYS_MANAGE_CMD_CHECK_UART,
+  SYS_MANAGE_CMD_GET_DATA,
+  SYS_MANAGE_CMD_SET_THRESHOLD,
+  SYS_MANAGE_CMD_SET_INTERVAL,
+  SYS_MANAGE_CMD_SET_TIME,
+  SYS_MANAGE_CMD_CLEAR_RECORDS
+} sys_manage_cmd_t;
+
+typedef enum
+{
   SYS_MAMAGE_STATE_SLEEP = 0,
   SYS_MANAGE_STATE_IDLE,
   SYS_MANAGE_STATE_NORMAL,
@@ -50,8 +60,9 @@ typedef enum
 typedef struct
 {
   sys_manage_state_t current_state;
-  sys_manage_state_t previous_state;
-
+  uint8_t cmd;
+  uint8_t lower_thresshold;
+  uint8_t upper_threshold;
 } sys_manage_t;
 
 /* Public macros ------------------------------------------------------ */
