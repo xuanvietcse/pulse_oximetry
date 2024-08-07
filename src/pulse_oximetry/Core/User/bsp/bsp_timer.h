@@ -33,7 +33,7 @@ typedef enum
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-
+typedef void (*bsp_timer_cb_t)(bsp_tim_typedef_t *htim);
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief       Set the prescaler for clock of timer.
@@ -176,5 +176,28 @@ bsp_timer_status_t bsp_pwm_stop(bsp_tim_typedef_t *htim, uint32_t tim_channel);
  *              0 if stop PWM on that channel successfully.
  */
 bsp_timer_status_t bsp_pwm_stop_it(bsp_tim_typedef_t *htim, uint32_t tim_channel);
+
+/**
+ * @brief       Register the function for event handler.
+ *
+ * @param[in]   period_elapsed          Function pointer to handle the period elapsed event.
+
+ *
+ * @return      -2 if error,
+ *              -1 if fail to stop PWM on that channel,
+ *              0 if stop PWM on that channel successfully.
+ */
+bsp_timer_status_t bsp_timer_register_callback(bsp_timer_cb_t period_elapsed);
+
+/**
+ * @brief       Handle the callback event
+ *
+ * @param[in]   htim          Pointer of timer handler.
+ *
+ * @return      -2 if error,
+ *              -1 if fail to stop PWM on that channel,
+ *              0 if stop PWM on that channel successfully.
+ */
+bsp_timer_status_t bsp_timer_period_callback_handler(bsp_tim_typedef_t *htim);
 
 #endif /* USER_BSP_BSP_TIMER_H_ */

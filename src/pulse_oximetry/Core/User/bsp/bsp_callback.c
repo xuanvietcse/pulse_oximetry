@@ -53,5 +53,10 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     Error_Handler();
   }
 }
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  bsp_timer_period_callback_handler(htim);
+}
 /* Private definitions ------------------------------------------------ */
 /* End of file -------------------------------------------------------- */
