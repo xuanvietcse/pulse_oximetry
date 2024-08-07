@@ -20,12 +20,12 @@
 #include "common.h"
 
 /* Private defines ---------------------------------------------------- */
-#define SYS_STORAGE_ID_SIZE       (1)   // 1 byte
-#define SYS_STORAGE_ID_MAX        (255)
-#define SYS_STORAGE_ID_MIN        (0)
-#define SYS_STORAGE_NUM_OF_ID     (256)
-#define SYS_STORAGE_ID_ACTIVE     (1)
-#define SYS_STORAGE_ID_INACTIVE   (0)
+#define SYS_STORAGE_ID_SIZE (1) // 1 byte
+#define SYS_STORAGE_ID_MAX (255)
+#define SYS_STORAGE_ID_MIN (0)
+#define SYS_STORAGE_NUM_OF_ID (256)
+#define SYS_STORAGE_ID_ACTIVE (1)
+#define SYS_STORAGE_ID_INACTIVE (0)
 
 /* Private enumerate/structure ---------------------------------------- */
 
@@ -65,9 +65,9 @@ static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id);
  * @param[in]   q      Temporary pointer for the comparation.
  *
  * @return
- *  - the minus result 
+ *  - the minus result
  */
-static uint32_t comparator(const void* p, const void* q);
+static uint32_t comparator(const void *p, const void *q);
 
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size)
@@ -75,7 +75,7 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(size < SYS_STORAGE_FLASH_SECTOR_SIZE, SYS_STORAGE_ERROR);
   __ASSERT(size != 0, SYS_STORAGE_ERROR);
-  
+
   storage->id = sys_storage_get_id();
 
   s_storage_mng[SYS_STORAGE_ID_MIN].id = storage->id;
@@ -85,7 +85,7 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
   if (storage->id == 0)
   {
     if ((start_address < SYS_STORAGE_FLASH_SECTOR_ADDRESS) ||
-       ((start_address + size) >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
+        ((start_address + size) >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
     {
       s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
       s_storage_mng[SYS_STORAGE_ID_MIN] = (sys_storage_t){0, 0, 0, 0};
@@ -100,13 +100,11 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
   {
     qsort(s_storage_mng, SYS_STORAGE_NUM_OF_ID, sizeof(sys_storage_t), comparator);
     uint8_t id_curr_pos = sys_storage_get_id_curr_pos_in_arr(storage->id);
-    
+
     if (id_curr_pos == 255)
     {
-      if ((s_storage_mng[id_curr_pos].address 
-           < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) || 
-         ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size)
-           >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
+      if ((s_storage_mng[id_curr_pos].address < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) ||
+          ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size) >= (SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE)))
       {
         s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
         s_storage_mng[id_curr_pos] = (sys_storage_t){0, 0, 0, 0};
@@ -114,12 +112,10 @@ uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32
         return SYS_STORAGE_ERROR;
       }
     }
-    else 
+    else
     {
-      if ((s_storage_mng[id_curr_pos].address 
-        < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) ||
-       ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size)
-         >= s_storage_mng[id_curr_pos + 1].address))
+      if ((s_storage_mng[id_curr_pos].address < (s_storage_mng[id_curr_pos - 1].address + s_storage_mng[id_curr_pos - 1].size)) ||
+          ((s_storage_mng[id_curr_pos].address + s_storage_mng[id_curr_pos].size) >= s_storage_mng[id_curr_pos + 1].address))
       {
         s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
         s_storage_mng[id_curr_pos] = (sys_storage_t){0, 0, 0, 0};
@@ -165,12 +161,13 @@ uint32_t sys_storage_export(sys_storage_t *storage, void *data, uint32_t size)
   __ASSERT(size <= (storage->size - storage->space_left), SYS_STORAGE_ERROR);
   __ASSERT(size != 0, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
-
+  static uint32_t offset_addr = 0;
   uint32_t ret = BSP_FLASH_OK;
-  ret = bsp_flash_read(storage->address + SYS_STORAGE_ID_SIZE, data, size);
+  ret = bsp_flash_read(storage->address + SYS_STORAGE_ID_SIZE + offset_addr, data, size);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+  offset_addr += size;
 
-  return SYS_STORAGE_OK; 
+  return SYS_STORAGE_OK;
 }
 
 uint32_t sys_storage_fully_clean(sys_storage_t *storage)
@@ -192,11 +189,11 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
 
   ret = bsp_flash_copy_address(SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE,
                                SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
-                               (storage->address + storage->size), 
-                               ((SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE) - 
+                               (storage->address + storage->size),
+                               ((SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE) -
                                 (storage->address + storage->size)));
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
-  
+
   // Clear main sector
   ret = bsp_flash_erase_sector(SYS_STORAGE_FLASH_SECTOR);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
@@ -210,7 +207,7 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   ret = bsp_flash_erase_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
-  return SYS_STORAGE_OK; 
+  return SYS_STORAGE_OK;
 }
 
 uint32_t sys_storage_deinit(sys_storage_t *storage)
@@ -223,12 +220,12 @@ uint32_t sys_storage_deinit(sys_storage_t *storage)
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   s_id_mng[storage->id] = SYS_STORAGE_ID_INACTIVE;
-  
+
   storage->address = 0;
   storage->size = 0;
   storage->space_left = 0;
 
-  return SYS_STORAGE_OK; 
+  return SYS_STORAGE_OK;
 }
 
 /* Private definitions ------------------------------------------------ */
@@ -254,10 +251,10 @@ static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id)
   }
 }
 
-static uint32_t comparator(const void* p, const void* q)
+static uint32_t comparator(const void *p, const void *q)
 {
-  uint32_t l = ((sys_storage_t*)p)->address;
-  uint32_t r = ((sys_storage_t*)q)->address;
+  uint32_t l = ((sys_storage_t *)p)->address;
+  uint32_t r = ((sys_storage_t *)q)->address;
   return (l - r);
 }
 

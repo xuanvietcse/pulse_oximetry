@@ -84,14 +84,17 @@ uint32_t sys_protocol_send_pkt_to_node(sys_protocol_node_t rx_node, sys_protocol
 }
 uint32_t sys_protocol_send_pkt_to_port(sys_protocol_pkt_t pkt)
 {
+  uint8_t trash[] = {0x01, 0x04};
   // Operation
   uint32_t ret = SYS_PROTOCOL_OK;
+  ret = bsp_serial_transmit(trash, 1);
   ret = bsp_serial_transmit(&(pkt.command), CMD_PKT_SIZE);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
   ret = bsp_serial_transmit(&(pkt.data), DATA_PKT_SIZE);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
-  ret = bsp_serial_transmit(&(pkt.threshold_level), TH_LEVEL_FIELD);
+  ret = bsp_serial_transmit(&(pkt.threshold_level), TH_PKT_SIZE);
   __ASSERT((ret == SYS_PROTOCOL_OK), SYS_PROTOCOL_FAILED);
+  ret = bsp_serial_transmit(trash + 1, 1);
   // Return
   return SYS_PROTOCOL_OK;
 }
