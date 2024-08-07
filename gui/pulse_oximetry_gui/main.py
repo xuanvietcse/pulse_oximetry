@@ -166,7 +166,7 @@ class MainWindow(QMainWindow):
             # Convert the integer value to an 8-character hex string
             interval_hex = f'{interval_value:08X}'
 
-            # Create the command string by concatenating the start code (0x1), cmd (0x3), hex value, threshold (0xFF) and end code (0x04)
+            # Create the command string by concatenating the start code (0x01), cmd (0x03), hex value, threshold (0xFF) and end code (0x04)
             interval_command = f'0103{interval_hex}FF04'
 
             # Convert the command string to bytes for sending over serial
@@ -201,7 +201,7 @@ class MainWindow(QMainWindow):
             threshold_high_hex = f'{threshold_high_value:02X}'
             threshold_low_hex = f'{threshold_low_value:02X}'
 
-            # Create the command string by concatenating the start code (0x1), cmd (0x2), hex value, threshold (0xFF) and end code (0x04)
+            # Create the command string by concatenating the start code (0x01), cmd (0x02), hex value, threshold (0xFF) and end code (0x04)
             threshold_command = f'0102FFFF{threshold_high_hex}{threshold_low_hex}FF04'
 
             # Convert the command string to bytes for sending over serial
@@ -225,7 +225,7 @@ class MainWindow(QMainWindow):
             if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
-            # Create the command string by concatenating the start code (0x1), cmd (0x0), hex value, threshold (0xFF) and end code (0x04)
+            # Create the command string by concatenating the start code (0x01), cmd (0x00), hex value, threshold (0xFF) and end code (0x04)
             check_com_hex_command = '0100FFFFFFFFFF04'
             check_com_command_bytes = bytes.fromhex(check_com_hex_command)
 
@@ -244,7 +244,7 @@ class MainWindow(QMainWindow):
             if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
-            # Create the command string by concatenating the start code (0x1), cmd (0x1), hex value, threshold (0xFF) and end code (0x04)
+            # Create the command string by concatenating the start code (0x01), cmd (0x01), hex value, threshold (0xFF) and end code (0x04)
             read_record_hex_command = '0101FFFFFFF0FF04'
             read_record_command_bytes = bytes.fromhex(read_record_hex_command)
 
@@ -263,7 +263,7 @@ class MainWindow(QMainWindow):
             if not self.serial_connection:
                 raise Exception("Serial port not connected.")
 
-            # Create the command string by concatenating the start code (0x1), cmd (0x5), hex value, threshold (0xFF) and end code (0x04)
+            # Create the command string by concatenating the start code (0x01), cmd (0x05), hex value, threshold (0xFF) and end code (0x04)
             clear_record_hex_command = '0105FFFFFFFFFF04'
             clear_record_command_bytes = bytes.fromhex(clear_record_hex_command)
 
@@ -323,7 +323,7 @@ class MainWindow(QMainWindow):
                     QMessageBox.warning(self, "Error", "Invalid threshold byte")
                     return
 
-                if not (cmd in ["01", "04", "06"]):
+                if not (cmd in ["00", "01", "04", "06"]):
                     QMessageBox.warning(self, "Error", "Invalid command")
                     return
 
@@ -334,8 +334,14 @@ class MainWindow(QMainWindow):
                 elif threshold == "FF":
                     self.ui_user.line_thre_noti.setText("Normal heart rate")
 
-
-                if cmd == "06":
+                if cmd == "00":
+                    if data == "FFFFFFFF":
+                        QMessageBox.information(self, "Success", "UART OK")
+                        return
+                    else:
+                        QMessageBox.warning(self, "Error", "Invalid data")
+                        return
+                elif cmd == "06":
                     if data == "FFFFFFFF":
                         self.dev_widget.ui_dev.line_err_noti.setText("Error occurred")
                     else:
