@@ -67,6 +67,15 @@ static void sys_manage_wakeup();
  * -  None
  */
 static void sys_manage_record_heart_rate();
+
+/**
+ * @brief       Trigger the recording heart rate event
+ * .
+ *
+ * @return
+ * -  None
+ */
+static void sys_manage_interval_elapsed(bsp_tim_typedef_t *tim);
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer)
 {
@@ -159,6 +168,7 @@ uint32_t sys_manage_start(bsp_tim_typedef_t *tim)
   s_tim_interval = tim;
   bsp_timer_set_autoreload(s_tim_interval, SYS_MANAGE_TIMESTAMP);
   bsp_timer_set_prescaler(s_tim_interval, 0);
+  bsp_timer_register_callback(sys_manage_interval_elapsed);
 }
 
 uint32_t sys_manage_loop()
@@ -330,5 +340,13 @@ static void sys_manage_record_heart_rate()
 {
   // Waiting for Khanh
   s_mng.current_state = SYS_MANAGE_STATE_RECORD;
+}
+
+static void sys_manage_interval_elapsed(bsp_tim_typedef_t *tim)
+{
+  if (tim->Instance == s_tim_interval->Instance)
+  {
+    s_mng.current_state = SYS_MANAGE_STATE_RECORD;
+  }
 }
 /* End of file -------------------------------------------------------- */
