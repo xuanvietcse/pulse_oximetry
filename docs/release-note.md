@@ -11,20 +11,23 @@ Initialization release.
 - Support serial port connection.
 - Plot the heart rate data and PPG signals.
 - Set interval for collecting heart rate data from device.
-### 2. In progress
+
+### 2. Issues
 #### 2.1. Firmware
+- Peak detector algorithm is not stable and low accuracy.
+#### 2.2. Application
+- Can not detect more than one device.
+
+### 3. In progress
+#### 3.1. Firmware
 - Handle the SSD1306 OLED display.
 - Create the sound effect for buzzer.
-#### 2.2. Application
+#### 3.2. Application
 - Auto-detect COM ports.
 - Parse data for visualization.
 - Set threshold (lower and higher) and initialization time for RTC.
 - Stream real-time data on the graphs.
-### 3. Issues
-#### 3.1. Firmware
-- Peak detector algorithm is not stable and low accuracy.
-#### 3.2. Application
-- Can not detect more than one device.
+
 
 ## **v0.1.0**
 ### 1. Features
