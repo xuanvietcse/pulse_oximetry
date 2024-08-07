@@ -122,6 +122,30 @@ uint32_t sys_display_show_noti(sys_display_t *display, char *msg);
  */
 uint32_t sys_display_clear_all(sys_display_t *display);
 
+/**
+ * @brief  Turn off the OLED display
+ *
+ * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t sys_display_sleep(sys_display_t *display);
+
+/**
+ * @brief  Turn on the OLED display
+ *
+ * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
+ *
+ * @return
+ *  - (-2): Error
+ *  - (-1): Failed
+ *  - (0) : Success
+ */
+uint32_t sys_display_wakeup(sys_display_t *display);
+
 #endif // __USER_SYS_DISPLAY_H
 
 /* End of file -------------------------------------------------------- */
