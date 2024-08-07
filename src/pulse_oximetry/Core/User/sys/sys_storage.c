@@ -165,11 +165,31 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   __ASSERT(storage != NULL, SYS_STORAGE_ERROR);
   __ASSERT(s_id_mng[storage->id] == SYS_STORAGE_ID_ACTIVE, SYS_STORAGE_ERROR);
 
-  // Store backup data to sector 6
+  uint32_t ret = BSP_FLASH_OK;
 
-  // uint32_t ret = SYS_STORAGE_OK;
-  // ret = 
-  // __ASSERT(ret == SYS_STORAGE_OK, SYS_STORAGE_FAILED);
+  // Clear backup sector
+  ret = bsp_flash_erase_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+
+  // Store backup data
+  ret = bsp_flash_copy_address(SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE,
+                               SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
+                               SYS_STORAGE_FLASH_SECTOR_ADDRESS, (storage->address - SYS_STORAGE_FLASH_SECTOR_ADDRESS))
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+
+  ret = bsp_flash_copy_address(SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE,
+                               SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
+                               (storage->address + storage->size), (SYS_STORAGE_FLASH_SECTOR_ADDRESS))
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+  
+  // Clear main sector
+  ret = bsp_flash_erase_sector(SYS_STORAGE_FLASH_SECTOR);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+
+  // Move valid data from backup sector to main sector
+  ret = uint32_t bsp_flash_copy_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
+                                       SYS_STORAGE_FLASH_SECTOR_ADDRESS, uint32_t SYS_STORAGE_FLASH_SECTOR_SIZE);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 
 }
