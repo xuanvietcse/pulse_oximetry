@@ -67,7 +67,7 @@ static uint8_t sys_storage_get_id_curr_pos_in_arr(uint8_t id);
  * @return
  *  - the minus result 
  */
-static uint32_t comparator(const void* p, const void* q)
+static uint32_t comparator(const void* p, const void* q);
 
 /* Function definitions ----------------------------------------------- */
 uint32_t sys_storage_init(sys_storage_t *storage, uint32_t start_address, uint32_t size)
@@ -204,6 +204,10 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   // Move valid data from backup sector to main sector
   ret = bsp_flash_copy_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
                               SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE);
+  __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
+
+  // Clear backup sector
+  ret = bsp_flash_erase_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 
