@@ -64,9 +64,9 @@ typedef struct
  * @param[in]     autoreload the top of counter.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t drv_hr_init(drv_hr_t *hr_sen,
                      bsp_adc_typedef_t *sen_adc,
@@ -80,9 +80,9 @@ uint32_t drv_hr_init(drv_hr_t *hr_sen,
  * @param[in]     hr_sen  pointer to a drv_hr_t structure that store the information of Heart Rate sensor
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t drv_hr_sleep(drv_hr_t *hr_sen);
 
@@ -92,9 +92,9 @@ uint32_t drv_hr_sleep(drv_hr_t *hr_sen);
  * @param[in]     hr_sen  pointer to a drv_hr_t structure that store the information of Heart Rate sensor
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t drv_hr_wakeup(drv_hr_t *hr_sen);
 

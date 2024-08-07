@@ -41,9 +41,10 @@ typedef enum
  * @param[in]   pin   pin of that port
  * @param[in]   gpio_state:  Logic level you want to write
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_gpio_status_t bsp_gpio_write_pin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState gpio_state);
 
@@ -65,9 +66,10 @@ GPIO_PinState bsp_gpio_read_pin(GPIO_TypeDef *gpio, uint16_t pin);
  *
  * @attention   gpio->mode: Must be OUTPUT (PP, OD)
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_gpio_status_t bsp_gpio_toggle_pin(GPIO_TypeDef *gpio, uint16_t pin);
 
@@ -76,9 +78,10 @@ bsp_gpio_status_t bsp_gpio_toggle_pin(GPIO_TypeDef *gpio, uint16_t pin);
  *
  * @param[in]   pin  Same pin per port is in the same external interrupt line
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_gpio_status_t bsp_gpio_exti_enable(uint16_t pin);
 
@@ -87,9 +90,10 @@ bsp_gpio_status_t bsp_gpio_exti_enable(uint16_t pin);
  *
  * @param[in]   pin  Same pin per port is in the same external interrupt line
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_gpio_status_t bsp_gpio_exti_enable(uint16_t pin);
 
@@ -98,9 +102,10 @@ bsp_gpio_status_t bsp_gpio_exti_enable(uint16_t pin);
  *
  * @param[in]   pin  Same pin per port is in the same external interrupt line
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_gpio_status_t bsp_gpio_exti_handler(uint16_t pin);
 

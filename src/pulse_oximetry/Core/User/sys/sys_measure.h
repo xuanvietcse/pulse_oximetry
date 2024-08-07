@@ -54,9 +54,9 @@ typedef struct
  * @param[in]     autoreload   Set the top of counter
  *
  * @return
- *  - (0): Error
- *  - (1): Fail
- *  - (2) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t sys_measure_init(sys_measure_t *signal,
                           bsp_adc_typedef_t *adc,
@@ -73,9 +73,9 @@ uint32_t sys_measure_init(sys_measure_t *signal,
  * @param[in]     heart_rate  Heart rate if can be measured
  *
  * @return
- *  - (0): Error
- *  - (1): Fail
- *  - (2) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t sys_measure_process_data(sys_measure_t *signal);
 
