@@ -174,12 +174,14 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   // Store backup data
   ret = bsp_flash_copy_address(SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE,
                                SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
-                               SYS_STORAGE_FLASH_SECTOR_ADDRESS, (storage->address - SYS_STORAGE_FLASH_SECTOR_ADDRESS))
+                               SYS_STORAGE_FLASH_SECTOR_ADDRESS, storage->address - SYS_STORAGE_FLASH_SECTOR_ADDRESS);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   ret = bsp_flash_copy_address(SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE,
                                SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
-                               (storage->address + storage->size), (SYS_STORAGE_FLASH_SECTOR_ADDRESS))
+                               (storage->address + storage->size), 
+                               ((SYS_STORAGE_FLASH_SECTOR_ADDRESS + SYS_STORAGE_FLASH_SECTOR_SIZE) - 
+                                (storage->address + storage->size)));
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
   
   // Clear main sector
@@ -187,8 +189,8 @@ uint32_t sys_storage_fully_clean(sys_storage_t *storage)
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   // Move valid data from backup sector to main sector
-  ret = uint32_t bsp_flash_copy_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
-                                       SYS_STORAGE_FLASH_SECTOR_ADDRESS, uint32_t SYS_STORAGE_FLASH_SECTOR_SIZE);
+  ret = bsp_flash_copy_sector(SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS, SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE,
+                              SYS_STORAGE_FLASH_SECTOR_ADDRESS, SYS_STORAGE_FLASH_SECTOR_SIZE);
   __ASSERT(ret == BSP_FLASH_OK, SYS_STORAGE_FAILED);
 
   return SYS_STORAGE_OK; 

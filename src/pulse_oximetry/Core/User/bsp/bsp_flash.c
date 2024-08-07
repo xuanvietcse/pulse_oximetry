@@ -115,8 +115,8 @@ uint32_t bsp_flash_erase_sector(uint32_t sector_num)
 uint32_t bsp_flash_copy_sector(uint32_t src_sector_addr, uint32_t src_sector_size,
                                uint32_t dest_sector_addr, uint32_t dest_sector_size)
 {
-  __ASSERT((src_sector_addr >= FLASH_SECTOR_0) && (src_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
-  __ASSERT((dest_sector_addr >= FLASH_SECTOR_0) && (dest_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+  __ASSERT((src_sector_addr >= BSP_FLASH_SECTOR_0_ADDRESS) && (src_sector_addr <= BSP_FLASH_SECTOR_7_ADDRESS), BSP_FLASH_ERROR);
+  __ASSERT((dest_sector_addr >= BSP_FLASH_SECTOR_0_ADDRESS) && (dest_sector_addr <= BSP_FLASH_SECTOR_7_ADDRESS), BSP_FLASH_ERROR);
   __ASSERT((dest_sector_size >= src_sector_size), BSP_FLASH_ERROR);
 
   uint32_t ret = BSP_FLASH_OK;
@@ -124,9 +124,9 @@ uint32_t bsp_flash_copy_sector(uint32_t src_sector_addr, uint32_t src_sector_siz
   ret = bsp_flash_unlock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
-  for (int i = 0; i < src_sector_size / 4; i++) 
+  for (uint32_t i = 0; i < src_sector_size / 4; i++) 
   {
-    HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector_addr, *src_sector_addr);
+    HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector_addr, *((__IO uint32_t *)src_sector_addr));
     src_sector_addr++;
     dest_sector_addr++;
   }
@@ -142,8 +142,8 @@ uint32_t bsp_flash_copy_address(uint32_t src_sector_addr, uint32_t src_sector_si
                                 uint32_t dest_sector_addr, uint32_t dest_sector_size,
                                 uint32_t src_start_address, uint32_t size)
 {
-  __ASSERT((src_sector_addr >= FLASH_SECTOR_0) && (src_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
-  __ASSERT((dest_sector_addr >= FLASH_SECTOR_0) && (dest_sector_addr <= FLASH_SECTOR_7), BSP_FLASH_ERROR);
+  __ASSERT((src_sector_addr >= BSP_FLASH_SECTOR_0_ADDRESS) && (src_sector_addr <= BSP_FLASH_SECTOR_7_ADDRESS), BSP_FLASH_ERROR);
+  __ASSERT((dest_sector_addr >= BSP_FLASH_SECTOR_0_ADDRESS) && (dest_sector_addr <= BSP_FLASH_SECTOR_7_ADDRESS), BSP_FLASH_ERROR);
   __ASSERT((dest_sector_size >= src_sector_size), BSP_FLASH_ERROR);
 
   uint32_t ret = BSP_FLASH_OK;
@@ -151,11 +151,11 @@ uint32_t bsp_flash_copy_address(uint32_t src_sector_addr, uint32_t src_sector_si
   ret = bsp_flash_unlock();
   __ASSERT(ret == BSP_FLASH_OK, BSP_FLASH_FAILED);
 
-  for (int i = 0; i < src_sector_size / 4; i++) 
+  for (uint32_t i = 0; i < src_sector_size / 4; i++) 
   {
     if ((src_sector_addr >= src_start_address) && (src_sector_addr < (src_start_address + size)))
     {
-      HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector_addr, *src_sector_addr);
+      HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, dest_sector_addr, *((__IO uint32_t *)src_sector_addr));
     }
 
     src_sector_addr++;
