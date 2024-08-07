@@ -182,9 +182,8 @@ uint32_t sys_manage_loop()
     {
     case SYS_MANAGE_CMD_CHECK_UART:
     {
-      sys_protocol_send_pkt_to_port(s_check_pkt);
       cb_clear(&s_rx_pkt_cbuf);
-      s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+      s_mng.current_state = SYS_MANAGE_STATE_CHECK_UART;
       break;
     }
     case SYS_MANAGE_CMD_GET_RECORDS:
@@ -199,55 +198,28 @@ uint32_t sys_manage_loop()
     {
       // Check UART
       sys_protocol_send_pkt_to_port(s_check_pkt);
-      // Get threshold from packet
-      uint32_t temp_data = 0;
-      cb_read(&s_rx_pkt_cbuf, &temp_data, DATA_PKT_SIZE);
-      // Set threshold
-      s_mng.lower_thresshold = temp_data & (0x000000FF);
-      s_mng.upper_threshold = (temp_data >> 8) & (0x000000FF);
-      uint8_t threshold[] = {s_mng.lower_thresshold, s_mng.upper_threshold};
-      sys_display_update_threshold(&s_oled_screen, threshold);
-      // Notification
-      sys_display_show_noti(&s_oled_screen, s_success_noti);
-      cb_clear(&s_rx_pkt_cbuf);
-      s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+      s_mng.current_state = SYS_MANAGE_STATE_SET_THRESHOLD;
       break;
     }
     case SYS_MANAGE_CMD_SET_INTERVAL:
     {
-      uint32_t temp_prescaler;
-      cb_read(&s_rx_pkt_cbuf, &temp_prescaler, DATA_PKT_SIZE);
-      bsp_timer_set_prescaler(s_tim_interval, temp_prescaler - 1);
-      bsp_timer_start_it(s_tim_interval);
-      cb_clear(&s_rx_pkt_cbuf);
-      s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+      // Check UART
+      sys_protocol_send_pkt_to_port(s_check_pkt);
+      s_mng.current_state = SYS_MANAGE_STATE_SET_INTERVAL;
       break;
     }
     case SYS_MANAGE_CMD_SET_TIME:
     {
-      // Get epoch time from packet
-      uint32_t temp_ept = 0;
-      uint32_t ret = SYS_TIME_OK;
-      cb_read(&s_rx_pkt_cbuf, &temp_ept, DATA_PKT_SIZE);
-      // Set time for system RTC
-      ret = sys_time_set_epoch_time(temp_ept, &s_rtc);
-      __ASSERT(ret = SYS_TIME_OK, SYS_MANAGE_ERROR);
-      // Notification
-      sys_display_show_noti(&s_oled_screen, s_success_noti);
-      cb_clear(&s_rx_pkt_cbuf);
-      s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+      // Check UART
+      sys_protocol_send_pkt_to_port(s_check_pkt);
+      s_mng.current_state = SYS_MAMAGE_STATE_SET_TIME;
       break;
     }
     case SYS_MANAGE_CMD_CLEAR_RECORDS:
     {
-      uint8_t msg[] = "Loading";
-      sys_display_show_noti(&s_oled_screen, msg);
-      sys_storage_fully_clean(&s_heart_rate_records);
-      cb_clear(&s_rx_pkt_cbuf);
-      sprintf(msg, "          ");
-      sys_display_show_noti(&s_oled_screen, msg);
-      cb_clear(&s_rx_pkt_cbuf);
-      s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+      // Check UART
+      sys_protocol_send_pkt_to_port(s_check_pkt);
+      s_mng.current_state = SYS_MAMAGE_STATE_CLEAR_RECORDS;
       break;
     }
     default:
@@ -284,6 +256,57 @@ uint32_t sys_manage_loop()
     break;
   }
 
+  case SYS_MANAGE_STATE_CHECK_UART:
+  {
+    sys_protocol_send_pkt_to_port(s_check_pkt);
+    s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+    break;
+  }
+
+  case SYS_MANAGE_STATE_SET_THRESHOLD:
+  {
+    // Get threshold from packet
+    uint32_t temp_data = 0;
+    cb_read(&s_rx_pkt_cbuf, &temp_data, DATA_PKT_SIZE);
+    // Set threshold
+    s_mng.lower_thresshold = temp_data & (0x000000FF);
+    s_mng.upper_threshold = (temp_data >> 8) & (0x000000FF);
+    uint8_t threshold[] = {s_mng.lower_thresshold, s_mng.upper_threshold};
+    sys_display_update_threshold(&s_oled_screen, threshold);
+    // Notification
+    sys_display_show_noti(&s_oled_screen, s_success_noti);
+    cb_clear(&s_rx_pkt_cbuf);
+    s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+    break;
+  }
+
+  case SYS_MANAGE_STATE_SET_INTERVAL:
+  {
+    uint32_t temp_prescaler;
+    cb_read(&s_rx_pkt_cbuf, &temp_prescaler, DATA_PKT_SIZE);
+    bsp_timer_set_prescaler(s_tim_interval, temp_prescaler - 1);
+    bsp_timer_start_it(s_tim_interval);
+    cb_clear(&s_rx_pkt_cbuf);
+    s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+    break;
+  }
+
+  case SYS_MAMAGE_STATE_SET_TIME:
+  {
+    // Get epoch time from packet
+    uint32_t temp_ept = 0;
+    uint32_t ret = SYS_TIME_OK;
+    cb_read(&s_rx_pkt_cbuf, &temp_ept, DATA_PKT_SIZE);
+    // Set time for system RTC
+    ret = sys_time_set_epoch_time(temp_ept, &s_rtc);
+    __ASSERT(ret = SYS_TIME_OK, SYS_MANAGE_ERROR);
+    // Notification
+    sys_display_show_noti(&s_oled_screen, s_success_noti);
+    cb_clear(&s_rx_pkt_cbuf);
+    s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+    break;
+  }
+
   case SYS_MANAGE_STATE_RECORD:
   {
     uint8_t msg[] = "Recording";
@@ -301,7 +324,7 @@ uint32_t sys_manage_loop()
   {
     uint32_t time = 0;
     uint8_t heart_rate = 0;
-    uint8_t msg[] = "Loading";
+    uint8_t msg[] = "Sending";
     sys_display_show_noti(&s_oled_screen, msg);
     for (uint32_t i = 1; i < (s_heart_rate_records.size - s_heart_rate_records.space_left); i += 5)
     {
@@ -314,6 +337,18 @@ uint32_t sys_manage_loop()
       sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xF0};
       sys_protocol_send_pkt_to_port(record_value);
     }
+    sprintf(msg, "          ");
+    sys_display_show_noti(&s_oled_screen, msg);
+    s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
+    break;
+  }
+
+  case SYS_MAMAGE_STATE_CLEAR_RECORDS:
+  {
+    uint8_t msg[] = "Cleaning";
+    sys_display_show_noti(&s_oled_screen, msg);
+    sys_storage_fully_clean(&s_heart_rate_records);
+    cb_clear(&s_rx_pkt_cbuf);
     sprintf(msg, "          ");
     sys_display_show_noti(&s_oled_screen, msg);
     s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
@@ -338,8 +373,10 @@ static void sys_manage_wakeup()
 
 static void sys_manage_record_heart_rate()
 {
-  // Waiting for Khanh
-  s_mng.current_state = SYS_MANAGE_STATE_RECORD;
+  if (s_mng.current_state == SYS_MANAGE_STATE_NORMAL)
+  {
+    s_mng.current_state = SYS_MANAGE_STATE_RECORD;
+  }
 }
 
 static void sys_manage_interval_elapsed(bsp_tim_typedef_t *tim)
