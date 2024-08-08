@@ -145,10 +145,17 @@ uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal
                                MAX_HEIGHT - 9 - 1,
                                DRV_SSD1306_COLOR_BLACK);
   }
-  drv_ssd1306_draw_pixel(&(display->screen),
-                         s_graph_pos_x++,
-                         (MAX_HEIGHT - 9 - 1) - (uint8_t)(avg_value / GRAPH_HEIGHT),
-                         DRV_SSD1306_COLOR_WHITE);
+
+  static uint8_t pre_pos_y = 0;
+  uint8_t current_pos_y = (MAX_HEIGHT - 9 - 1) - (uint8_t)(avg_value / GRAPH_HEIGHT);
+  drv_ssd1306_draw_line(&display->screen,
+                        s_graph_pos_x,
+                        pre_pos_y,
+                        ++s_graph_pos_x,
+                        current_pos_y,
+                        DRV_SSD1306_COLOR_WHITE);
+  pre_pos_y = current_pos_y;
+
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;
