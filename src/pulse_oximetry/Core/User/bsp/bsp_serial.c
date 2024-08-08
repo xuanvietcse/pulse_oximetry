@@ -35,7 +35,6 @@ static uint8_t dma_buffer[DMA_BUFFER_SIZE] = {0};
 static uint8_t swap_buffer_a[DMA_BUFFER_SIZE] = {0};
 static uint8_t swap_buffer_b[DMA_BUFFER_SIZE] = {0};
 
-const uint8_t bsp_start_msg[] = "\r\nStart driver Serial finished SUCCESSFULLY!\r\n";
 /* Private function prototypes ---------------------------------------- */
 /**
  * @brief         Handle the trigger of data receive event
@@ -67,9 +66,6 @@ uint32_t bsp_serial_init(UART_HandleTypeDef *uart)
   __ASSERT(ret == BSP_UART_OK, BSP_SERIAL_FAILED);
 
   ret = bsp_uart_register_cb_function(bsp_serial_rx_evt_handler);
-  __ASSERT(ret == BSP_UART_OK, BSP_SERIAL_FAILED);
-
-  ret = bsp_uart_transmit(b_serial.uart, (uint8_t *)bsp_start_msg, __SIZE_OF(bsp_start_msg));
   __ASSERT(ret == BSP_UART_OK, BSP_SERIAL_FAILED);
 
   return BSP_SERIAL_OK;

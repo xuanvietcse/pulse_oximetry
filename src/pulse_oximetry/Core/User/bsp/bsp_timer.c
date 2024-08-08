@@ -20,7 +20,7 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
-
+static bsp_timer_cb_t b_period_elapsed = NULL;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -164,6 +164,21 @@ bsp_timer_status_t bsp_pwm_stop_it(bsp_tim_typedef_t *htim, uint32_t tim_channel
   ret = HAL_TIM_OC_Stop_IT(htim, tim_channel);
 
   __ASSERT(ret == HAL_OK, BSP_TIMER_FAIL);
+  return BSP_TIMER_OK;
+}
+
+bsp_timer_status_t bsp_timer_register_callback(bsp_timer_cb_t period_elapsed)
+{
+  __ASSERT(period_elapsed != NULL, BSP_TIMER_ERROR);
+  b_period_elapsed = period_elapsed;
+
+  return BSP_TIMER_OK;
+}
+
+bsp_timer_status_t bsp_timer_period_callback_handler(bsp_tim_typedef_t *htim)
+{
+  __CALLBACK(b_period_elapsed, htim);
+
   return BSP_TIMER_OK;
 }
 

@@ -21,8 +21,6 @@
 /* Private defines ---------------------------------------------------- */
 #define TIME_OUT_TRANSMIT_UART (1000)
 
-const uint8_t b_uart_start_it_msg[] = "\r\nStart UART in INTERRUPT mode finished successfully!\r\n";
-const uint8_t b_uart_start_dma_msg[] = "\r\nStart UART in DMA mode finished successfully!\r\n";
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -44,13 +42,6 @@ uint32_t bsp_uart_start_receive_to_idle_it(UART_HandleTypeDef *huart,
   ret = HAL_UARTEx_ReceiveToIdle_IT(huart, rx_data, bytes);
   __ASSERT(ret == HAL_OK, BSP_UART_FAIL);
 
-  ret = HAL_UART_Transmit(huart,
-                          b_uart_start_it_msg,
-                          __SIZE_OF(b_uart_start_it_msg),
-                          TIME_OUT_TRANSMIT_UART);
-
-  __ASSERT(ret == HAL_OK, BSP_UART_FAIL);
-
   return BSP_UART_OK;
 }
 
@@ -63,13 +54,6 @@ uint32_t bsp_uart_start_receive_to_idle_dma(UART_HandleTypeDef *huart,
 
   HAL_StatusTypeDef ret = HAL_OK;
   ret = HAL_UARTEx_ReceiveToIdle_DMA(huart, rx_data, bytes);
-  __ASSERT(ret == HAL_OK, BSP_UART_FAIL);
-
-  ret = HAL_UART_Transmit(huart,
-                          b_uart_start_dma_msg,
-                          __SIZE_OF(b_uart_start_dma_msg),
-                          TIME_OUT_TRANSMIT_UART);
-
   __ASSERT(ret == HAL_OK, BSP_UART_FAIL);
 
   return BSP_UART_OK;

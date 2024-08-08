@@ -37,11 +37,7 @@ sound_effect_t win_11_startup[] =
 
 sound_effect_t system_alert[] =
     {
-        {NOTE_AS7, 200},
-        {0, 50},
-        {NOTE_AS7, 200},
-        {0, 50},
-        {NOTE_AS7, 200}};
+        {NOTE_AS7, 20}};
 
 /* Public function prototypes ----------------------------------------- */
 

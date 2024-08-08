@@ -56,9 +56,10 @@ typedef void (*drv_button_callback)(uint16_t exti_line);
  *
  * @attention   None
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to initialize,
- *              0 if initialize successfully.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 drv_button_status_t drv_button_init(drv_button_t *button,
                                     GPIO_TypeDef *button_port,
@@ -72,9 +73,10 @@ drv_button_status_t drv_button_init(drv_button_t *button,
  *
  * @attention   None
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to initialize,
- *              0 if initialize successfully.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 drv_button_status_t drv_button_exti_handler(uint16_t exti_line);
 
@@ -85,9 +87,10 @@ drv_button_status_t drv_button_exti_handler(uint16_t exti_line);
  *
  * @attention   None
  *
- * @return      -2 if input parameters error,
- *              -1 if fail to initialize,
- *              0 if initialize successfully.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 drv_button_status_t drv_button_register_callback(drv_button_callback callback_function);
 

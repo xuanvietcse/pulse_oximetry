@@ -30,9 +30,9 @@
  */
 typedef enum
 {
-  SYS_TIME_ERROR = -2,
-  SYS_TIME_FAILED,
-  SYS_TIME_OK
+  SYS_TIME_ERROR = 0xFFFFFFFF,
+  SYS_TIME_FAILED = 0x7FFFFFFF,
+  SYS_TIME_OK = 0x3FFFFFFF
 } sys_time_status_t;
 
 /**
@@ -104,6 +104,11 @@ sys_time_status_t sys_time_set_date_time(drv_ds1307_t *ds1307);
  * @return      The status of sys_time operation.
  */
 sys_time_status_t sys_time_get_date_time(drv_ds1307_t *ds1307);
+
+/**
+ *
+ */
+uint32_t sys_time_get_epoch_time(drv_ds1307_t *ds1307);
 
 /**
  * @brief       Set alarm.

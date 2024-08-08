@@ -8,10 +8,10 @@
  *             Khanh Nguyen Ngoc
  *             Viet Hoang Xuan
  *
- * @brief      <None
+ * @brief      None
  *
  * @note       None
- * @example    Noone
+ * @example    None
  */
 
 /* Includes ----------------------------------------------------------- */
