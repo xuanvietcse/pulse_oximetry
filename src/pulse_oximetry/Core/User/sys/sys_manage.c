@@ -16,6 +16,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "sys_manage.h"
+#include "bsp_utils.h"
 #include "list_of_sound_effects.h"
 #include "common.h"
 /* Private defines ---------------------------------------------------- */
@@ -158,7 +159,9 @@ uint32_t sys_manage_start(bsp_tim_typedef_t *tim)
   s_mng.cmd = 0xFF;
   s_mng.interval = 0;
   s_mng.lower_threshold = 60;
-  s_mng.upper_threshold = 0xFF;
+  s_mng.upper_threshold = 140;
+  uint8_t threshold[] = {s_mng.lower_threshold, s_mng.upper_threshold};
+  sys_display_update_threshold(&s_oled_screen, threshold);
 
   s_check_pkt.command = 0x00;
   s_check_pkt.data = 0xFFFFFFFF;
@@ -176,8 +179,11 @@ uint32_t sys_manage_loop()
 {
   sys_button_manage();
   sys_measure_process_data(&s_ppg_signal);
-  sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
-  sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
+  if (bsp_utils_get_tick() > 10000)
+  {
+    sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
+    sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
+  }
   if (cb_data_count(&s_rx_pkt_cbuf) > 0)
   {
     cb_read(&s_rx_pkt_cbuf, &s_mng.cmd, CMD_PKT_SIZE);
@@ -267,7 +273,7 @@ uint32_t sys_manage_loop()
   {
     uint8_t msg[] = "Warning";
     sys_display_show_noti(&s_oled_screen, msg);
-    // drv_buzzer_play(&s_passive_buzzer, system_alert, 5);
+    drv_buzzer_play(&s_passive_buzzer, system_alert, 1);
     if ((s_ppg_signal.heart_rate > s_mng.lower_threshold) && (s_ppg_signal.heart_rate < s_mng.upper_threshold))
     {
       s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
@@ -351,10 +357,10 @@ uint32_t sys_manage_loop()
       sys_storage_export(&s_heart_rate_records, &time, 4);
       sys_storage_export(&s_heart_rate_records, &heart_rate, 1);
 
-      sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_GET_RECORDS, time, 0xF0};
+      sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_SET_TIME, time, 0xFF};
       sys_protocol_send_pkt_to_port(record_time);
 
-      sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xF0};
+      sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xFF};
       sys_protocol_send_pkt_to_port(record_value);
     }
     sprintf(msg, "          ");
