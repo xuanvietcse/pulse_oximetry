@@ -45,9 +45,9 @@ typedef enum
  * @param[in]     time_out            Time to wait before retrying transmitting
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_master_transmit(bsp_i2c_handle_t *hi2c,
                                          uint16_t device_address,
@@ -66,9 +66,9 @@ bsp_i2c_status_t bsp_i2c_master_transmit(bsp_i2c_handle_t *hi2c,
  * @param[in]     time_out            Time to wait before retrying transmitting
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_master_receive(bsp_i2c_handle_t *hi2c,
                                         uint16_t device_address,
@@ -86,9 +86,9 @@ bsp_i2c_status_t bsp_i2c_master_receive(bsp_i2c_handle_t *hi2c,
  * @param[in]     size                Amount of data to transfer
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_master_transmit_it(bsp_i2c_handle_t *hi2c,
                                             uint16_t device_address,
@@ -105,9 +105,9 @@ bsp_i2c_status_t bsp_i2c_master_transmit_it(bsp_i2c_handle_t *hi2c,
  * @param[in]     size                Amount of data to receive
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_master_receive_it(bsp_i2c_handle_t *hi2c,
                                            uint16_t device_address,
@@ -127,9 +127,9 @@ bsp_i2c_status_t bsp_i2c_master_receive_it(bsp_i2c_handle_t *hi2c,
  * @param[in]     time_out            Time to wait before retrying writing
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_mem_write(bsp_i2c_handle_t *hi2c,
                                    uint16_t device_address,
@@ -152,9 +152,9 @@ bsp_i2c_status_t bsp_i2c_mem_write(bsp_i2c_handle_t *hi2c,
  * @param[in]     time_out            Time to wait before retrying reading
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_mem_read(bsp_i2c_handle_t *hi2c,
                                   uint16_t device_address,
@@ -176,9 +176,9 @@ bsp_i2c_status_t bsp_i2c_mem_read(bsp_i2c_handle_t *hi2c,
  * @param[in]     size                Amount of data to transfer
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_mem_write_it(bsp_i2c_handle_t *hi2c,
                                       uint16_t device_address,
@@ -199,9 +199,9 @@ bsp_i2c_status_t bsp_i2c_mem_write_it(bsp_i2c_handle_t *hi2c,
  * @param[in]     size                Amount of data to transfer
  *
  * @return
- *  - (-2): Error
- *  - (-1): Fail
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 bsp_i2c_status_t bsp_i2c_mem_read_it(bsp_i2c_handle_t *hi2c,
                                      uint16_t device_address,

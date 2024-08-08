@@ -77,12 +77,9 @@ uint32_t cb_clear(cbuffer_t *cb)
 	if (cb == NULL)
 		return CB_ERROR;
 
-	cb->data = 0;
-	cb->size = 0;
 	cb->writer = 0;
 	cb->reader = 0;
 	cb->overflow = 0;
-	cb->active = 0;
 
 	return CB_SUCCESS;
 }

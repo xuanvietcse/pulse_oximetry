@@ -3,7 +3,7 @@
  * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
  * @license    This project is released under the Fiot License.
  * @version    v1.0.0
- * @date       yyyy-mm-dd
+ * @date       2024-07-27
  * @author     Giang Phan Truong
  *             Khanh Nguyen Ngoc
  *             Viet Hoang Xuan
@@ -43,9 +43,9 @@ enum bsp_adc_status_t
  *                the configuration information for the specified ADC.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_start(bsp_adc_typedef_t *badc);
 
@@ -56,9 +56,9 @@ uint32_t bsp_adc_start(bsp_adc_typedef_t *badc);
  *                the configuration information for the specified ADC.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_start_it(bsp_adc_typedef_t *badc);
 
@@ -69,9 +69,9 @@ uint32_t bsp_adc_start_it(bsp_adc_typedef_t *badc);
  *                the configuration information for the specified ADC.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_start_dma(bsp_adc_typedef_t *badc, uint32_t *dma_buf, uint32_t length);
 
@@ -84,9 +84,9 @@ uint32_t bsp_adc_start_dma(bsp_adc_typedef_t *badc, uint32_t *dma_buf, uint32_t 
  *                the configuration information for the specified ADC.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_stop(bsp_adc_typedef_t *badc);
 
@@ -99,9 +99,9 @@ uint32_t bsp_adc_stop(bsp_adc_typedef_t *badc);
  *                the configuration information for the specified ADC.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_stop_it(bsp_adc_typedef_t *badc);
 
@@ -114,9 +114,9 @@ uint32_t bsp_adc_stop_it(bsp_adc_typedef_t *badc);
  *                the configuration information for the specified ADC.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_stop_dma(bsp_adc_typedef_t *badc);
 
@@ -139,9 +139,9 @@ uint32_t bsp_adc_get_value(bsp_adc_typedef_t *badc);
  * @param  bsp_adc_cb pointer to a function handle this callback.
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t bsp_adc_register_handler(cbuffer_t *adc_conv_cbuf);
 

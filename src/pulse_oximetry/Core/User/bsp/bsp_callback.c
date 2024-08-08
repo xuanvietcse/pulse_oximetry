@@ -19,6 +19,7 @@
 #include "bsp_adc.h"
 #include "bsp_timer.h"
 #include "bsp_gpio.h"
+#include "bsp_uart.h"
 
 /* Private defines ---------------------------------------------------- */
 
@@ -38,14 +39,24 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   bsp_adc_conv_cplt_callback(hadc);
 }
 
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-{
-  bsp_pwm_pulse_finished_handler(htim);
-}
-
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   bsp_gpio_exti_handler(GPIO_Pin);
+}
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+  uint32_t ret = BSP_UART_OK;
+  ret = bsp_uart_rx_cb_handler(huart, Size);
+
+  if (ret != BSP_UART_OK)
+  {
+    Error_Handler();
+  }
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  bsp_timer_period_callback_handler(htim);
 }
 /* Private definitions ------------------------------------------------ */
 /* End of file -------------------------------------------------------- */

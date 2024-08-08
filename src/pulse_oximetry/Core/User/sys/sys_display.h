@@ -21,8 +21,9 @@
 /* Includes ----------------------------------------------------------- */
 #include "main.h"
 #include "drv_ssd1306.h"
+#include "cbuffer.h"
 /* Public defines ----------------------------------------------------- */
-
+#define SSD1306_INCLUDE_FONT_6x8 true
 /* Public enumerate/structure ----------------------------------------- */
 enum sys_display_status_t
 {
@@ -33,8 +34,8 @@ enum sys_display_status_t
 
 typedef struct
 {
+  drv_ssd1306_t screen;
   uint8_t heart_rate;
-  uint8_t *signal_buf;
   uint8_t *threshold_buf;
 } sys_display_t;
 
@@ -43,6 +44,7 @@ typedef struct
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
+
 /**
  * @brief  Initialize the display and start UI
  *
@@ -50,11 +52,11 @@ typedef struct
  * @param[in]     i2c      pointer to I2C handler
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c);
+uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c, uint8_t *dev_buffer);
 
 /**
  * @brief  Update the heart rate on the display
@@ -63,24 +65,24 @@ uint32_t sys_display_init(sys_display_t *display, bsp_i2c_handle_t *i2c);
  * @param[in]     heart_rate      measured heart rate
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t sys_display_update_heart_rate(sys_display_t *display, uint8_t heart_rate);
 
 /**
  * @brief  Graph the PPG signal on the display
  *
- * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
- * @param[in]     ppg_sig_buf      amount of PPG data needed to graph
+ * @param[in]     display         pointer to sys_display_t structure for manage the display in the system
+ * @param[in]     signal_buf      amount of PPG data needed to graph
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
-uint32_t sys_display_update_ppg_signal(sys_display_t *display, uint8_t *ppg_sig_buf);
+uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal_buf);
 
 /**
  * @brief  Update new threshold
@@ -89,9 +91,9 @@ uint32_t sys_display_update_ppg_signal(sys_display_t *display, uint8_t *ppg_sig_
  * @param[in]     threshold      pointer to array contains upper and lower threshold
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t sys_display_update_threshold(sys_display_t *display, uint8_t *threshold);
 
@@ -102,9 +104,9 @@ uint32_t sys_display_update_threshold(sys_display_t *display, uint8_t *threshold
  * @param[in]     msg      pointer to the message array
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t sys_display_show_noti(sys_display_t *display, char *msg);
 
@@ -114,11 +116,35 @@ uint32_t sys_display_show_noti(sys_display_t *display, char *msg);
  * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
  *
  * @return
- *  - (-2): Error
- *  - (-1): Failed
- *  - (0) : Success
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 uint32_t sys_display_clear_all(sys_display_t *display);
+
+/**
+ * @brief  Turn off the OLED display
+ *
+ * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
+ *
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
+ */
+uint32_t sys_display_sleep(sys_display_t *display);
+
+/**
+ * @brief  Turn on the OLED display
+ *
+ * @param[in]     display  pointer to sys_display_t structure for manage the display in the system
+ *
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
+ */
+uint32_t sys_display_wakeup(sys_display_t *display);
 
 #endif // __USER_SYS_DISPLAY_H
 

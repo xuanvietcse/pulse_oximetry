@@ -1,9 +1,9 @@
 /**
- * @file       drv_ssd1306_fonts.h
+ * @file       ssd1306_fonts.c
  * @copyright  Copyright (C) 2019 ITRVN. All rights reserved.
  * @license    This project is released under the Fiot License.
  * @version    0.0.1
- * @date       2024-08-01
+ * @date       2024-08-04
  * @author     Viet Hoang Xuan
  *             Giang Phan Truong
  *             Khanh Nguyen Ngoc
@@ -15,21 +15,15 @@
  * @example
  */
 
-/* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __DRV_SSD1306_FONTS_H
-#define __DRV_SSD1306_FONTS_H
-
 /* Includes ----------------------------------------------------------- */
+#include "ssd1306_fonts.h"
+/* Private defines ---------------------------------------------------- */
 
-/* Public defines ----------------------------------------------------- */
+/* Private enumerate/structure ---------------------------------------- */
 
-/* Public enumerate/structure ----------------------------------------- */
-
-/* Public macros ------------------------------------------------------ */
-
-/* Public variables --------------------------------------------------- */
+/* Private macros ----------------------------------------------------- */
 #ifdef SSD1306_INCLUDE_FONT_7x10
-const uint16_t Font7x10[] = {
+static const uint16_t Font7x10[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // sp
     0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x0000, 0x1000, 0x0000, 0x0000, // !
     0x2800, 0x2800, 0x2800, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // "
@@ -129,7 +123,7 @@ const uint16_t Font7x10[] = {
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_11x18
-const uint16_t Font11x18[] = {
+static const uint16_t Font11x18[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // sp
     0x0000, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0000, 0x0C00, 0x0C00, 0x0000, 0x0000, 0x0000, // !
     0x0000, 0x1B00, 0x1B00, 0x1B00, 0x1B00, 0x1B00, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // "
@@ -228,7 +222,7 @@ const uint16_t Font11x18[] = {
 };
 #endif
 #ifdef SSD1306_INCLUDE_FONT_16x26
-const uint16_t Font16x26[] = {
+static const uint16_t Font16x26[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // Ascii = [ ]
     0x03E0, 0x03E0, 0x03E0, 0x03E0, 0x03E0, 0x03E0, 0x03E0, 0x03E0, 0x03C0, 0x03C0, 0x01C0, 0x01C0, 0x01C0, 0x01C0, 0x01C0, 0x0000, 0x0000, 0x0000, 0x03E0, 0x03E0, 0x03E0, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // Ascii = [!]
     0x1E3C, 0x1E3C, 0x1E3C, 0x1E3C, 0x1E3C, 0x1E3C, 0x1E3C, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // Ascii = ["]
@@ -327,7 +321,7 @@ const uint16_t Font16x26[] = {
 };
 #endif
 #ifdef SSD1306_INCLUDE_FONT_6x8
-const uint16_t Font6x8[] = {
+static const uint16_t Font6x8[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // sp
     0x2000, 0x2000, 0x2000, 0x2000, 0x2000, 0x0000, 0x2000, 0x0000, // !
     0x5000, 0x5000, 0x5000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // "
@@ -428,7 +422,7 @@ const uint16_t Font6x8[] = {
 
 /* see ./examples/custom-fonts/ */
 #ifdef SSD1306_INCLUDE_FONT_16x24
-const uint16_t Font16x24[] = {
+static const uint16_t Font16x24[] = {
     /* -- <- these are comments and symbol separators */
     /* -- */
     /* -- This file was created manually by looking at: */
@@ -629,7 +623,7 @@ const uint16_t Font16x24[] = {
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_16x15
-const uint16_t Font16x15[] = {
+static const uint16_t Font16x15[] = {
     /**   **/
     0x0000,
     0x0000,
@@ -2152,7 +2146,7 @@ const uint16_t Font16x15[] = {
     0x0000,
 };
 
-const uint8_t char_width[] = {
+static const uint8_t char_width[] = {
     6,  /**   **/
     5,  /** ! **/
     6,  /** " **/
@@ -2252,21 +2246,21 @@ const uint8_t char_width[] = {
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_6x8
-const SSD1306_Font_t Font_6x8 = {6, 8, Font6x8, NULL};
+const ssd1306_font_t Font_6x8 = {6, 8, Font6x8, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_7x10
-const SSD1306_Font_t Font_7x10 = {7, 10, Font7x10, NULL};
+const ssd1306_font_t Font_7x10 = {7, 10, Font7x10, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_11x18
-const SSD1306_Font_t Font_11x18 = {11, 18, Font11x18, NULL};
+const ssd1306_font_t Font_11x18 = {11, 18, Font11x18, NULL};
 #endif
 #ifdef SSD1306_INCLUDE_FONT_16x26
-const SSD1306_Font_t Font_16x26 = {16, 26, Font16x26, NULL};
+const ssd1306_font_t Font_16x26 = {16, 26, Font16x26, NULL};
 #endif
 
 /* see ./examples/custom-fonts/ */
 #ifdef SSD1306_INCLUDE_FONT_16x24
-const SSD1306_Font_t Font_16x24 = {16, 24, Font16x24, NULL};
+const ssd1306_font_t Font_16x24 = {16, 24, Font16x24, NULL};
 #endif
 
 #ifdef SSD1306_INCLUDE_FONT_16x15
@@ -2274,10 +2268,16 @@ const SSD1306_Font_t Font_16x24 = {16, 24, Font16x24, NULL};
  * @copyright Google https://github.com/googlefonts/roboto
  * @license This font is licensed under the Apache License, Version 2.0.
  */
-const SSD1306_Font_t Font_16x15 = {16, 15, Font16x15, char_width};
+const ssd1306_font_t Font_16x15 = {16, 15, Font16x15, char_width};
 #endif
-/* Public function prototypes ----------------------------------------- */
+/* Public variables --------------------------------------------------- */
 
-#endif // __DRV_SSD1306_FONTS_H
+/* Private variables -------------------------------------------------- */
+
+/* Private function prototypes ---------------------------------------- */
+
+/* Function definitions ----------------------------------------------- */
+
+/* Private definitions ----------------------------------------------- */
 
 /* End of file -------------------------------------------------------- */

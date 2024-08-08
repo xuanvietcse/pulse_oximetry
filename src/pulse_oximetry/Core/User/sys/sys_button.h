@@ -76,6 +76,7 @@ typedef struct __attribute__((__packed__))
 /* Public variables --------------------------------------------------- */
 typedef void (*sys_button_evt_on_power)();
 typedef void (*sys_button_evt_off_power)();
+typedef void (*sys_button_evt_record)();
 
 /* Public function prototypes ----------------------------------------- */
 /**
@@ -84,30 +85,34 @@ typedef void (*sys_button_evt_off_power)();
  * @param[in]   gpio  Pointer point to GPIO port
  * @param[in]   pin   pin of that port
  * @param[in]   button_active_level Determine the active high or active low button
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 sys_button_status_t sys_button_init(GPIO_TypeDef *gpio, uint16_t pin, uint32_t button_active_level);
 
 /**
  * @brief       Manage the system button
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
 sys_button_status_t sys_button_manage();
 
 /**
  * @brief       Register button event callback: ON/OFF power.
  *
- * @return      -2 if error,
- *              -1 if fail,
- *              0 if success.
+ * @return
+ *  - (0xFFFFFFFF): Error
+ *  - (0x7FFFFFFF): Failed
+ *  - (0x3FFFFFFF) : Success
  */
-sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb, 
-                                                    sys_button_evt_off_power off_power_cb);
+sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb,
+                                                    sys_button_evt_off_power off_power_cb,
+                                                    sys_button_evt_record record_cb);
 
 #endif // __USER_SYS_SYS_BUTTON_H
 

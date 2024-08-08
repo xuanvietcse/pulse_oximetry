@@ -19,6 +19,7 @@
 #include "drv_ssd1306.h"
 #include "common.h"
 #include <string.h>
+#include <stdlib.h>
 /* Private defines ---------------------------------------------------- */
 #define SSD1306_CONTRAST_REGISTER (0x81)
 /* Private enumerate/structure ---------------------------------------- */
@@ -94,7 +95,7 @@ uint32_t drv_ssd1306_fill_screen(drv_ssd1306_t *dev,
   __ASSERT((color == DRV_SSD1306_COLOR_WHITE) || (color == DRV_SSD1306_COLOR_BLACK),
            DRV_SSD1306_ERROR);
   // Operation
-  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, (dev->size.height * dev->size.width));
+  memset((dev->buffer), (color == DRV_SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, (dev->size.height * dev->size.width / 8));
   uint32_t ret = DRV_SSD1306_OK;
   ret = drv_ssd1306_update_screen(dev);
   __ASSERT((ret == DRV_SSD1306_OK), DRV_SSD1306_FAILED);
@@ -144,11 +145,11 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
   // Pass value
   switch (color)
   {
-  case DRV_SSD1306_COLOR_BLACK:
+  case DRV_SSD1306_COLOR_WHITE:
     dev->buffer[pos_x + (pos_y / 8) * 128] |= (1 << (pos_y % 8));
     break;
-  case DRV_SSD1306_COLOR_WHITE:
-    dev->buffer[pos_x + (pos_y / 8) * 128] &= (0 << (pos_y % 8));
+  case DRV_SSD1306_COLOR_BLACK:
+    dev->buffer[pos_x + (pos_y / 8) * 128] &= ~(1 << (pos_y % 8));
     break;
   default:
     // Do nothing
@@ -160,7 +161,7 @@ uint32_t drv_ssd1306_draw_pixel(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
                                 char ch,
-                                drv_ssd1306_font_t font,
+                                ssd1306_font_t font,
                                 drv_ssd1306_color_t color)
 {
   // Check parameters
@@ -179,11 +180,11 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
     {
       if ((temp << j) & 0x8000)
       {
-        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, DRV_SSD1306_COLOR_WHITE);
+        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, color);
       }
       else
       {
-        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, DRV_SSD1306_COLOR_BLACK);
+        drv_ssd1306_draw_pixel(dev, dev->cursor.x + j, dev->cursor.y + i, !color);
       }
     }
   }
@@ -195,7 +196,7 @@ uint32_t drv_ssd1306_write_char(drv_ssd1306_t *dev,
 
 uint32_t drv_ssd1306_write_string(drv_ssd1306_t *dev,
                                   char *str,
-                                  drv_ssd1306_font_t font,
+                                  ssd1306_font_t font,
                                   drv_ssd1306_color_t color)
 {
   // Check parameters
@@ -231,6 +232,150 @@ uint32_t drv_ssd1306_update_screen(drv_ssd1306_t *dev)
   return DRV_SSD1306_OK;
 }
 
+uint32_t drv_ssd1306_draw_bitmap(drv_ssd1306_t *dev,
+                                 uint8_t pos_x,
+                                 uint8_t pos_y,
+                                 const uint8_t *bitmap,
+                                 uint8_t bitmap_width,
+                                 uint8_t bitmap_height,
+                                 drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x < dev->size.width) && (pos_y < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((bitmap != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((bitmap_width <= dev->size.width) && (bitmap_height <= dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  // Compute the number of bytes to store one row of the bitmap
+  uint8_t byte_width = (bitmap_width + 7) / 8;
+  uint8_t byte = 0;
+  for (uint8_t j = 0; j < bitmap_height; j++, pos_y++)
+  {
+    for (uint8_t i = 0; i < bitmap_width; i++)
+    {
+      if (i & 7)
+      {
+        byte <<= 1;
+      }
+      else
+      {
+        byte = bitmap[j * byte_width + i / 8];
+      }
+      if (byte & 0x80)
+      {
+        drv_ssd1306_draw_pixel(dev,
+                               pos_x + i,
+                               pos_y,
+                               color);
+      }
+    }
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_draw_line(drv_ssd1306_t *dev,
+                               uint8_t pos_x1,
+                               uint8_t pos_y1,
+                               uint8_t pos_x2,
+                               uint8_t pos_y2,
+                               drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x1 < dev->size.width) && (pos_x2 < dev->size.width),
+           DRV_SSD1306_ERROR);
+  __ASSERT((pos_y1 < dev->size.height) && (pos_y2 < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  uint16_t delta_x = abs(pos_x2 - pos_x1);
+  uint16_t delta_y = abs(pos_y2 - pos_y1);
+  int8_t sign_of_x = ((pos_x1 < pos_x2) ? 1 : -1);
+  int8_t sign_of_y = ((pos_y1 < pos_y2) ? 1 : -1);
+  int32_t error = delta_x - delta_y;
+  int32_t error_2;
+
+  drv_ssd1306_draw_pixel(dev, pos_x2, pos_y2, color);
+
+  while ((pos_x1 != pos_x2) || (pos_y1 != pos_y2))
+  {
+    drv_ssd1306_draw_pixel(dev, pos_x1, pos_y1, color);
+    error_2 = error * 2;
+    if (error_2 > -delta_y)
+    {
+      error -= delta_y;
+      pos_x1 += sign_of_x;
+    }
+    if (error_2 < delta_x)
+    {
+      error += delta_x;
+      pos_y1 += sign_of_y;
+    }
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_draw_rectangle(drv_ssd1306_t *dev,
+                                    uint8_t pos_x1,
+                                    uint8_t pos_y1,
+                                    uint8_t pos_x2,
+                                    uint8_t pos_y2,
+                                    drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x1 < dev->size.width) && (pos_x2 < dev->size.width),
+           DRV_SSD1306_ERROR);
+  __ASSERT((pos_y1 < dev->size.height) && (pos_y2 < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  drv_ssd1306_draw_line(dev, pos_x1, pos_y1, pos_x2, pos_y1, color);
+  drv_ssd1306_draw_line(dev, pos_x2, pos_y1, pos_x2, pos_y2, color);
+  drv_ssd1306_draw_line(dev, pos_x2, pos_y2, pos_x1, pos_y2, color);
+  drv_ssd1306_draw_line(dev, pos_x1, pos_y2, pos_x1, pos_y1, color);
+  // Return
+  return DRV_SSD1306_OK;
+}
+
+uint32_t drv_ssd1306_fill_rectangle(drv_ssd1306_t *dev,
+                                    uint8_t pos_x1,
+                                    uint8_t pos_y1,
+                                    uint8_t pos_x2,
+                                    uint8_t pos_y2,
+                                    drv_ssd1306_color_t color)
+{
+  // Check parameters
+  __ASSERT((dev != NULL), DRV_SSD1306_ERROR);
+  __ASSERT((pos_x1 < dev->size.width) && (pos_x2 < dev->size.width),
+           DRV_SSD1306_ERROR);
+  __ASSERT((pos_y1 < dev->size.height) && (pos_y2 < dev->size.height),
+           DRV_SSD1306_ERROR);
+  __ASSERT((color == DRV_SSD1306_COLOR_BLACK) || (color == DRV_SSD1306_COLOR_WHITE),
+           DRV_SSD1306_ERROR);
+  // Operation
+  uint8_t starting_x = ((pos_x1 <= pos_x2) ? pos_x1 : pos_x2);
+  uint8_t ending_x = ((pos_x1 <= pos_x2) ? pos_x2 : pos_x1);
+  uint8_t starting_y = ((pos_y1 <= pos_y2) ? pos_y1 : pos_y2);
+  uint8_t ending_y = ((pos_y1 <= pos_y2) ? pos_y2 : pos_y1);
+  for (uint8_t y = starting_y; (y <= ending_y) && (y < SSD1306_HEIGHT); y++)
+  {
+    for (uint8_t x = starting_x; (x <= ending_x) && (x < SSD1306_WIDTH); x++)
+    {
+      drv_ssd1306_draw_pixel(dev, x, y, DRV_SSD1306_COLOR_BLACK);
+    }
+  }
+  // Return
+  return DRV_SSD1306_OK;
+}
 /* Private definitions ----------------------------------------------- */
 static uint32_t drv_ssd1306_oled_init(drv_ssd1306_t *dev)
 {
