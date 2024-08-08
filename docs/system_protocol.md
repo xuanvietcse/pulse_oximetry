@@ -30,10 +30,6 @@ Users can clear all previous records which are unneeded to reduce memory.
 
 Whenever heart rate overcomes the threshold, system must signal to users.
 
-8. **Error notification**
-
-If there is any error, system must notify to users.
-
 **More over, every time users or developers send a packet to system, there will be a **Check UART** packet sent first to ensure there is no packet lost between communication process.**
 
 ## Packet format
@@ -52,7 +48,6 @@ If there is any error, system must notify to users.
     - 0x03: Set interval.
     - 0x04: Set/Get time.
     - 0x05: Clear records.
-    - 0x06: Error notification.
 - Data (DATA):
   - Length: 4 bytes.
   - Value: Based on CMD.
@@ -62,7 +57,6 @@ If there is any error, system must notify to users.
     - Set interval: Default unit is second (s). 0xXXXXXXXX, we should read datasheet before to ensure the interval we set is supported by MCU.
     - Set/Get time: 0xXXXXXXXX is the epoch time.
     - Clear records: 0xFFFFFFFF.
-    - Error notification: 0xFFFFFFFF.
 - Threshold:
   - Length: 1 byte.
   - Value: 0xXY. 
