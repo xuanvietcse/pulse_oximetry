@@ -352,7 +352,9 @@ uint32_t sys_manage_loop()
     uint8_t heart_rate = 0;
     uint8_t msg[] = "Sending";
     sys_display_show_noti(&s_oled_screen, msg);
-    for (uint32_t i = 1; i < (s_heart_rate_records.size - s_heart_rate_records.space_left); i += 5)
+    uint32_t i;
+    static uint32_t records_sent = 0;
+    for (i = records_sent; i < (s_heart_rate_records.size - s_heart_rate_records.space_left); i += 5)
     {
       sys_storage_export(&s_heart_rate_records, &time, 4);
       sys_storage_export(&s_heart_rate_records, &heart_rate, 1);
@@ -360,9 +362,10 @@ uint32_t sys_manage_loop()
       sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_SET_TIME, time, 0xFF};
       sys_protocol_send_pkt_to_port(record_time);
 
-      sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xFF};
+      sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xF0};
       sys_protocol_send_pkt_to_port(record_value);
     }
+    records_sent = records_sent + (i - 1) / 5;
     sprintf(msg, "          ");
     sys_display_show_noti(&s_oled_screen, msg);
     s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
