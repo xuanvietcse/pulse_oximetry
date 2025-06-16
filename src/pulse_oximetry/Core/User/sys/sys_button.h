@@ -22,7 +22,7 @@
 #include "drv_button.h"
 
 /* Public defines ----------------------------------------------------- */
-#define BUTTON_DEBOUNCE_TIME (50UL)
+#define BUTTON_DEBOUNCE_TIME (10UL)
 #define BUTTON_RELEASE_TIME (300UL)
 #define BUTTON_SINGLE_CLICK_TIME (500UL)
 #define BUTTON_HOLD_TIME (3000UL)
@@ -74,9 +74,7 @@ typedef struct __attribute__((__packed__))
 /* Public macros ------------------------------------------------------ */
 
 /* Public variables --------------------------------------------------- */
-typedef void (*sys_button_evt_on_power)();
-typedef void (*sys_button_evt_off_power)();
-typedef void (*sys_button_evt_record)();
+typedef void (*sys_button_evt_cb_t)();
 
 /* Public function prototypes ----------------------------------------- */
 /**
@@ -110,9 +108,9 @@ sys_button_status_t sys_button_manage();
  *  - (0x7FFFFFFF): Failed
  *  - (0x3FFFFFFF) : Success
  */
-sys_button_status_t sys_button_register_cb_function(sys_button_evt_on_power on_power_cb,
-                                                    sys_button_evt_off_power off_power_cb,
-                                                    sys_button_evt_record record_cb);
+sys_button_status_t sys_button_register_cb_function(sys_button_evt_cb_t single_click,
+                                                    sys_button_evt_cb_t double_click,
+                                                    sys_button_evt_cb_t hold);
 
 #endif // __USER_SYS_SYS_BUTTON_H
 

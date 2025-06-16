@@ -121,7 +121,7 @@ uint32_t sys_time_get_epoch_time(drv_ds1307_t *ds1307)
   struct tm t;
   time_t t_of_day;
   t.tm_year = (ds1307->year + 2000) - 1900;
-  t.tm_mon = (ds1307->month);
+  t.tm_mon = (ds1307->month) - 1;
   t.tm_mday = (ds1307->date);
   t.tm_hour = (ds1307->hour);
   t.tm_min = (ds1307->minute);
@@ -230,8 +230,8 @@ static sys_time_status_t sys_time_convert_epoch_time(uint32_t epoch_time,
   // Declare a tm structure to hold the result of localtime
   struct tm *current_date_time;
 
-  // change epoch time from GMT0 to GMT7
-  epoch_time += GMT0_TO_GMT7_SECOND;
+  // // change epoch time from GMT0 to GMT7
+  // epoch_time += GMT0_TO_GMT7_SECOND;
 
   time_t epoch_time_temp = (time_t)epoch_time;
 
@@ -251,11 +251,11 @@ static sys_time_status_t sys_time_convert_epoch_time(uint32_t epoch_time,
   // +1 to fix with RTC DS1307 (Jan to Dec is 1 to 12)
   date_time->month = (current_date_time->tm_mon) + 1;
 
-  date_time->day = current_date_time->tm_mday;
+  date_time->date = current_date_time->tm_mday;
 
   // tm_wday: Sunday is 0, Monday to Saturday is 1 to 6
   // +1 to convert (0->6) to (1->7) to fix with RTC DS1307
-  date_time->date = (current_date_time->tm_wday) + 1;
+  date_time->day = (current_date_time->tm_wday) + 1;
 
   date_time->hour = current_date_time->tm_hour;
   date_time->minute = current_date_time->tm_min;

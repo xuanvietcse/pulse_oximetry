@@ -21,7 +21,7 @@
 
 /* Private defines ---------------------------------------------------- */
 
-#define SYS_MEASURE_MAX_SAMPLES_PROCESS (200)
+#define SYS_MEASURE_MAX_SAMPLES_PROCESS (128)
 #define SYS_MEASURE_LPF_NUM_OF_COEFFS (5) // 4-order
 #define SYS_MEASURE_HPF_NUM_OF_COEFFS (3) // 2-order
 #define SYS_MEASURE_SAMPLING_RATE (100.0)
@@ -30,7 +30,7 @@
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
-static uint16_t s_adc_val_buf[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
+static uint16_t s_adc_val_buf[SYS_MEASURE_MAX_SAMPLES_PROCESS + 1] = {0};
 
 /* Private variables -------------------------------------------------- */
 
@@ -83,7 +83,8 @@ uint32_t sys_measure_process_data(sys_measure_t *signal)
   __ASSERT(signal->dev.active == true, SYS_MEASURE_ERROR);
 
   sys_measure_filter_data(signal);
-  if (cb_space_count(&(signal->filtered_data)) == 0)
+
+  if (cb_space_count(&signal->filtered_data) == 0)
   {
     sys_measure_peak_detector(signal);
   }
@@ -202,7 +203,8 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
   double mean_of_signal = 0;
   int i, j;
   double handle_data[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
-  cb_read(&(signal->filtered_data), handle_data, sizeof(handle_data));
+  cbuffer_t peak_detector_cbuf = signal->filtered_data;
+  cb_read(&peak_detector_cbuf, handle_data, sizeof(handle_data));
 
   // Enhance the signal
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
@@ -238,7 +240,7 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
   mean_of_signal /= SYS_MEASURE_MAX_SAMPLES_PROCESS;
 
   // Calculate the Threshold for generating Block of Interest
-  double beta = 0.5;
+  double beta = 0.8;
   double threshold[SYS_MEASURE_MAX_SAMPLES_PROCESS] = {0};
 
   for (i = 0; i < SYS_MEASURE_MAX_SAMPLES_PROCESS; i++)
@@ -302,14 +304,16 @@ static uint32_t sys_measure_peak_detector(sys_measure_t *signal)
 
   // Calculate the average peak interval (in second unit)
   heart_rate_avg = peak_index_buf[peak_nums - 1] - peak_index_buf[0];
-  heart_rate_avg /= (peak_nums - 1);
-  heart_rate_avg *= (1 / SYS_MEASURE_SAMPLING_RATE);
-  // Calibration
-  heart_rate_avg -= 0.0065;
-  // Estimate the heart rate (beats per minute unit)
-  heart_rate_avg = 60 / heart_rate_avg;
-  signal->heart_rate = (uint32_t)heart_rate_avg;
-
+  if (peak_nums > 1)
+  {
+    heart_rate_avg /= (peak_nums - 1);
+    heart_rate_avg *= (1 / SYS_MEASURE_SAMPLING_RATE);
+    // Calibration
+    heart_rate_avg -= 0.0065;
+    // Estimate the heart rate (beats per minute unit)
+    heart_rate_avg = 60 / heart_rate_avg;
+    signal->heart_rate = (uint32_t)heart_rate_avg;
+  }
   return SYS_MEASURE_OK;
 }
 /* End of file -------------------------------------------------------- */

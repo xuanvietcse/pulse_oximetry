@@ -23,27 +23,27 @@
 
 /* Public defines ----------------------------------------------------- */
 #ifndef SYS_STORAGE_FLASH_SECTOR
-#define SYS_STORAGE_FLASH_SECTOR                  (FLASH_SECTOR_7)
+#define SYS_STORAGE_FLASH_SECTOR (FLASH_SECTOR_7)
 #endif
 
 #ifndef SYS_STORAGE_FLASH_SECTOR_SIZE
-#define SYS_STORAGE_FLASH_SECTOR_SIZE             (BSP_FLASH_SECTOR_7_SIZE)
+#define SYS_STORAGE_FLASH_SECTOR_SIZE (BSP_FLASH_SECTOR_7_SIZE)
 #endif
 
 #ifndef SYS_STORAGE_FLASH_SECTOR_ADDRESS
-#define SYS_STORAGE_FLASH_SECTOR_ADDRESS          (BSP_FLASH_SECTOR_7_ADDRESS)
+#define SYS_STORAGE_FLASH_SECTOR_ADDRESS (BSP_FLASH_SECTOR_7_ADDRESS)
 #endif
 
 #ifndef SYS_STORAGE_BACKUP_FLASH_SECTOR
-#define SYS_STORAGE_BACKUP_FLASH_SECTOR           (FLASH_SECTOR_6)
+#define SYS_STORAGE_BACKUP_FLASH_SECTOR (FLASH_SECTOR_6)
 #endif
 
 #ifndef SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE
-#define SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE      (BSP_FLASH_SECTOR_6_SIZE)
+#define SYS_STORAGE_BACKUP_FLASH_SECTOR_SIZE (BSP_FLASH_SECTOR_6_SIZE)
 #endif
 
 #ifndef SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS
-#define SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS   (BSP_FLASH_SECTOR_6_ADDRESS)
+#define SYS_STORAGE_BACKUP_FLASH_SECTOR_ADDRESS (BSP_FLASH_SECTOR_6_ADDRESS)
 #endif
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -62,6 +62,7 @@ typedef struct __attribute__((__packed__))
   uint8_t id;
   uint32_t address;
   uint32_t size;
+  uint32_t pointer;
   uint32_t space_left;
 } sys_storage_t;
 

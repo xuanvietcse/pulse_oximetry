@@ -23,6 +23,8 @@
 #define SYS_MANAGE_TIMESTAMP (96000000U)
 
 #define SYS_MANAGE_SEGMENT_HEART_RATE_RECORDS_SIZE (4096U)
+
+#define SYS_MANAGE_FILTERED_DATA_OFFSET_PKT (1000.0)
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -47,20 +49,12 @@ static const uint8_t s_success_noti[] = "Success!";
 /* Private function prototypes ---------------------------------------- */
 
 /**
- * @brief       Sleep down the system service.
+ * @brief       Control the ON/OFF state of the system service.
  *
  * @return
  * -  None
  */
-static void sys_manage_sleep();
-
-/**
- * @brief       Wake up the system service.
- *
- * @return
- * -  None
- */
-static void sys_manage_wakeup();
+static void sys_manage_pwr_ctrl();
 
 /**
  * @brief       Record the current heart rate.
@@ -69,6 +63,14 @@ static void sys_manage_wakeup();
  * -  None
  */
 static void sys_manage_record_heart_rate();
+
+/**
+ * @brief       Switch display signal on OLED or stream on GUI application.
+ *
+ * @return
+ * -  None
+ */
+static void sys_manage_select_stream();
 
 /**
  * @brief       Trigger the recording heart rate event
@@ -83,6 +85,8 @@ uint32_t sys_manage_start_display(bsp_i2c_handle_t *i2c, uint8_t *dev_buffer)
 {
   uint32_t ret = SYS_DISPLAY_OK;
   ret = sys_display_init(&s_oled_screen, i2c, dev_buffer);
+  __ASSERT(ret == SYS_DISPLAY_OK, SYS_MANAGE_ERROR);
+  ret = sys_display_show_noti(&s_oled_screen, s_success_noti);
   __ASSERT(ret == SYS_DISPLAY_OK, SYS_MANAGE_ERROR);
 
   return SYS_MANAGE_OK;
@@ -106,9 +110,9 @@ uint32_t sys_manage_start_button(GPIO_TypeDef *gpio, uint16_t pin, uint32_t butt
   uint32_t ret = SYS_BUTTON_OK;
   ret = sys_button_init(gpio, pin, button_active_level);
   __ASSERT(ret == SYS_BUTTON_OK, SYS_MANAGE_ERROR);
-  ret = sys_button_register_cb_function(sys_manage_wakeup,
-                                        sys_manage_sleep,
-                                        sys_manage_record_heart_rate);
+  ret = sys_button_register_cb_function(sys_manage_record_heart_rate,
+                                        sys_manage_select_stream,
+                                        sys_manage_pwr_ctrl);
   __ASSERT(ret == SYS_BUTTON_OK, SYS_MANAGE_ERROR);
   return SYS_MANAGE_OK;
 }
@@ -160,6 +164,8 @@ uint32_t sys_manage_start(bsp_tim_typedef_t *tim)
   s_mng.interval = 0;
   s_mng.lower_threshold = 60;
   s_mng.upper_threshold = 140;
+  s_mng.active = true;
+  s_mng.stream = SYS_MANAGE_STREAM_OLED;
   uint8_t threshold[] = {s_mng.lower_threshold, s_mng.upper_threshold};
   sys_display_update_threshold(&s_oled_screen, threshold);
 
@@ -178,12 +184,46 @@ uint32_t sys_manage_start(bsp_tim_typedef_t *tim)
 uint32_t sys_manage_loop()
 {
   sys_button_manage();
-  sys_measure_process_data(&s_ppg_signal);
-  if (bsp_utils_get_tick() > 10000)
+
+  if (s_mng.stream == SYS_MANAGE_STREAM_GUI)
   {
-    sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
-    sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
+    if (cb_data_count(&s_ppg_signal.dev.adc_conv) > 0)
+    {
+      cbuffer_t raw_data_cbuf = s_ppg_signal.dev.adc_conv;
+
+      while (cb_data_count(&raw_data_cbuf) > 0)
+      {
+        uint16_t adc_val = 0;
+        cb_read(&raw_data_cbuf, &adc_val, sizeof(adc_val));
+        sys_protocol_pkt_t raw_data_pkt = {SYS_MANAGE_CMD_GET_RAW_PPG, (uint32_t)adc_val, 0xFF};
+        sys_protocol_send_pkt_to_port(raw_data_pkt);
+      }
+    }
   }
+  sys_measure_process_data(&s_ppg_signal);
+
+  if (bsp_utils_get_tick() > 5000)
+  {
+    if (s_mng.stream == SYS_MANAGE_STREAM_OLED)
+    {
+      sys_display_update_ppg_signal(&s_oled_screen, &(s_ppg_signal.filtered_data));
+    }
+  }
+
+  if (s_mng.stream == SYS_MANAGE_STREAM_GUI)
+  {
+    while (cb_data_count(&s_ppg_signal.filtered_data) > 0)
+    {
+      double temp = 0;
+      cb_read(&s_ppg_signal.filtered_data, &temp, sizeof(temp));
+      temp += SYS_MANAGE_FILTERED_DATA_OFFSET_PKT;
+      sys_protocol_pkt_t filtered_data_pkt = {SYS_MANAGE_CMD_GET_FILTERED_PPG, (uint32_t)temp, 0xFF};
+      sys_protocol_send_pkt_to_port(filtered_data_pkt);
+    }
+  }
+
+  sys_display_update_heart_rate(&s_oled_screen, s_ppg_signal.heart_rate);
+
   if (cb_data_count(&s_rx_pkt_cbuf) > 0)
   {
     cb_read(&s_rx_pkt_cbuf, &s_mng.cmd, CMD_PKT_SIZE);
@@ -218,7 +258,7 @@ uint32_t sys_manage_loop()
       s_mng.current_state = SYS_MANAGE_STATE_SET_INTERVAL;
       break;
     }
-    case SYS_MANAGE_CMD_SET_TIME:
+    case SYS_MANAGE_CMD_TIME:
     {
       // Check UART
       sys_protocol_send_pkt_to_port(s_check_pkt);
@@ -272,12 +312,9 @@ uint32_t sys_manage_loop()
   case SYS_MANAGE_STATE_HEART_RATE_WARNING:
   {
     uint8_t msg[] = "Warning";
-    sys_display_show_noti(&s_oled_screen, msg);
-    drv_buzzer_play(&s_passive_buzzer, system_alert, 1);
     if ((s_ppg_signal.heart_rate > s_mng.lower_threshold) && (s_ppg_signal.heart_rate < s_mng.upper_threshold))
     {
       s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
-      drv_buzzer_play(&s_passive_buzzer, system_alert, 0);
     }
     break;
   }
@@ -352,20 +389,42 @@ uint32_t sys_manage_loop()
     uint8_t heart_rate = 0;
     uint8_t msg[] = "Sending";
     sys_display_show_noti(&s_oled_screen, msg);
-    uint32_t i;
-    static uint32_t records_sent = 0;
-    for (i = records_sent; i < (s_heart_rate_records.size - s_heart_rate_records.space_left); i += 5)
+    uint32_t ret = 0;
+    do
     {
-      sys_storage_export(&s_heart_rate_records, &time, 4);
-      sys_storage_export(&s_heart_rate_records, &heart_rate, 1);
+      ret = sys_storage_export(&s_heart_rate_records, &time, 4);
+      if (ret != SYS_STORAGE_OK)
+      {
+        break;
+      }
+      ret = sys_storage_export(&s_heart_rate_records, &heart_rate, 1);
+      if (ret != SYS_STORAGE_OK)
+      {
+        break;
+      }
+      if ((s_ppg_signal.heart_rate < s_mng.upper_threshold) && (s_ppg_signal.heart_rate > s_mng.lower_threshold))
+      {
+        sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_TIME, time, 0xFF};
+        sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xFF};
+        sys_protocol_send_pkt_to_port(record_time);
+        sys_protocol_send_pkt_to_port(record_value);
+      }
+      else if (s_ppg_signal.heart_rate > s_mng.upper_threshold)
+      {
+        sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_TIME, time, 0x0F};
+        sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0x0F};
+        sys_protocol_send_pkt_to_port(record_time);
+        sys_protocol_send_pkt_to_port(record_value);
+      }
+      else
+      {
+        sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_TIME, time, 0xF0};
+        sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xF0};
+        sys_protocol_send_pkt_to_port(record_time);
+        sys_protocol_send_pkt_to_port(record_value);
+      }
+    } while (ret == SYS_STORAGE_OK);
 
-      sys_protocol_pkt_t record_time = {SYS_MANAGE_CMD_SET_TIME, time, 0xFF};
-      sys_protocol_send_pkt_to_port(record_time);
-
-      sys_protocol_pkt_t record_value = {SYS_MANAGE_CMD_GET_RECORDS, heart_rate, 0xF0};
-      sys_protocol_send_pkt_to_port(record_value);
-    }
-    records_sent = records_sent + (i - 1) / 5;
     sprintf(msg, "          ");
     sys_display_show_noti(&s_oled_screen, msg);
     s_mng.current_state = SYS_MANAGE_STATE_NORMAL;
@@ -388,16 +447,29 @@ uint32_t sys_manage_loop()
   }
 }
 /* Private definitions ------------------------------------------------ */
-static void sys_manage_sleep()
+static void sys_manage_select_stream()
 {
-  // Do something stuffs
-  s_mng.current_state = SYS_MAMAGE_STATE_SLEEP;
+  if (s_mng.stream == SYS_MANAGE_STREAM_OLED)
+  {
+    s_mng.stream = SYS_MANAGE_STREAM_GUI;
+  }
+  else
+  {
+    s_mng.stream = SYS_MANAGE_STREAM_OLED;
+  }
 }
 
-static void sys_manage_wakeup()
+static void sys_manage_pwr_ctrl()
 {
-  // Do something stuffs
-  s_mng.current_state = SYS_MANAGE_STATE_IDLE;
+  s_mng.active ^= 1;
+  if (s_mng.active)
+  {
+    s_mng.current_state = SYS_MANAGE_STATE_IDLE;
+  }
+  else
+  {
+    s_mng.current_state = SYS_MAMAGE_STATE_SLEEP;
+  }
 }
 
 static void sys_manage_record_heart_rate()

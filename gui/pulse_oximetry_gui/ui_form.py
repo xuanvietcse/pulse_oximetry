@@ -125,7 +125,7 @@ class Ui_User_UI(object):
         self.Record.setGeometry(QRect(500, 480, 1001, 241))
         self.txt_record = QTextEdit(self.Record)
         self.txt_record.setObjectName(u"txt_record")
-        self.txt_record.setGeometry(QRect(20, 30, 831, 201))
+        self.txt_record.setGeometry(QRect(10, 30, 841, 201))
         self.btn_read_record = QPushButton(self.Record)
         self.btn_read_record.setObjectName(u"btn_read_record")
         self.btn_read_record.setGeometry(QRect(870, 60, 111, 29))

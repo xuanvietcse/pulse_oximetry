@@ -20,7 +20,7 @@ PPG is the most commonly used measurement of heart rate for heart rate trackers.
 
 ## 1. Technologies
 
-<p align="center">
+<p align=c"enter">
   <img src="./img/tech.png" alt="Project Image" width="500" height="auto">
 </p>
 
@@ -48,3 +48,19 @@ About this Heart Rate Monitor:
 ## 3. Usages
 
 There are many user scenarios, including education, sports or maker/interactive projects but should not be used to diagnose or treat medical conditions.
+
+## 4. Demo
+Pulse oximetry and OLED:
+<p align=c"enter">
+  <img src="./img/demo_pulse_oximetry.gif" alt="Project Image" width="500" height="auto">
+</p>
+
+Heart rate record and graph:
+<p align=c"enter">
+  <img src="./img/record_graph.png" alt="Project Image" width="700" height="auto">
+</p>
+
+Stream PPG signal on GUI:
+<p align=c"enter">
+  <img src="./img/stream_ppg_on_gui.gif" alt="Project Image" width="700" height="auto">
+</p>

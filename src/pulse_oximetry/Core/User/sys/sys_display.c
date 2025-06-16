@@ -26,18 +26,21 @@
 #define MAX_HEIGHT (SSD1306_HEIGHT - 1)
 #define GRAPH_HEIGHT (45)
 #define GRAPH_WIDTH (MAX_WIDTH)
+#define RATIO (1) // Changing this also change the size of PPG Signal buffer size
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
-static uint8_t s_graph_pos_x = 0;
-static uint8_t s_graph_pos_y = 0;
+
 /* Private variables -------------------------------------------------- */
 static char s_heart_rate[18] = "HeartRate: --- bpm";
 static char s_notifications[11] = "Noti";
 static char s_high_threshold[6] = "H:---";
 static char s_low_threshold[6] = "L:---";
+static uint8_t s_graph_pos_x = 0;
+static uint8_t s_graph_pos_y = 0;
+static uint8_t s_graph_pre_pos_y = 0;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -104,16 +107,18 @@ uint32_t sys_display_update_heart_rate(sys_display_t *display, uint8_t heart_rat
   __ASSERT((display != NULL), SYS_DISPLAY_OK);
   // Operation
   char heart_rate_update[4];
-  uint8_t bytes = sprintf(heart_rate_update, "%03d", heart_rate);
-  memcpy(s_heart_rate + 11, heart_rate_update, bytes);
+
+  sprintf(heart_rate_update, "%03d", heart_rate);
   drv_ssd1306_set_cursor(&(display->screen),
-                         0,
+                         Font_6x8.width * 11,
                          0);
   drv_ssd1306_write_string(&(display->screen),
-                           s_heart_rate,
+                           heart_rate_update,
                            Font_6x8,
                            DRV_SSD1306_COLOR_WHITE);
+
   drv_ssd1306_update_screen(&(display->screen));
+
   // Return
   return SYS_DISPLAY_OK;
 }
@@ -125,15 +130,12 @@ uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal
   __ASSERT((signal_buf != NULL), SYS_DISPLAY_ERROR);
   // Operation
   // Read data
-  double temp_buf[3] = {0};
-  cb_read(signal_buf, temp_buf, 3 * sizeof(double));
-  // 3 samples create 1 pixel so we calculate the avg.
-  double avg_value = 0;
-  for (uint8_t i = 0; i < 3; i++)
+  if (cb_space_count(signal_buf) != 0)
   {
-    avg_value += *(temp_buf + i);
+    return SYS_DISPLAY_FAILED;
   }
-  avg_value = (avg_value / 3) + 750;
+  double temp_buf[(MAX_WIDTH + 1) / RATIO] = {0};
+  cb_read(signal_buf, temp_buf, sizeof(temp_buf));
   // Check if we have reached the width or not
   s_graph_pos_x = (s_graph_pos_x > (GRAPH_WIDTH - 2) ? 0 : s_graph_pos_x);
   if (s_graph_pos_x == 0)
@@ -145,17 +147,22 @@ uint32_t sys_display_update_ppg_signal(sys_display_t *display, cbuffer_t *signal
                                MAX_HEIGHT - 9 - 1,
                                DRV_SSD1306_COLOR_BLACK);
   }
-
-  static uint8_t pre_pos_y = 0;
-  uint8_t current_pos_y = (MAX_HEIGHT - 9 - 1) - (uint8_t)(avg_value / GRAPH_HEIGHT);
-  drv_ssd1306_draw_line(&display->screen,
-                        s_graph_pos_x,
-                        pre_pos_y,
-                        ++s_graph_pos_x,
-                        current_pos_y,
-                        DRV_SSD1306_COLOR_WHITE);
-  pre_pos_y = current_pos_y;
-
+  // Plot PPG signal on SSD1306
+  for (uint8_t i = 0; i < ((MAX_WIDTH + 1) / RATIO); i++)
+  {
+    s_graph_pos_y = (MAX_HEIGHT - 9 - 1) - (uint8_t)((temp_buf[i] + 750) / GRAPH_HEIGHT);
+    // Check if overheight or not
+    s_graph_pos_y = ((s_graph_pos_y < (BITMAP_HEIGHT + 1)) ? (BITMAP_HEIGHT + 1) : s_graph_pos_y);
+    drv_ssd1306_draw_line(&display->screen,
+                          s_graph_pos_x,
+                          s_graph_pre_pos_y,
+                          (s_graph_pos_x + RATIO),
+                          s_graph_pos_y,
+                          DRV_SSD1306_COLOR_WHITE);
+    s_graph_pos_x += RATIO;
+    s_graph_pre_pos_y = s_graph_pos_y;
+  }
+  // Update result on SSD1306
   drv_ssd1306_update_screen(&(display->screen));
   // Return
   return SYS_DISPLAY_OK;

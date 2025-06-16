@@ -39,13 +39,21 @@ enum sys_manage_status_t
 
 typedef enum
 {
-  SYS_MANAGE_CMD_CHECK_UART = 0,
-  SYS_MANAGE_CMD_GET_RECORDS,
-  SYS_MANAGE_CMD_SET_THRESHOLD,
-  SYS_MANAGE_CMD_SET_INTERVAL,
-  SYS_MANAGE_CMD_SET_TIME,
-  SYS_MANAGE_CMD_CLEAR_RECORDS
+  SYS_MANAGE_CMD_CHECK_UART = 0x00,
+  SYS_MANAGE_CMD_GET_RECORDS = 0x01,
+  SYS_MANAGE_CMD_GET_RAW_PPG = 0x11,
+  SYS_MANAGE_CMD_GET_FILTERED_PPG = 0x21,
+  SYS_MANAGE_CMD_SET_THRESHOLD = 0x02,
+  SYS_MANAGE_CMD_SET_INTERVAL = 0x03,
+  SYS_MANAGE_CMD_TIME = 0x04,
+  SYS_MANAGE_CMD_CLEAR_RECORDS = 0x05
 } sys_manage_cmd_t;
+
+typedef enum
+{
+  SYS_MANAGE_STREAM_OLED = 0,
+  SYS_MANAGE_STREAM_GUI
+} sys_manage_stream_select_t;
 
 typedef enum
 {
@@ -68,7 +76,9 @@ typedef enum
 typedef struct
 {
   sys_manage_state_t current_state;
+  bool active;
   uint8_t cmd;
+  sys_manage_stream_select_t stream;
   uint32_t interval;
   uint8_t lower_threshold;
   uint8_t upper_threshold;

@@ -444,9 +444,9 @@
     <widget class="QTextEdit" name="txt_record">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>30</y>
-       <width>831</width>
+       <width>841</width>
        <height>201</height>
       </rect>
      </property>
